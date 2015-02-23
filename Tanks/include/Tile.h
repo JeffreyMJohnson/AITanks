@@ -14,6 +14,9 @@ public:
 	int mFScore;
 	Tile* mPathParentNode;
 	int rowPos, colPos;
+	glm::vec2 mSize;
+	glm::vec2 mPosition;
+
 
 	Tile(int a_rowPos, int a_colPos)
 	{
