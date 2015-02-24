@@ -41,7 +41,9 @@ int main()
 	tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
 
-	tank.mPosition = GetRandomTilePosition();
+	Tile* t = GetTile(GetRandomTilePosition());
+	tank.mPosition = t->mPosition;
+	tank.mLastNodeVisited = t;
 	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
 
 	do
@@ -50,7 +52,8 @@ int main()
 
 		frk.ClearScreen();
 		UpdateTiles();
-
+		tank.Update(frk.GetDeltaTime());
+		frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
 		frk.DrawSprite(tank.mSpriteID, tank.mColor);
 
 		HandleUI();
@@ -206,5 +209,6 @@ void HandleUI()
 		//std::cout << "Nearest tile pos (" << t->mPosition.x << ", " << t->mPosition.y << ")\n";
 		t->mColor = glm::vec4(1, 0, 0, 1);
 		mGoalNode = t;
+		tank.mGoalNode = t;
 	}
 }
