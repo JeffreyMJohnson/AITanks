@@ -4,6 +4,7 @@
 #include "Tank.h"
 
 #include <time.h>
+#include <iostream>
 
 
 void CreateGrid();
@@ -14,6 +15,7 @@ Tile* GetTile(int a_row, int a_col);
 void UpdateTiles();
 glm::vec2 GetRandomTilePosition();
 void HandleUI();
+Tile* GetNearestTile(float xPos, float yPos);
 
 
 const int GRID_ROWS = 25;
@@ -25,6 +27,8 @@ std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
 
 Tank tank(glm::vec2(20,20), glm::vec2(200,75));
+
+Tile* mGoalNode = nullptr;
 
 int main()
 {
@@ -42,6 +46,8 @@ int main()
 
 	do
 	{
+
+
 		frk.ClearScreen();
 		UpdateTiles();
 
@@ -56,6 +62,21 @@ int main()
 	Destroy();
 
 	return 0;
+}
+
+Tile* GetNearestTile(float xPos, float yPos)
+{
+	Tile* result = nullptr;
+	float dx = INT_MAX;
+	for (auto tile : grid)
+	{
+		if (glm::distance(tile->mPosition, glm::vec2(xPos, yPos)) < dx)
+		{
+			result = tile;
+			dx = glm::distance(tile->mPosition, glm::vec2(xPos, yPos));
+		}
+	}
+	return result;
 }
 
 glm::vec2 GetRandomTilePosition()
@@ -175,5 +196,15 @@ void HandleUI()
 	if (frk.IsKeyDown(ESC))
 	{
 		quit = true;
+	}
+	double xPos = 0;
+	double yPos = 0;
+	if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && mGoalNode == nullptr)
+	{
+		//std::cout << "left clicked: \nxPos: " << xPos << "\nyPos: " << yPos << std::endl;
+		Tile* t = GetNearestTile(xPos, yPos);
+		//std::cout << "Nearest tile pos (" << t->mPosition.x << ", " << t->mPosition.y << ")\n";
+		t->mColor = glm::vec4(1, 0, 0, 1);
+		mGoalNode = t;
 	}
 }

@@ -8,11 +8,18 @@
 
 #include "glm\glm.hpp"
 
+#include "Globals.h"
 #include "framework/Sprite.h"
 #include "framework/FontManager.h"
 #include "framework/Animation.h"
 
 #include <vector>
+
+enum MOUSE_BUTTON
+{
+	LEFT = GLFW_MOUSE_BUTTON_1,
+	RIGHT = GLFW_MOUSE_BUTTON_2
+};
 
 enum KEY_CODE
 {
@@ -196,6 +203,16 @@ public:
 	Returns true if given key is being pressed while being polled, else returns false.	
 	*/
 	bool IsKeyDown(KEY_CODE a_key);
+
+	bool IsMouseButtonDown(MOUSE_BUTTON a_button, double& xPos,double& yPos)
+	{
+		if (!glfwGetMouseButton(mWindow, a_button))
+			return false;
+		glfwGetCursorPos(mWindow, &xPos, &yPos);
+		//invert the yPos
+		yPos = MNF::Globals::SCREEN_HEIGHT - yPos;
+		return true;
+	}
 
 	/**
 	Returns the time in seconds from the last frame.
