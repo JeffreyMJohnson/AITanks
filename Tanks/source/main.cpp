@@ -3,17 +3,23 @@
 #include "Tile.h"
 #include "Tank.h"
 
+#include <time.h>
+
+
 void CreateGrid();
 void LoadGridEdges();
 void Destroy();
 Tile* GetTile(int a_row, int a_col);
 void UpdateTiles();
+glm::vec2 GetRandomTilePosition();
+void HandleUI();
 
 
 const int GRID_ROWS = 25;
 const int GRID_COLS = 25;
 
 Framework frk;
+bool quit = false;
 std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
 
@@ -21,12 +27,16 @@ Tank tank(glm::vec2(20,20), glm::vec2(200,75));
 
 int main()
 {
+	srand(time(NULL));
+	
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
 	CreateGrid();
 	tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
+
+	tank.mPosition = GetRandomTilePosition();
 	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
 
 
@@ -34,10 +44,11 @@ int main()
 	{
 		frk.ClearScreen();
 		UpdateTiles();
+
 		frk.DrawSprite(tank.mSpriteID);
 
-
-	} while (frk.UpdateFramework());
+		HandleUI();
+	} while (frk.UpdateFramework() && !quit);
 
 
 
@@ -45,6 +56,12 @@ int main()
 	Destroy();
 
 	return 0;
+}
+
+glm::vec2 GetRandomTilePosition()
+{
+	Tile* tile = grid[rand() % grid.size()];
+	return tile->mPosition;
 }
 
 void CreateGrid()
@@ -141,4 +158,12 @@ void Destroy()
 		delete t;
 	}
 	grid.clear();
+}
+
+void HandleUI()
+{
+	if (frk.IsKeyDown(ESC))
+	{
+		quit = true;
+	}
 }
