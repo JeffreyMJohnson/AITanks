@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "framework/Framework.h"
 #include "Tile.h"
+#include "Tank.h"
 
 void CreateGrid();
 void LoadGridEdges();
@@ -16,16 +17,26 @@ Framework frk;
 std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
 
+Tank tank(glm::vec2(20,20), glm::vec2(200,75));
+
 int main()
 {
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
 	CreateGrid();
+	tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
+	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
+
 
 	do
 	{
+		frk.ClearScreen();
 		UpdateTiles();
+		frk.DrawSprite(tank.mSpriteID);
+
+
 	} while (frk.UpdateFramework());
 
 
@@ -39,9 +50,9 @@ int main()
 void CreateGrid()
 {
 	glm::vec2 tileSize(25, 25);
-	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", false);
+	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
 
-	glm::vec2 startPos(175, 75);
+	glm::vec2 startPos(200, 75);
 	glm::vec2 position = startPos;
 	for (int row = 0; row < GRID_ROWS; row++)
 	{

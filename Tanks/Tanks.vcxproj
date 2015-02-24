@@ -85,6 +85,7 @@
     <ClInclude Include="include\framework\Framework.h" />
     <ClInclude Include="include\framework\Sprite.h" />
     <ClInclude Include="include\Globals.h" />
+    <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />
   </ItemGroup>
   <ItemGroup>

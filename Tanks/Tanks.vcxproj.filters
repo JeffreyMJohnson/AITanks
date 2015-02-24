@@ -65,6 +65,9 @@
     <ClInclude Include="include\Edge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Tank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="source\FlatFragmentShader.glsl">
