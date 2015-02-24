@@ -202,8 +202,10 @@ void HandleUI()
 	}
 	double xPos = 0;
 	double yPos = 0;
-	if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && mGoalNode == nullptr)
+	if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && tank.mGoalNode == nullptr)
 	{
+		//check if current node is old goal node and change color
+		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = glm::vec4(1, 1, 1, 1);
 		//std::cout << "left clicked: \nxPos: " << xPos << "\nyPos: " << yPos << std::endl;
 		Tile* t = GetNearestTile(xPos, yPos);
 		//std::cout << "Nearest tile pos (" << t->mPosition.x << ", " << t->mPosition.y << ")\n";
