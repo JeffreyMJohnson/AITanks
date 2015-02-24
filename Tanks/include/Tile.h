@@ -29,6 +29,7 @@ public:
 		colPos = a_colPos;
 		mColor = glm::vec4(1, 1, 1, 1);
 	}
+
 };
 
 #endif

@@ -12,3 +12,5 @@ void main()
 	TexCoord = texCoord;
 	gl_Position = MVP * vec4(position, 0, 1);
 }
+
+// butts

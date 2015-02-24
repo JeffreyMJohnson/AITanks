@@ -101,17 +101,6 @@ public:
 	void SetSpriteScale(unsigned int spriteId, float scaleX, float scaleY);
 
 	/**
-	Set the color of the given sprite to the given color.
-	__Values are expected to be from 0 to 1.__
-	####parameters
-	`r` - Red value from 0 to 1.\n
-	`g` - Green value from 0 to 1.\n
-	`b` - Blue value from 0 to 1.\n
-	`a` - Alpha value from 0 to 1. __note: 0 is totally transparent, while 1 equates total opacity.__
-	*/
-	void SetSpriteColor(unsigned int spriteId, float r, float g, float b, float a);
-
-	/**
 	Move the given sprite to the given pixel position coordinates on the screen.
 	####parameters
 	`spriteID` - ID returned from `CreateSprite()` for sprite to set.\n
@@ -126,6 +115,8 @@ public:
 	`spriteID` - ID returned from `CreateSprite()` for sprite to draw.\n
 	*/
 	void DrawSprite(unsigned int spriteID);
+
+	void DrawSprite(unsigned int spriteID, glm::vec4& color);
 
 	/**
 	Create an animated sprite with a given texture sprite sheet to be moved and drawn on the screen.\n

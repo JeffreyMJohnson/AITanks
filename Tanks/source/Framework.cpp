@@ -77,14 +77,14 @@ void Framework::SetSpriteScale(unsigned int spriteId, float scaleX, float scaleY
 	mSpriteList[spriteId]->SetScale(scaleX, scaleY);
 }
 
-void Framework::SetSpriteColor(unsigned int spriteId, float r, float g, float b, float a)
-{
-	mSpriteList[spriteId]->mColor = glm::vec4(r, g, b, a);
-}
-
 void Framework::DrawSprite(unsigned int spriteID)
 {
 	mSpriteList[spriteID]->Draw();
+}
+
+void Framework::DrawSprite(unsigned int spriteID, glm::vec4& color)
+{
+	mSpriteList[spriteID]->Draw(color);
 }
 
 unsigned int Framework::CreateAnimation(const float width, const float height, const char* spriteSheetDataFile)

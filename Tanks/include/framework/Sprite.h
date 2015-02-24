@@ -50,8 +50,6 @@ public:
 	glm::mat4 projectionMatrix;
 	glm::mat4 modelViewProjectionMatrix;
 
-	glm::vec4 mColor;
-
 
 	Sprite();
 
@@ -66,6 +64,8 @@ public:
 	void SetScale(const float scaleX, const float scaleY);
 
 	void Draw();
+
+	void Draw(glm::vec4& a_color);
 
 	void UpdateTransform();
 

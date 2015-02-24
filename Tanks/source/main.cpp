@@ -38,17 +38,14 @@ int main()
 	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
 
 	tank.mPosition = GetRandomTilePosition();
-	frk.SetSpriteColor(tank.mSpriteID, 1,0,0,1);
 	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-	//Tile* tile = GetTile(tank.mPosition);
-	//if (tile) tile->mColor = glm::vec4(1, 0, 0, 1);
 
 	do
 	{
 		frk.ClearScreen();
 		UpdateTiles();
 
-		frk.DrawSprite(tank.mSpriteID);
+		frk.DrawSprite(tank.mSpriteID, tank.mColor);
 
 		HandleUI();
 	} while (frk.UpdateFramework() && !quit);
@@ -101,7 +98,7 @@ void UpdateTiles()
 	for (auto tile : grid)
 	{
 		frk.MoveSprite(mTileSpriteID, tile->mPosition.x, tile->mPosition.y);
-		frk.DrawSprite(mTileSpriteID);
+		frk.DrawSprite(mTileSpriteID, tile->mColor);
 	}
 }
 
