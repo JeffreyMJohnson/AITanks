@@ -9,6 +9,7 @@
 void CreateGrid();
 void LoadGridEdges();
 void Destroy();
+Tile* GetTile(glm::vec2 position);
 Tile* GetTile(int a_row, int a_col);
 void UpdateTiles();
 glm::vec2 GetRandomTilePosition();
@@ -37,8 +38,10 @@ int main()
 	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
 
 	tank.mPosition = GetRandomTilePosition();
+	frk.SetSpriteColor(tank.mSpriteID, 1,0,0,1);
 	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-
+	//Tile* tile = GetTile(tank.mPosition);
+	//if (tile) tile->mColor = glm::vec4(1, 0, 0, 1);
 
 	do
 	{
@@ -100,6 +103,16 @@ void UpdateTiles()
 		frk.MoveSprite(mTileSpriteID, tile->mPosition.x, tile->mPosition.y);
 		frk.DrawSprite(mTileSpriteID);
 	}
+}
+
+Tile* GetTile(glm::vec2 position)
+{
+	for (auto tile : grid)
+	{
+		if (tile->mPosition == position)
+			return tile;
+	}
+	return nullptr;
 }
 
 Tile* GetTile(int a_row, int a_col)

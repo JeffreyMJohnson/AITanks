@@ -35,6 +35,7 @@ public:
 	float* vertices;
 	GLuint textureID;
 	GLuint uniTextureSample;
+	GLuint uniColor;
 	GLuint shaderProgram;
 	glm::mat4 transform;
 	glm::vec3 translation, scale;
@@ -48,6 +49,8 @@ public:
 	glm::mat4 cameraMatrix;
 	glm::mat4 projectionMatrix;
 	glm::mat4 modelViewProjectionMatrix;
+
+	glm::vec4 mColor;
 
 
 	Sprite();

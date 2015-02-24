@@ -108,6 +108,10 @@ void Sprite::Initialize(float a_width, float a_height, const char* texturePath, 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	uniColor = glGetUniformLocation(shaderProgram, "color");
+	mColor = glm::vec4(1, 1, 1, 1);
+	glUniform4f(uniColor, mColor.r, mColor.g, mColor.b, mColor.a);
+
 	transform = glm::mat4(1);
 	translation = glm::vec3(0, 0, 0);
 
@@ -177,6 +181,8 @@ void Sprite::Draw()
 
 	//send uniform to shader
 	glUniformMatrix4fv(uniMVP, 1, GL_FALSE, glm::value_ptr(modelViewProjectionMatrix));
+
+	glUniform4f(uniColor, mColor.r, mColor.g, mColor.b, mColor.a);
 
 	//draw it
 	glDrawArrays(GL_QUADS, 0, 4);
