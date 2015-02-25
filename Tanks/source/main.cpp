@@ -2,9 +2,11 @@
 #include "framework/Framework.h"
 #include "Tile.h"
 #include "Tank.h"
+#include "Globals.h"
 
 #include <time.h>
 #include <iostream>
+#include <algorithm>
 
 
 void CreateGrid();
@@ -16,7 +18,8 @@ void UpdateTiles();
 glm::vec2 GetRandomTilePosition();
 void HandleUI();
 Tile* GetNearestTile(float xPos, float yPos);
-
+bool SortOnFScore(Tile* lhs, Tile* rhs);
+void AStarPathFind(); 
 
 const int GRID_ROWS = 25;
 const int GRID_COLS = 25;
@@ -33,6 +36,7 @@ Tile* mGoalNode = nullptr;
 int main()
 {
 	srand(time(NULL));
+
 	
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
@@ -48,8 +52,6 @@ int main()
 
 	do
 	{
-
-
 		frk.ClearScreen();
 		UpdateTiles();
 		tank.Update(frk.GetDeltaTime());
@@ -209,8 +211,83 @@ void HandleUI()
 		//std::cout << "left clicked: \nxPos: " << xPos << "\nyPos: " << yPos << std::endl;
 		Tile* t = GetNearestTile(xPos, yPos);
 		//std::cout << "Nearest tile pos (" << t->mPosition.x << ", " << t->mPosition.y << ")\n";
-		t->mColor = glm::vec4(1, 0, 0, 1);
+		//t->mColor = glm::vec4(1, 0, 0, 1);
 		mGoalNode = t;
-		tank.mGoalNode = t;
+		//tank.mGoalNode = t;
+		AStarPathFind();
+
+	}
+}
+
+void ResetTiles()
+{
+	for (auto tile : grid)
+	{
+		tile->mIsVisited = false;
+		tile->mGScore = INT_MAX;
+		tile->mFScore = 0;
+		tile->mPathParentNode = nullptr;
+	}
+}
+
+bool SortOnFScore(Tile* lhs, Tile* rhs)
+{
+	return lhs->mFScore < rhs->mFScore;
+}
+
+float GetHeuristic(Tile* node, Tile* nodeTarget)
+{
+	return glm::distance(node->mPosition, nodeTarget->mPosition);
+}
+
+void AStarPathFind()
+{
+	std::list<Tile*> priorityQ;
+	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
+	priorityQ.push_front(startTile);
+	startTile->mGScore = 0;
+	startTile->mPathParentNode = startTile;
+
+	while (!priorityQ.empty())
+	{
+		priorityQ.sort(SortOnFScore);
+		Tile* current = priorityQ.front();
+		priorityQ.pop_front();
+
+		current->mIsVisited = true;
+		if (current != startTile && current != mGoalNode)
+		{
+			current->mColor = glm::vec4(1, 1, 0, 1);
+		}
+
+		if (current == mGoalNode)
+			break;
+
+		for (auto edge : current->mEdges)
+		{
+			Tile* neighbor = edge->mEnd;
+			if (!neighbor->mIsVisited)
+			{
+				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(neighbor, mGoalNode);
+				if (fScore < neighbor->mGScore)
+				{
+					neighbor->mPathParentNode = current;
+					neighbor->mGScore = current->mGScore + neighbor->mWeight;
+					neighbor->mFScore = fScore;
+					if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end())
+					{
+						priorityQ.push_back(neighbor);
+					}
+				}
+			}
+		}
+
+	}
+	Tile* parent = mGoalNode->mPathParentNode;
+	tank.pathList.push_front(parent);
+	while (parent != startTile)
+	{
+		parent = parent->mPathParentNode;
+		tank.pathList.push_front(parent);
 	}
 }

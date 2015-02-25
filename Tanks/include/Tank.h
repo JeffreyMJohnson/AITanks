@@ -2,6 +2,7 @@
 #define _TANK_H_
 
 #include <vector>
+#include <list>
 #include "glm/gtx/compatibility.hpp"
 
 class Tank
@@ -13,7 +14,7 @@ public:
 	glm::vec4 mColor;
 	Tile* mGoalNode;
 	Tile* mLastNodeVisited;
-	std::vector<Tile*> pathList;
+	std::list<Tile*> pathList;
 	float mCurrentLERPValue = 0;
 
 
@@ -21,14 +22,15 @@ public:
 	{
 		mSpriteID = 0;
 		mPosition = a_position;
-			mSize = a_size;
-			mColor = glm::vec4(1, 1, 1, 1);
+		mSize = a_size;
+		mColor = glm::vec4(1, 1, 1, 1);
 	}
 
 	void Update(float deltaTime)
 	{
-		if (mGoalNode != nullptr)
+		if (pathList.size() > 0)
 		{
+			mGoalNode = pathList.front();
 			if (mCurrentLERPValue < 1)
 			{
 				mPosition = glm::lerp(mLastNodeVisited->mPosition, mGoalNode->mPosition, mCurrentLERPValue);
@@ -38,8 +40,14 @@ public:
 			{
 				mCurrentLERPValue = 0;
 				mLastNodeVisited = mGoalNode;
-				mGoalNode = nullptr;
+				pathList.pop_front();
+				if (pathList.size() > 0)
+					mGoalNode = pathList.front();
 			}
+		}
+		else
+		{
+			mGoalNode = nullptr;
 		}
 	}
 

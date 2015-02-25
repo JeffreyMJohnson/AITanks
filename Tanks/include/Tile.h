@@ -12,18 +12,19 @@ public:
 	bool mIsVisited;
 	int mGScore;
 	int mFScore;
+	int mWeight;
 	Tile* mPathParentNode;
 	int rowPos, colPos;
 	glm::vec2 mSize;
 	glm::vec2 mPosition;
 	glm::vec4 mColor;
 
-
 	Tile(int a_rowPos, int a_colPos)
 	{
 		mIsVisited = false;
 		mGScore = INT_MAX;
 		mFScore = 0;
+		mWeight = 1;
 		mPathParentNode = nullptr;
 		rowPos = a_rowPos;
 		colPos = a_colPos;
