@@ -25,7 +25,7 @@ public:
 		mPosition = a_position;
 		mSize = a_size;
 		mColor = glm::vec4(1, 1, 1, 1);
-		mVelocity = 2;
+		mVelocity = 5;
 	}
 
 	void Update(float deltaTime)

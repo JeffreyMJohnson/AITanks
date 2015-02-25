@@ -282,8 +282,6 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 		result = glm::distance(node->mPosition, nodeTarget->mPosition);
 		break;
 	case MANHATTAN:
-		//distanceX = glm::distance(node->mPosition.x, nodeTarget->mPosition.x);
-		//distanceY = glm::distance(node->mPosition.y, node->mPosition.y);
 		distanceX = abs(node->mPosition.x - nodeTarget->mPosition.x);
 		distanceY = abs(node->mPosition.y - nodeTarget->mPosition.y);
 		result = distanceX + distanceY;
