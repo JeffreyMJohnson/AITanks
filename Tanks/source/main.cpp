@@ -20,9 +20,13 @@ void HandleUI();
 Tile* GetNearestTile(float xPos, float yPos);
 bool SortOnFScore(Tile* lhs, Tile* rhs);
 void AStarPathFind(); 
+void ResetTiles();
 
 const int GRID_ROWS = 25;
 const int GRID_COLS = 25;
+const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
+const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
+const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
 
 Framework frk;
 bool quit = false;
@@ -206,12 +210,13 @@ void HandleUI()
 	double yPos = 0;
 	if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && tank.mGoalNode == nullptr)
 	{
+		ResetTiles();
 		//check if current node is old goal node and change color
-		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = glm::vec4(1, 1, 1, 1);
+		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
 		//std::cout << "left clicked: \nxPos: " << xPos << "\nyPos: " << yPos << std::endl;
 		Tile* t = GetNearestTile(xPos, yPos);
 		//std::cout << "Nearest tile pos (" << t->mPosition.x << ", " << t->mPosition.y << ")\n";
-		//t->mColor = glm::vec4(1, 0, 0, 1);
+		t->mColor = RED;
 		mGoalNode = t;
 		//tank.mGoalNode = t;
 		AStarPathFind();
@@ -227,6 +232,7 @@ void ResetTiles()
 		tile->mGScore = INT_MAX;
 		tile->mFScore = 0;
 		tile->mPathParentNode = nullptr;
+		tile->mColor = WHITE;
 	}
 }
 
@@ -283,6 +289,7 @@ void AStarPathFind()
 		}
 
 	}
+	tank.pathList.push_back(mGoalNode);
 	Tile* parent = mGoalNode->mPathParentNode;
 	tank.pathList.push_front(parent);
 	while (parent != startTile)

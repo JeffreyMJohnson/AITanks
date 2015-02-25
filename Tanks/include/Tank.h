@@ -16,6 +16,7 @@ public:
 	Tile* mLastNodeVisited;
 	std::list<Tile*> pathList;
 	float mCurrentLERPValue = 0;
+	float mVelocity;
 
 
 	Tank(glm::vec2 a_size, glm::vec2 a_position)
@@ -24,6 +25,7 @@ public:
 		mPosition = a_position;
 		mSize = a_size;
 		mColor = glm::vec4(1, 1, 1, 1);
+		mVelocity = 2;
 	}
 
 	void Update(float deltaTime)
@@ -34,7 +36,7 @@ public:
 			if (mCurrentLERPValue < 1)
 			{
 				mPosition = glm::lerp(mLastNodeVisited->mPosition, mGoalNode->mPosition, mCurrentLERPValue);
-				mCurrentLERPValue += deltaTime;
+				mCurrentLERPValue += mVelocity * deltaTime;
 			}
 			else
 			{
