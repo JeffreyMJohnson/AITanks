@@ -8,6 +8,12 @@
 #include <iostream>
 #include <algorithm>
 
+enum HEURISTIC_TYPE
+{
+	DISTANCE,
+	MANHATTAN,
+	DIAGONAL
+};
 
 void CreateGrid();
 void LoadGridEdges();
@@ -23,6 +29,7 @@ bool SortOnFScore(Tile* lhs, Tile* rhs);
 void AStarPathFind(); 
 void ResetTiles();
 void AutoRun();
+float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
 
 
 const int GRID_ROWS = 25;
@@ -39,6 +46,8 @@ unsigned int mTileSpriteID;
 Tank tank(glm::vec2(20,20), glm::vec2(200,75));
 
 Tile* mGoalNode = nullptr;
+
+
 
 int main()
 {
@@ -237,6 +246,7 @@ void AutoRun()
 	if (tank.mGoalNode == nullptr)
 	{
 		ResetTiles();
+		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
 		Tile* t = GetRandomTile();
 		t->mColor = RED;
 		mGoalNode = t;
@@ -261,9 +271,28 @@ bool SortOnFScore(Tile* lhs, Tile* rhs)
 	return lhs->mFScore < rhs->mFScore;
 }
 
-float GetHeuristic(Tile* node, Tile* nodeTarget)
+float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 {
-	return glm::distance(node->mPosition, nodeTarget->mPosition);
+	float result = 0;
+	float distanceX;
+	float distanceY;
+	switch (type)
+	{
+	case DISTANCE:
+		result = glm::distance(node->mPosition, nodeTarget->mPosition);
+		break;
+	case MANHATTAN:
+		//distanceX = glm::distance(node->mPosition.x, nodeTarget->mPosition.x);
+		//distanceY = glm::distance(node->mPosition.y, node->mPosition.y);
+		distanceX = abs(node->mPosition.x - nodeTarget->mPosition.x);
+		distanceY = abs(node->mPosition.y - nodeTarget->mPosition.y);
+		result = distanceX + distanceY;
+		break;
+	case DIAGONAL:
+		break;
+	}
+	return result;
+	
 }
 
 void AStarPathFind()
@@ -294,7 +323,8 @@ void AStarPathFind()
 			Tile* neighbor = edge->mEnd;
 			if (!neighbor->mIsVisited)
 			{
-				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(neighbor, mGoalNode);
+				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
 				if (fScore < neighbor->mGScore)
 				{
 					neighbor->mPathParentNode = current;
