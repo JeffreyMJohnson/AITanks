@@ -15,12 +15,15 @@ void Destroy();
 Tile* GetTile(glm::vec2 position);
 Tile* GetTile(int a_row, int a_col);
 void UpdateTiles();
+Tile* GetRandomTile();
 glm::vec2 GetRandomTilePosition();
 void HandleUI();
 Tile* GetNearestTile(float xPos, float yPos);
 bool SortOnFScore(Tile* lhs, Tile* rhs);
 void AStarPathFind(); 
 void ResetTiles();
+void AutoRun();
+
 
 const int GRID_ROWS = 25;
 const int GRID_COLS = 25;
@@ -63,6 +66,8 @@ int main()
 		frk.DrawSprite(tank.mSpriteID, tank.mColor);
 
 		HandleUI();
+		AutoRun();
+
 	} while (frk.UpdateFramework() && !quit);
 
 
@@ -88,10 +93,14 @@ Tile* GetNearestTile(float xPos, float yPos)
 	return result;
 }
 
+Tile* GetRandomTile()
+{
+	return grid[rand() % grid.size()];
+}
+
 glm::vec2 GetRandomTilePosition()
 {
-	Tile* tile = grid[rand() % grid.size()];
-	return tile->mPosition;
+	return GetRandomTile()->mPosition;
 }
 
 void CreateGrid()
@@ -213,14 +222,25 @@ void HandleUI()
 		ResetTiles();
 		//check if current node is old goal node and change color
 		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
-		//std::cout << "left clicked: \nxPos: " << xPos << "\nyPos: " << yPos << std::endl;
 		Tile* t = GetNearestTile(xPos, yPos);
-		//std::cout << "Nearest tile pos (" << t->mPosition.x << ", " << t->mPosition.y << ")\n";
 		t->mColor = RED;
 		mGoalNode = t;
 		//tank.mGoalNode = t;
 		AStarPathFind();
 
+	}
+}
+
+void AutoRun()
+{
+
+	if (tank.mGoalNode == nullptr)
+	{
+		ResetTiles();
+		Tile* t = GetRandomTile();
+		t->mColor = RED;
+		mGoalNode = t;
+		AStarPathFind();
 	}
 }
 
