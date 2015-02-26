@@ -17,6 +17,8 @@ enum HEURISTIC_TYPE
 
 void CreateGrid();
 void LoadGridEdges();
+void LoadGridEdgesDiagonal();
+void LoadGridEdgesOneWay();
 void Destroy();
 Tile* GetTile(glm::vec2 position);
 Tile* GetTile(int a_row, int a_col);
@@ -37,6 +39,8 @@ const int GRID_COLS = 25;
 const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
 const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
 const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
+const glm::vec4 BLUE = glm::vec4(0, 0, 1, 1);
+const glm::vec4 BROWN = glm::vec4(0.501, 0.152, 0.039, 1.0f);
 
 Framework frk;
 bool quit = false;
@@ -114,6 +118,7 @@ glm::vec2 GetRandomTilePosition()
 
 void CreateGrid()
 {
+	const int wallProbability = 30;//int between 0 and 100. greater increases likelyhood of tile being wall
 	glm::vec2 tileSize(25, 25);
 	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
 
@@ -135,10 +140,19 @@ void CreateGrid()
 			{
 				position.x += tileSize.x;
 			}
+			//see if wall
+			if (rand() % 101 <= wallProbability)
+			{
+				t->mColor = BROWN;
+				t->mWeight = INT_MAX;
+			}
+
 		}
 		position.y += tileSize.y;
 	}
 	LoadGridEdges();
+	//LoadGridEdgesDiagonal();
+	//LoadGridEdgesOneWay();
 }
 
 void UpdateTiles()
@@ -201,6 +215,91 @@ void LoadGridEdges()
 			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
 			tile->mEdges.push_back(e);
 		}
+		if (tile->mWeight == INT_MAX)
+		{
+			tile->mEdges.clear();
+		}
+	}
+}
+
+void LoadGridEdgesOneWay()
+{
+	for (auto tile : grid)
+	{
+		//north edge
+		if (tile->rowPos + 1 < GRID_ROWS && GetTile(tile->rowPos + 1, tile->colPos)->mEdges.size() == 0)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
+			tile->mEdges.push_back(e);
+		}
+		//south edge
+		if (tile->rowPos - 1 >= 0 && GetTile(tile->rowPos - 1, tile->colPos)->mEdges.size() == 0)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
+			tile->mEdges.push_back(e);
+		}
+		//east edge
+		if (tile->colPos + 1 < GRID_COLS && GetTile(tile->rowPos, tile->colPos + 1)->mEdges.size() == 0)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
+			tile->mEdges.push_back(e);
+		}
+		//west edge
+		if (tile->colPos - 1 >= 0 && GetTile(tile->rowPos, tile->colPos - 1)->mEdges.size() == 0)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
+			tile->mEdges.push_back(e);
+		}
+	}
+}
+
+void LoadGridEdgesDiagonal()
+{
+	LoadGridEdges();
+
+	for (auto tile : grid)
+	{
+		//north-east
+		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos + 1 < GRID_COLS)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos + 1);
+			tile->mEdges.push_back(e);
+		}
+		//north-west
+		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos - 1 >= 0)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos - 1);
+			tile->mEdges.push_back(e);
+		}
+
+		//south-east
+		if (tile->rowPos - 1 >= 0 && tile->colPos + 1 < GRID_COLS)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos + 1);
+			tile->mEdges.push_back(e);
+		}
+		//south-west
+		if (tile->rowPos - 1 >= 0 && tile->colPos - 1 >= 0)
+		{
+			Edge* e = new Edge();
+			e->mStart = tile;
+			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos - 1);
+			tile->mEdges.push_back(e);
+		}
 	}
 }
 
@@ -247,7 +346,13 @@ void AutoRun()
 	{
 		ResetTiles();
 		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
-		Tile* t = GetRandomTile();
+		
+		Tile* t = nullptr;
+		while (t == nullptr)
+		{
+			t = GetRandomTile();
+			if (t->mColor == BROWN) t = nullptr;
+		}
 		t->mColor = RED;
 		mGoalNode = t;
 		AStarPathFind();
@@ -262,7 +367,7 @@ void ResetTiles()
 		tile->mGScore = INT_MAX;
 		tile->mFScore = 0;
 		tile->mPathParentNode = nullptr;
-		tile->mColor = WHITE;
+		if (tile->mColor != BROWN) tile->mColor = WHITE;
 	}
 }
 
@@ -286,8 +391,6 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 		distanceY = abs(node->mPosition.y - nodeTarget->mPosition.y);
 		result = distanceX + distanceY;
 		break;
-	case DIAGONAL:
-		break;
 	}
 	return result;
 	
@@ -308,7 +411,7 @@ void AStarPathFind()
 		priorityQ.pop_front();
 
 		current->mIsVisited = true;
-		if (current != startTile && current != mGoalNode)
+		if (current != startTile && current != mGoalNode && current->mColor != BROWN)
 		{
 			current->mColor = glm::vec4(1, 1, 0, 1);
 		}
@@ -321,8 +424,8 @@ void AStarPathFind()
 			Tile* neighbor = edge->mEnd;
 			if (!neighbor->mIsVisited)
 			{
-				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
-				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
+				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
 				if (fScore < neighbor->mGScore)
 				{
 					neighbor->mPathParentNode = current;
@@ -336,6 +439,11 @@ void AStarPathFind()
 			}
 		}
 
+	}
+	if (mGoalNode->mPathParentNode == nullptr)
+	{
+		//no solution
+		return;
 	}
 	tank.pathList.push_back(mGoalNode);
 	Tile* parent = mGoalNode->mPathParentNode;

@@ -33,6 +33,7 @@ public:
 		if (pathList.size() > 0)
 		{
 			mGoalNode = pathList.front();
+			mGoalNode->mColor = glm::vec4(0, 0, 1, 1);
 			if (mCurrentLERPValue < 1)
 			{
 				mPosition = glm::lerp(mLastNodeVisited->mPosition, mGoalNode->mPosition, mCurrentLERPValue);
