@@ -145,6 +145,7 @@ void CreateGrid()
 			{
 				t->mColor = BROWN;
 				t->mWeight = INT_MAX;
+				t->mIsWalkable = false;
 			}
 
 		}
@@ -214,10 +215,6 @@ void LoadGridEdges()
 			e->mStart = tile;
 			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
 			tile->mEdges.push_back(e);
-		}
-		if (tile->mWeight == INT_MAX)
-		{
-			tile->mEdges.clear();
 		}
 	}
 }
@@ -411,7 +408,7 @@ void AStarPathFind()
 		priorityQ.pop_front();
 
 		current->mIsVisited = true;
-		if (current != startTile && current != mGoalNode && current->mColor != BROWN)
+		if (current != startTile && current != mGoalNode && current->mIsWalkable)
 		{
 			current->mColor = glm::vec4(1, 1, 0, 1);
 		}
@@ -422,7 +419,7 @@ void AStarPathFind()
 		for (auto edge : current->mEdges)
 		{
 			Tile* neighbor = edge->mEnd;
-			if (!neighbor->mIsVisited)
+			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
 			{
 				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
 				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
