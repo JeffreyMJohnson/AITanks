@@ -71,6 +71,7 @@ vec2 GetRandomTilePosition();
 void HandleUI();
 Tile* GetNearestTile(float xPos, float yPos);
 bool SortOnFScore(Tile* lhs, Tile* rhs);
+void ThetaStarPathFind();
 void AStarPathFind(bool smoothPath);
 bool HasStraightLine(Tile* start, Tile* goal);
 void ResetTiles();
@@ -401,7 +402,8 @@ void AutoRun()
 		}
 		t->mColor = RED;
 		mGoalNode = t;
-		AStarPathFind(false);
+		//AStarPathFind(false);
+		ThetaStarPathFind();
 	}
 }
 
@@ -440,6 +442,78 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 	}
 	return result;
 	
+}
+
+void ThetaStarPathFind()
+{
+	std::list<Tile*> priorityQ;
+	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
+	priorityQ.push_front(startTile);
+	startTile->mGScore = 0;
+	startTile->mPathParentNode = startTile;
+
+	while (!priorityQ.empty())
+	{
+		priorityQ.sort(SortOnFScore);
+		Tile* current = priorityQ.front();
+		priorityQ.pop_front();
+
+		current->mIsVisited = true;
+		if (current != startTile && current != mGoalNode && current->mIsWalkable)
+		{
+			current->mColor = glm::vec4(1, 1, 0, 1);
+		}
+
+		if (current == mGoalNode)
+			break;
+		for (auto edge : current->mEdges)
+		{
+			Tile* neighbor = edge->mEnd;
+			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
+			{
+				if (HasStraightLine(current->mPathParentNode, neighbor))
+				{
+					float fScore = current->mPathParentNode->mGScore + glm::distance(current->mPathParentNode->mPosition, neighbor->mPosition) + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+					if (fScore < neighbor->mGScore)
+					{
+						neighbor->mPathParentNode = current->mPathParentNode;
+						neighbor->mGScore = current->mGScore + neighbor->mWeight;
+						neighbor->mFScore = fScore;
+					}
+				}
+				else
+				{
+					float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+					//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
+					if (fScore < neighbor->mGScore)
+					{
+						neighbor->mPathParentNode = current;
+						neighbor->mGScore = current->mGScore + neighbor->mWeight;
+						neighbor->mFScore = fScore;
+					}
+				}
+				if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end() && neighbor->mPathParentNode != nullptr)
+				{
+					priorityQ.push_back(neighbor);
+				}
+			}
+		}
+
+	}
+	if (mGoalNode->mPathParentNode == nullptr)
+	{
+		//no solution
+		return;
+	}
+
+	tank.pathList.push_back(mGoalNode);
+	Tile* parent = mGoalNode->mPathParentNode;
+	tank.pathList.insert(tank.pathList.begin(), parent);
+	while (parent != startTile)
+	{
+		parent = parent->mPathParentNode;
+		tank.pathList.insert(tank.pathList.begin(), parent);
+	}
 }
 
 void AStarPathFind(bool smoothPath)
