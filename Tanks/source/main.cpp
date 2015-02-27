@@ -8,6 +8,8 @@
 #include <iostream>
 #include <algorithm>
 
+typedef std::vector<Tile*>::iterator It;
+
 enum HEURISTIC_TYPE
 {
 	DISTANCE,
@@ -15,23 +17,70 @@ enum HEURISTIC_TYPE
 	DIAGONAL
 };
 
+typedef glm::vec2 vec2;
+
+struct Ray
+{
+	vec2 origin;
+	vec2 direction;
+
+	Ray(vec2 origin, vec2 direction)
+	{
+		this->origin = origin;
+		this->direction = direction;
+	}
+
+
+};
+
+struct Plane
+{
+	vec2 point;
+	vec2 normal;
+
+	Plane(vec2 point, vec2 normal)
+	{
+		this->point = point;
+		this->normal = normal;
+	}
+};
+
+struct AABB
+{
+	vec2 minPoint;
+	vec2 maxPoint;
+
+	AABB(vec2 minPoint, vec2 maxPoint)
+	{
+		this->minPoint = minPoint;
+		this->maxPoint = maxPoint;
+	}
+};
+
+
 void CreateGrid();
 void LoadGridEdges();
 void LoadGridEdgesDiagonal();
 void LoadGridEdgesOneWay();
 void Destroy();
-Tile* GetTile(glm::vec2 position);
+Tile* GetTile(vec2 position);
 Tile* GetTile(int a_row, int a_col);
 void UpdateTiles();
 Tile* GetRandomTile();
-glm::vec2 GetRandomTilePosition();
+vec2 GetRandomTilePosition();
 void HandleUI();
 Tile* GetNearestTile(float xPos, float yPos);
 bool SortOnFScore(Tile* lhs, Tile* rhs);
-void AStarPathFind(); 
+void AStarPathFind(bool smoothPath);
+bool HasStraightLine(Tile* start, Tile* goal);
 void ResetTiles();
 void AutoRun();
 float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
+bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t);
+bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit);
+AABB GetAABB(Tile* tile);
+std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
+vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 
 
 const int GRID_ROWS = 25;
@@ -47,7 +96,7 @@ bool quit = false;
 std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
 
-Tank tank(glm::vec2(20,20), glm::vec2(200,75));
+Tank tank(vec2(20,20), vec2(200,75));
 
 Tile* mGoalNode = nullptr;
 
@@ -97,10 +146,10 @@ Tile* GetNearestTile(float xPos, float yPos)
 	float dx = INT_MAX;
 	for (auto tile : grid)
 	{
-		if (glm::distance(tile->mPosition, glm::vec2(xPos, yPos)) < dx)
+		if (glm::distance(tile->mPosition, vec2(xPos, yPos)) < dx)
 		{
 			result = tile;
-			dx = glm::distance(tile->mPosition, glm::vec2(xPos, yPos));
+			dx = glm::distance(tile->mPosition, vec2(xPos, yPos));
 		}
 	}
 	return result;
@@ -111,7 +160,7 @@ Tile* GetRandomTile()
 	return grid[rand() % grid.size()];
 }
 
-glm::vec2 GetRandomTilePosition()
+vec2 GetRandomTilePosition()
 {
 	return GetRandomTile()->mPosition;
 }
@@ -119,11 +168,11 @@ glm::vec2 GetRandomTilePosition()
 void CreateGrid()
 {
 	const int wallProbability = 30;//int between 0 and 100. greater increases likelyhood of tile being wall
-	glm::vec2 tileSize(25, 25);
+	vec2 tileSize(25, 25);
 	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
 
-	glm::vec2 startPos(200, 75);
-	glm::vec2 position = startPos;
+	vec2 startPos(200, 75);
+	vec2 position = startPos;
 	for (int row = 0; row < GRID_ROWS; row++)
 	{
 		for (int col = 0; col < GRID_COLS; col++)
@@ -165,7 +214,7 @@ void UpdateTiles()
 	}
 }
 
-Tile* GetTile(glm::vec2 position)
+Tile* GetTile(vec2 position)
 {
 	for (auto tile : grid)
 	{
@@ -331,7 +380,7 @@ void HandleUI()
 		t->mColor = RED;
 		mGoalNode = t;
 		//tank.mGoalNode = t;
-		AStarPathFind();
+		AStarPathFind(false);
 
 	}
 }
@@ -352,7 +401,7 @@ void AutoRun()
 		}
 		t->mColor = RED;
 		mGoalNode = t;
-		AStarPathFind();
+		AStarPathFind(false);
 	}
 }
 
@@ -393,7 +442,7 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 	
 }
 
-void AStarPathFind()
+void AStarPathFind(bool smoothPath)
 {
 	std::list<Tile*> priorityQ;
 	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
@@ -442,12 +491,128 @@ void AStarPathFind()
 		//no solution
 		return;
 	}
+
 	tank.pathList.push_back(mGoalNode);
 	Tile* parent = mGoalNode->mPathParentNode;
-	tank.pathList.push_front(parent);
+	tank.pathList.insert(tank.pathList.begin(), parent);
 	while (parent != startTile)
 	{
 		parent = parent->mPathParentNode;
-		tank.pathList.push_front(parent);
+		tank.pathList.insert(tank.pathList.begin(), parent);
 	}
+
+	if (smoothPath)
+	{
+
+		if (tank.pathList.size() < 3)
+			return;
+		Tile* start = *tank.pathList.begin();
+		Tile* end = *(tank.pathList.begin() + 2);
+
+		//std::find(tank.pathList.begin(), tank.pathList.end(), start)
+		//std::find(tank.pathList.begin(), tank.pathList.end(), end)
+		while (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
+		{
+			if (HasStraightLine(start, end))
+			{
+				//remove node after start
+				tank.pathList.erase(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
+				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
+				{
+					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
+				}				
+			}
+			else
+			{
+				start = *(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
+				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
+				{
+					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
+				}
+			}
+		}
+	}
+}
+
+std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end)
+{
+	std::vector<Tile*> result;
+	vec2 currentPosition = ray.origin;
+	Tile* currentTile = nullptr;
+
+	while (currentTile != end)
+	{
+		currentPosition += end->mSize * ray.direction;
+		currentTile = GetNearestTile(currentPosition.x, currentPosition.y);
+		if (std::find(result.begin(), result.end(), currentTile) == result.end())
+		{
+			result.push_back(currentTile);
+		}
+		
+	}
+	return result;
+}
+
+bool HasStraightLine(Tile* start, Tile* goal)
+{
+	Ray ray(start->mPosition, GetRayDirection(start->mPosition, goal->mPosition));
+	//need to check every object for collision
+	std::vector<Tile*> nodeList = GetTilesInLine(ray, goal);
+	for (Tile* tile : nodeList)
+	{
+		//only need to check non walkable objects
+		if (!tile->mIsWalkable)
+		{
+			AABB box = GetAABB(tile);
+			float enter = 0.0f;
+			float exit = 0.0f;
+			if (RayAABBIntersect(ray, box, enter, exit))
+			{
+				//if collision true, no straight line
+				return false;
+			}
+		}
+	}
+	//no collisions found
+	return true;
+}
+
+AABB GetAABB(Tile* tile)
+{
+	float hHeight = tile->mSize.y * .5;
+	float hWidth = tile->mSize.x * .5;
+	return AABB(vec2(tile->mPosition.x - hWidth, tile->mPosition.y - hHeight), vec2(tile->mPosition.x + hWidth, tile->mPosition.y + hHeight));
+}
+
+bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t)
+{
+	float denom = glm::dot(plane.normal, ray.direction);
+	if (denom > 1e-6)
+	{
+		vec2 point_origin = plane.point - ray.origin;
+		t = glm::dot(point_origin, plane.normal) / denom;
+		return (t >= 0);
+	}
+	return false;
+
+}
+
+vec2 GetRayDirection(const vec2& pointA, const vec2& pointB)
+{
+	return glm::normalize(pointB - pointA);
+}
+
+
+bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit)
+{
+	vec2 min = (box.minPoint - ray.origin) / ray.direction;
+	vec2 max = (box.maxPoint - ray.origin) / ray.direction;
+
+	vec2 near = glm::min(min, max);
+	vec2 far = glm::max(min, max);
+
+	enter = glm::max(glm::max(near.x, near.y), 0.0f);
+	exit = glm::min(far.x, far.y);
+
+	return (exit > 0.0f && enter < exit);
 }

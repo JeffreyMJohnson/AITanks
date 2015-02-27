@@ -14,7 +14,7 @@ public:
 	glm::vec4 mColor;
 	Tile* mGoalNode;
 	Tile* mLastNodeVisited;
-	std::list<Tile*> pathList;
+	std::vector<Tile*> pathList;
 	float mCurrentLERPValue = 0;
 	float mVelocity;
 
@@ -43,7 +43,7 @@ public:
 			{
 				mCurrentLERPValue = 0;
 				mLastNodeVisited = mGoalNode;
-				pathList.pop_front();
+				pathList.erase(pathList.begin());
 				if (pathList.size() > 0)
 					mGoalNode = pathList.front();
 			}
