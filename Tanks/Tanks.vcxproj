@@ -77,7 +77,9 @@
     <ClCompile Include="source\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AITank.h" />
     <ClInclude Include="include\Edge.h" />
+    <ClInclude Include="include\Flee.h" />
     <ClInclude Include="include\framework\Animation.h" />
     <ClInclude Include="include\framework\Font.h" />
     <ClInclude Include="include\framework\FontChar.h" />
@@ -85,6 +87,8 @@
     <ClInclude Include="include\framework\Framework.h" />
     <ClInclude Include="include\framework\Sprite.h" />
     <ClInclude Include="include\Globals.h" />
+    <ClInclude Include="include\Seek.h" />
+    <ClInclude Include="include\SteeringBehaviour.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />
   </ItemGroup>

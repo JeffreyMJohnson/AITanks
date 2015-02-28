@@ -3,12 +3,17 @@
 #include "Tile.h"
 #include "Tank.h"
 #include "Globals.h"
+#include "AITank.h"
+#include "Seek.h"
+#include "Flee.h"
 
 #include <time.h>
 #include <iostream>
 #include <algorithm>
 
 typedef std::vector<Tile*>::iterator It;
+typedef glm::vec2 vec2;
+
 
 enum HEURISTIC_TYPE
 {
@@ -17,7 +22,7 @@ enum HEURISTIC_TYPE
 	DIAGONAL
 };
 
-typedef glm::vec2 vec2;
+
 
 struct Ray
 {
@@ -98,6 +103,8 @@ std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
 
 Tank tank(vec2(20,20), vec2(200,75));
+AITank tank1(vec2(20, 20), vec2(0,0));
+AITank tank2(vec2(20, 20), vec2(0, 0));
 
 Tile* mGoalNode = nullptr;
 
@@ -106,30 +113,72 @@ Tile* mGoalNode = nullptr;
 int main()
 {
 	srand(time(NULL));
-
 	
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
 	CreateGrid();
-	tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
+	
+	tank1.mSpriteID = frk.CreateSprite(tank1.mSize.x, tank1.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank1.mSpriteID, .008, .016, .121, .109);
+	tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
+
+	Seek* seekBehaviour = new Seek;
+	seekBehaviour->owner = &tank1;
+	seekBehaviour->target = &tank2;
+	tank1.mBehaviour = seekBehaviour;
+
+	Flee* fleeBehaviour = new Flee;
+	fleeBehaviour->owner = &tank2;
+	fleeBehaviour->target = &tank1;
+	tank2.mBehaviour = fleeBehaviour;
+
+	tank1.mPosition = GetRandomTilePosition();
+	tank2.mPosition = GetRandomTilePosition();
+
+	tank1.mMaxVelocity = 100;
+	tank2.mMaxVelocity = 100;
+
+	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
+	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
+
+
+	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+
+	frk.DrawSprite(tank1.mSpriteID);
+	frk.DrawSprite(tank2.mSpriteID);
+
+	/*tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
 
 	Tile* t = GetTile(GetRandomTilePosition());
 	tank.mPosition = t->mPosition;
 	tank.mLastNodeVisited = t;
-	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
+	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);*/
 
 	do
 	{
 		frk.ClearScreen();
 		UpdateTiles();
-		tank.Update(frk.GetDeltaTime());
+
+		tank1.Update(frk.GetDeltaTime());
+		tank2.Update(frk.GetDeltaTime());
+
+		frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+		frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+
+		frk.DrawSprite(tank1.mSpriteID);
+		frk.DrawSprite(tank2.mSpriteID);
+
+
+		/*tank.Update(frk.GetDeltaTime());
 		frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-		frk.DrawSprite(tank.mSpriteID, tank.mColor);
+		frk.DrawSprite(tank.mSpriteID, tank.mColor);*/
 
 		HandleUI();
-		AutoRun();
+		//AutoRun();
 
 	} while (frk.UpdateFramework() && !quit);
 
@@ -137,7 +186,8 @@ int main()
 
 	frk.Shutdown();
 	Destroy();
-
+	delete seekBehaviour;
+	delete fleeBehaviour;
 	return 0;
 }
 
@@ -168,7 +218,7 @@ vec2 GetRandomTilePosition()
 
 void CreateGrid()
 {
-	const int wallProbability = 30;//int between 0 and 100. greater increases likelyhood of tile being wall
+	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
 	vec2 tileSize(25, 25);
 	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
 
@@ -191,7 +241,7 @@ void CreateGrid()
 				position.x += tileSize.x;
 			}
 			//see if wall
-			if (rand() % 101 <= wallProbability)
+			if ((rand() % 100) + 1 <= wallProbability)
 			{
 				t->mColor = BROWN;
 				t->mWeight = INT_MAX;
@@ -402,8 +452,8 @@ void AutoRun()
 		}
 		t->mColor = RED;
 		mGoalNode = t;
-		//AStarPathFind(false);
-		ThetaStarPathFind();
+		AStarPathFind(true);
+		//ThetaStarPathFind();
 	}
 }
 
