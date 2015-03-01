@@ -2,6 +2,7 @@
 #define _AI_TANK_H_
 
 #include "Tank.h"
+#include "Globals.h"
 #include "SteeringBehaviour.h"
 #include <algorithm>
 
@@ -34,6 +35,11 @@ public:
 		if (mVelocity != glm::vec2(0,0))
 			mVelocity = glm::normalize(mVelocity) * std::min(magnitude, mMaxVelocity);
 		mPosition += mVelocity * deltaTime;
+
+		//if (mPosition.x > MNF::Globals::SCREEN_WIDTH) mPosition.x = 1;
+		//if (mPosition.x < 0) mPosition.x = MNF::Globals::SCREEN_WIDTH - 1;
+		//if (mPosition.y > MNF::Globals::SCREEN_HEIGHT) mPosition.y = 1;
+		//if (mPosition.y < 0) mPosition.y = MNF::Globals::SCREEN_HEIGHT - 1;
 	}
 };
 

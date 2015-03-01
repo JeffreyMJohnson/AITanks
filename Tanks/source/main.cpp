@@ -87,6 +87,9 @@ bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit);
 AABB GetAABB(Tile* tile);
 std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
 vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
+void TankLogic(float deltaTime);
+bool IsOutOfBounds(AITank& tank);
+void FlipTankBehaviour();
 
 
 const int GRID_ROWS = 25;
@@ -101,10 +104,13 @@ Framework frk;
 bool quit = false;
 std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
+glm::vec4 gridRect;
 
 Tank tank(vec2(20,20), vec2(200,75));
 AITank tank1(vec2(20, 20), vec2(0,0));
 AITank tank2(vec2(20, 20), vec2(0, 0));
+Seek* seekBehaviour;
+Flee* fleeBehaviour;
 
 Tile* mGoalNode = nullptr;
 
@@ -124,21 +130,28 @@ int main()
 	tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
 
-	Seek* seekBehaviour = new Seek;
+	seekBehaviour = new Seek;
 	seekBehaviour->owner = &tank1;
 	seekBehaviour->target = &tank2;
 	tank1.mBehaviour = seekBehaviour;
+	tank1.mColor = GREEN;
 
-	Flee* fleeBehaviour = new Flee;
+	fleeBehaviour = new Flee;
 	fleeBehaviour->owner = &tank2;
 	fleeBehaviour->target = &tank1;
 	tank2.mBehaviour = fleeBehaviour;
+	tank2.mColor = RED;
 
+	//debug
 	tank1.mPosition = GetRandomTilePosition();
 	tank2.mPosition = GetRandomTilePosition();
+	//Tile* t = GetNearestTile(400, 350);
+	//tank1.mPosition = t->mPosition;
+	//t = GetNearestTile(600, 250);
+	//tank2.mPosition = t->mPosition;
 
-	tank1.mMaxVelocity = 100;
-	tank2.mMaxVelocity = 100;
+	tank1.mMaxVelocity = 900;
+	tank2.mMaxVelocity = 700;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
@@ -163,12 +176,8 @@ int main()
 		frk.ClearScreen();
 		UpdateTiles();
 
-		tank1.Update(frk.GetDeltaTime());
-		tank2.Update(frk.GetDeltaTime());
-
-		frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
-		frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
-
+		TankLogic(frk.GetDeltaTime());
+		
 		frk.DrawSprite(tank1.mSpriteID);
 		frk.DrawSprite(tank2.mSpriteID);
 
@@ -186,9 +195,77 @@ int main()
 
 	frk.Shutdown();
 	Destroy();
-	delete seekBehaviour;
-	delete fleeBehaviour;
+
 	return 0;
+}
+
+void TankLogic(float deltaTime)
+{
+	tank1.Update(deltaTime);
+	tank2.Update(deltaTime);
+
+	if (IsOutOfBounds(tank1) || IsOutOfBounds(tank2))
+	{
+		FlipTankBehaviour();
+	}
+	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+
+}
+
+void FlipTankBehaviour()
+{
+	//tank1 seek, tank2 flee
+	if (tank1.mBehaviour == seekBehaviour)
+	{
+		seekBehaviour->owner = &tank2;
+		seekBehaviour->target = &tank1;
+		fleeBehaviour->owner = &tank1;
+		fleeBehaviour->target = &tank2;
+		tank1.mBehaviour = fleeBehaviour;
+		tank2.mBehaviour = seekBehaviour;
+		tank1.mColor = GREEN;
+		tank2.mColor = RED;
+	}
+	//tank1 flee, tank2 seek
+	else
+	{
+		seekBehaviour->owner = &tank1;
+		seekBehaviour->target = &tank2;
+		fleeBehaviour->owner = &tank2;
+		fleeBehaviour->target = &tank1;
+		tank1.mBehaviour = seekBehaviour;
+		tank2.mBehaviour = fleeBehaviour;
+		tank1.mColor = RED;
+		tank2.mColor = GREEN;
+	}
+}
+
+bool IsOutOfBounds(AITank& tank)
+{
+	bool result = false;
+	if (tank.mPosition.x < gridRect.x)
+	{
+		tank.mPosition.x = gridRect.z;
+		result = true;
+	}
+	else if (tank.mPosition.x > gridRect.z)
+	{
+		tank.mPosition.x = gridRect.x;
+		result = true;
+	}
+
+	if (tank.mPosition.y < gridRect.y)
+	{
+		tank.mPosition.y = gridRect.w;
+		result = true;
+	}
+	else if (tank.mPosition.y > gridRect.w)
+	{
+		tank.mPosition.y = gridRect.y;
+		result = true;
+	}
+	return result;
 }
 
 Tile* GetNearestTile(float xPos, float yPos)
@@ -223,6 +300,8 @@ void CreateGrid()
 	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
 
 	vec2 startPos(200, 75);
+	gridRect.x = startPos.x - (tileSize.x * .5);
+	gridRect.y = startPos.y - (tileSize.y * .5);
 	vec2 position = startPos;
 	for (int row = 0; row < GRID_ROWS; row++)
 	{
@@ -251,6 +330,9 @@ void CreateGrid()
 		}
 		position.y += tileSize.y;
 	}
+	Tile* t = grid.back();
+	gridRect.z = t->mPosition.x + (tileSize.x * .5);
+	gridRect.w = t->mPosition.y + (tileSize.y * .5);
 	LoadGridEdges();
 	//LoadGridEdgesDiagonal();
 	//LoadGridEdgesOneWay();
@@ -412,6 +494,8 @@ void Destroy()
 		delete t;
 	}
 	grid.clear();
+	delete seekBehaviour;
+	delete fleeBehaviour;
 }
 
 void HandleUI()
