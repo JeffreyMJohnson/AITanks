@@ -68,13 +68,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\AITank.cpp" />
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\Flee.cpp" />
     <ClCompile Include="source\Font.cpp" />
     <ClCompile Include="source\FontChar.cpp" />
     <ClCompile Include="source\FontManager.cpp" />
     <ClCompile Include="source\Framework.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Seek.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
+    <ClCompile Include="source\Tank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AITank.h" />

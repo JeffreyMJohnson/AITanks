@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <list>
+#include "Globals.h"
+#include "Tile.h"
 #include "glm/gtx/compatibility.hpp"
 
 class Tank
@@ -18,45 +20,11 @@ public:
 	float mCurrentLERPValue = 0;
 	float mMoveSpeed;
 
-	Tank()
-	{
-		Tank(glm::vec2(0, 0), glm::vec2(0, 0));
-	};
+	Tank();
 
-	Tank(glm::vec2 a_size, glm::vec2 a_position)
-	{
-		mSpriteID = 0;
-		mPosition = a_position;
-		mSize = a_size;
-		mColor = glm::vec4(1, 1, 1, 1);
-		mMoveSpeed = 1;
-	}
+	Tank(glm::vec2 a_size, glm::vec2 a_position);
 
-	virtual void Update(float deltaTime)
-	{
-		if (pathList.size() > 0)
-		{
-			mGoalNode = pathList.front();
-			mGoalNode->mColor = glm::vec4(0, 0, 1, 1);
-			if (mCurrentLERPValue < 1)
-			{
-				mPosition = glm::lerp(mLastNodeVisited->mPosition, mGoalNode->mPosition, mCurrentLERPValue);
-				mCurrentLERPValue += mMoveSpeed * deltaTime;
-			}
-			else
-			{
-				mCurrentLERPValue = 0;
-				mLastNodeVisited = mGoalNode;
-				pathList.erase(pathList.begin());
-				if (pathList.size() > 0)
-					mGoalNode = pathList.front();
-			}
-		}
-		else
-		{
-			mGoalNode = nullptr;
-		}
-	}
+	virtual void Update(float deltaTime);
 
 };
 
