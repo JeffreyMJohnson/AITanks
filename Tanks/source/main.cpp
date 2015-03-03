@@ -1,8 +1,6 @@
 #include "Globals.h"
 #include "framework/Framework.h"
 #include "Tile.h"
-#include "Tank.h"
-#include "Globals.h"
 #include "AITank.h"
 #include "Seek.h"
 #include "Flee.h"
@@ -146,12 +144,12 @@ int main()
 	tank2.mVisibilityRadius = 50;
 
 	//debug
-	tank1.mPosition = GetRandomTilePosition();
-	tank2.mPosition = GetRandomTilePosition();
-	//Tile* t = GetNearestTile(400, 350);
-	//tank1.mPosition = t->mPosition;
-	//t = GetNearestTile(600, 250);
-	//tank2.mPosition = t->mPosition;
+	//tank1.mPosition = GetRandomTilePosition();
+	//tank2.mPosition = GetRandomTilePosition();
+	Tile* t = GetNearestTile(400, 350);
+	tank1.mPosition = t->mPosition;
+	t = GetNearestTile(600, 250);
+	tank2.mPosition = t->mPosition;
 
 	tank1.mMaxVelocity = 1000;
 	tank2.mMaxVelocity = 900;
@@ -166,13 +164,13 @@ int main()
 	frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 
-	/*tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
-	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
+	//tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
+	//frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
 
-	Tile* t = GetTile(GetRandomTilePosition());
-	tank.mPosition = t->mPosition;
-	tank.mLastNodeVisited = t;
-	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);*/
+	//Tile* t = GetTile(GetRandomTilePosition());
+	//tank.mPosition = t->mPosition;
+	//tank.mLastNodeVisited = t;
+	//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
 
 	do
 	{
@@ -185,9 +183,9 @@ int main()
 		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 
 
-		/*tank.Update(frk.GetDeltaTime());
-		frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-		frk.DrawSprite(tank.mSpriteID, tank.mColor);*/
+		//tank.Update(frk.GetDeltaTime());
+		//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
+		//frk.DrawSprite(tank.mSpriteID, tank.mColor);
 
 		HandleUI();
 		//AutoRun();
@@ -210,6 +208,8 @@ void TankLogic(float deltaTime)
 	IsOutOfBounds(tank2);
 	AABB tank1Box = GetAABB(tank1);
 	AABB tank2Box = GetAABB(tank2);
+
+	bool f = dynamic_cast<Seek*>(tank1.mBehaviour) != nullptr;
 
 	if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
 	{
@@ -374,6 +374,7 @@ Tile* GetTile(vec2 position)
 Tile* GetTile(int a_row, int a_col)
 {
 	return grid[a_row * GRID_ROWS + a_col];
+
 }
 
 void LoadGridEdges()

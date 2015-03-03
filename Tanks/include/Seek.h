@@ -7,6 +7,7 @@ class Seek : public SteeringBehaviour
 {
 public:
 	AITank* target;
+	bool mIsTagged = false;
 
 	glm::vec2 GetForce()
 	{

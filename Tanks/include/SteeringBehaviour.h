@@ -1,8 +1,6 @@
 #ifndef _STEERING_BEHAVIOUR_H_
 #define _STEERING_BEHAVIOUR_H_
 
-#include "AITank.h"
-
 class AITank;
 
 class SteeringBehaviour
