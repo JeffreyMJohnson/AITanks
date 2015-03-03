@@ -89,6 +89,7 @@ vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
 bool IsOutOfBounds(AITank& tank);
 void FlipTankBehaviour();
+bool IsSeekerPaused(AITank& tank, float deltaTime);
 
 
 const int GRID_ROWS = 25;
@@ -146,13 +147,13 @@ int main()
 	//debug
 	//tank1.mPosition = GetRandomTilePosition();
 	//tank2.mPosition = GetRandomTilePosition();
-	Tile* t = GetNearestTile(400, 350);
+	Tile* t = GetTile(3, 3);
 	tank1.mPosition = t->mPosition;
-	t = GetNearestTile(600, 250);
+	t = GetTile(3, 8);
 	tank2.mPosition = t->mPosition;
 
 	tank1.mMaxVelocity = 1000;
-	tank2.mMaxVelocity = 900;
+	tank2.mMaxVelocity = 500;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
@@ -202,14 +203,19 @@ int main()
 
 void TankLogic(float deltaTime)
 {
-	tank1.Update(deltaTime);
-	tank2.Update(deltaTime);
+	if (!IsSeekerPaused(tank1, deltaTime))
+	{
+		tank1.Update(deltaTime);
+	}
+	if (!IsSeekerPaused(tank2, deltaTime))
+	{
+		tank2.Update(deltaTime);
+	}
+	
 	IsOutOfBounds(tank1);
 	IsOutOfBounds(tank2);
 	AABB tank1Box = GetAABB(tank1);
 	AABB tank2Box = GetAABB(tank2);
-
-	bool f = dynamic_cast<Seek*>(tank1.mBehaviour) != nullptr;
 
 	if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
 	{
@@ -219,6 +225,25 @@ void TankLogic(float deltaTime)
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
 
+}
+
+bool IsSeekerPaused(AITank& tank, float deltaTime)
+{
+	if (tank.mBehaviour == seekBehaviour && seekBehaviour->mIsTagged)
+	{
+		if (tank.mWaitTimer < 3)
+		{
+			tank.mWaitTimer += deltaTime;
+			return true;
+		}
+		else
+		{
+			tank.mWaitTimer = 0;
+			seekBehaviour->mIsTagged = false;
+			return false;
+		}
+	}
+	return false;
 }
 
 void FlipTankBehaviour()
@@ -237,6 +262,7 @@ void FlipTankBehaviour()
 		tank2.mMaxVelocity = t;
 		tank1.mColor = RED;
 		tank2.mColor = GREEN;
+		seekBehaviour->mIsTagged = true;
 	}
 	//tank1 flee, tank2 seek
 	else
@@ -252,6 +278,7 @@ void FlipTankBehaviour()
 		tank2.mMaxVelocity = t;
 		tank1.mColor = GREEN;
 		tank2.mColor = RED;
+		seekBehaviour->mIsTagged = true;
 	}
 }
 
