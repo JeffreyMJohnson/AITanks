@@ -85,6 +85,7 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
 bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t);
 bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit);
 AABB GetAABB(Tile* tile);
+AABB GetAABB(Tank& tank);
 std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
 vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
@@ -135,12 +136,14 @@ int main()
 	seekBehaviour->target = &tank2;
 	tank1.mBehaviour = seekBehaviour;
 	tank1.mColor = GREEN;
+	tank1.mVisibilityRadius = 50;
 
 	fleeBehaviour = new Flee;
 	fleeBehaviour->owner = &tank2;
 	fleeBehaviour->target = &tank1;
 	tank2.mBehaviour = fleeBehaviour;
 	tank2.mColor = RED;
+	tank2.mVisibilityRadius = 50;
 
 	//debug
 	tank1.mPosition = GetRandomTilePosition();
@@ -150,8 +153,8 @@ int main()
 	//t = GetNearestTile(600, 250);
 	//tank2.mPosition = t->mPosition;
 
-	tank1.mMaxVelocity = 900;
-	tank2.mMaxVelocity = 700;
+	tank1.mMaxVelocity = 1000;
+	tank2.mMaxVelocity = 900;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
@@ -160,8 +163,8 @@ int main()
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
 
-	frk.DrawSprite(tank1.mSpriteID);
-	frk.DrawSprite(tank2.mSpriteID);
+	frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
+	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 
 	/*tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
@@ -178,8 +181,8 @@ int main()
 
 		TankLogic(frk.GetDeltaTime());
 		
-		frk.DrawSprite(tank1.mSpriteID);
-		frk.DrawSprite(tank2.mSpriteID);
+		frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
+		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 
 
 		/*tank.Update(frk.GetDeltaTime());
@@ -203,11 +206,16 @@ void TankLogic(float deltaTime)
 {
 	tank1.Update(deltaTime);
 	tank2.Update(deltaTime);
+	IsOutOfBounds(tank1);
+	IsOutOfBounds(tank2);
+	AABB tank1Box = GetAABB(tank1);
+	AABB tank2Box = GetAABB(tank2);
 
-	if (IsOutOfBounds(tank1) || IsOutOfBounds(tank2))
+	if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
 	{
 		FlipTankBehaviour();
 	}
+
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
 
@@ -224,8 +232,11 @@ void FlipTankBehaviour()
 		fleeBehaviour->target = &tank2;
 		tank1.mBehaviour = fleeBehaviour;
 		tank2.mBehaviour = seekBehaviour;
-		tank1.mColor = GREEN;
-		tank2.mColor = RED;
+		float t = tank1.mMaxVelocity;
+		tank1.mMaxVelocity = tank2.mMaxVelocity;
+		tank2.mMaxVelocity = t;
+		tank1.mColor = RED;
+		tank2.mColor = GREEN;
 	}
 	//tank1 flee, tank2 seek
 	else
@@ -236,8 +247,11 @@ void FlipTankBehaviour()
 		fleeBehaviour->target = &tank1;
 		tank1.mBehaviour = seekBehaviour;
 		tank2.mBehaviour = fleeBehaviour;
-		tank1.mColor = RED;
-		tank2.mColor = GREEN;
+		float t = tank1.mMaxVelocity;
+		tank1.mMaxVelocity = tank2.mMaxVelocity;
+		tank2.mMaxVelocity = t;
+		tank1.mColor = GREEN;
+		tank2.mColor = RED;
 	}
 }
 
@@ -790,6 +804,13 @@ AABB GetAABB(Tile* tile)
 	float hHeight = tile->mSize.y * .5;
 	float hWidth = tile->mSize.x * .5;
 	return AABB(vec2(tile->mPosition.x - hWidth, tile->mPosition.y - hHeight), vec2(tile->mPosition.x + hWidth, tile->mPosition.y + hHeight));
+}
+
+AABB GetAABB(Tank& tank)
+{
+	float hHeight = tank.mSize.y * .5;
+	float hWidth = tank.mSize.x * .5;
+	return AABB(vec2(tank.mPosition.x - hWidth, tank.mPosition.y - hHeight), vec2(tank.mPosition.x + hWidth, tank.mPosition.y + hHeight));
 }
 
 bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t)
