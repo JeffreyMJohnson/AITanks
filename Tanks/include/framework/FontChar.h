@@ -1,3 +1,5 @@
+#ifndef _FONT_CHAR_H_
+#define _FONT_CHAR_H_
 #include "glm\glm.hpp"
 
 
@@ -18,3 +20,5 @@ public:
 private:
 
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef _FONT_H_
+#define _FONT_H_
 #include "glm\glm.hpp"
 #include "pugixml\pugixml.hpp"
 #include "SOIL\SOIL.h"
@@ -31,3 +33,4 @@ private:
 	unsigned int loadTexture(const char* a_pFilename);
 };
 
+#endif

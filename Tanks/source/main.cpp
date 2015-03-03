@@ -1,8 +1,6 @@
 #include "Globals.h"
 #include "framework/Framework.h"
 #include "Tile.h"
-#include "Tank.h"
-#include "Globals.h"
 #include "AITank.h"
 #include "Seek.h"
 #include "Flee.h"
@@ -91,6 +89,7 @@ vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
 bool IsOutOfBounds(AITank& tank);
 void FlipTankBehaviour();
+bool IsSeekerPaused(AITank& tank, float deltaTime);
 
 
 const int GRID_ROWS = 25;
@@ -146,15 +145,15 @@ int main()
 	tank2.mVisibilityRadius = 50;
 
 	//debug
-	tank1.mPosition = GetRandomTilePosition();
-	tank2.mPosition = GetRandomTilePosition();
-	//Tile* t = GetNearestTile(400, 350);
-	//tank1.mPosition = t->mPosition;
-	//t = GetNearestTile(600, 250);
-	//tank2.mPosition = t->mPosition;
+	//tank1.mPosition = GetRandomTilePosition();
+	//tank2.mPosition = GetRandomTilePosition();
+	Tile* t = GetTile(3, 3);
+	tank1.mPosition = t->mPosition;
+	t = GetTile(3, 8);
+	tank2.mPosition = t->mPosition;
 
 	tank1.mMaxVelocity = 1000;
-	tank2.mMaxVelocity = 900;
+	tank2.mMaxVelocity = 500;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
@@ -166,13 +165,13 @@ int main()
 	frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 
-	/*tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
-	frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
+	//tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
+	//frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
 
-	Tile* t = GetTile(GetRandomTilePosition());
-	tank.mPosition = t->mPosition;
-	tank.mLastNodeVisited = t;
-	frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);*/
+	//Tile* t = GetTile(GetRandomTilePosition());
+	//tank.mPosition = t->mPosition;
+	//tank.mLastNodeVisited = t;
+	//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
 
 	do
 	{
@@ -185,9 +184,9 @@ int main()
 		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 
 
-		/*tank.Update(frk.GetDeltaTime());
-		frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-		frk.DrawSprite(tank.mSpriteID, tank.mColor);*/
+		//tank.Update(frk.GetDeltaTime());
+		//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
+		//frk.DrawSprite(tank.mSpriteID, tank.mColor);
 
 		HandleUI();
 		//AutoRun();
@@ -204,8 +203,15 @@ int main()
 
 void TankLogic(float deltaTime)
 {
-	tank1.Update(deltaTime);
-	tank2.Update(deltaTime);
+	if (!IsSeekerPaused(tank1, deltaTime))
+	{
+		tank1.Update(deltaTime);
+	}
+	if (!IsSeekerPaused(tank2, deltaTime))
+	{
+		tank2.Update(deltaTime);
+	}
+	
 	IsOutOfBounds(tank1);
 	IsOutOfBounds(tank2);
 	AABB tank1Box = GetAABB(tank1);
@@ -219,6 +225,25 @@ void TankLogic(float deltaTime)
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
 
+}
+
+bool IsSeekerPaused(AITank& tank, float deltaTime)
+{
+	if (tank.mBehaviour == seekBehaviour && seekBehaviour->mIsTagged)
+	{
+		if (tank.mWaitTimer < 3)
+		{
+			tank.mWaitTimer += deltaTime;
+			return true;
+		}
+		else
+		{
+			tank.mWaitTimer = 0;
+			seekBehaviour->mIsTagged = false;
+			return false;
+		}
+	}
+	return false;
 }
 
 void FlipTankBehaviour()
@@ -237,6 +262,7 @@ void FlipTankBehaviour()
 		tank2.mMaxVelocity = t;
 		tank1.mColor = RED;
 		tank2.mColor = GREEN;
+		seekBehaviour->mIsTagged = true;
 	}
 	//tank1 flee, tank2 seek
 	else
@@ -252,6 +278,7 @@ void FlipTankBehaviour()
 		tank2.mMaxVelocity = t;
 		tank1.mColor = GREEN;
 		tank2.mColor = RED;
+		seekBehaviour->mIsTagged = true;
 	}
 }
 
@@ -374,6 +401,7 @@ Tile* GetTile(vec2 position)
 Tile* GetTile(int a_row, int a_col)
 {
 	return grid[a_row * GRID_ROWS + a_col];
+
 }
 
 void LoadGridEdges()

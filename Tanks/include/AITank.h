@@ -2,10 +2,12 @@
 #define _AI_TANK_H_
 
 #include "Tank.h"
-#include "Globals.h"
 #include "SteeringBehaviour.h"
+
+
 #include <algorithm>
 
+class Seek;
 
 class AITank : public Tank
 {
@@ -36,22 +38,6 @@ public:
 	
 	void Update(float deltaTime)
 	{
-		//if (dynamic_cast<Seek*>(mBehaviour) != nullptr)
-		//{
-		//	if (dynamic_cast<Seek*>(mBehaviour)->mIsTagged)
-		//	{
-		//		if (mWaitTimer > 3)
-		//		{
-		//			mWaitTimer = 0;
-		//			dynamic_cast<Seek*>(mBehaviour)->mIsTagged = false;
-		//		}
-		//		else
-		//		{
-		//			mWaitTimer += deltaTime;
-		//			return;
-		//		}
-		//	}
-		//}
 		mVelocity = mBehaviour->GetForce() * deltaTime;
 		float magnitude = glm::length(mVelocity);
 		if (mVelocity != glm::vec2(0,0))
