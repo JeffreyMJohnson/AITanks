@@ -4,7 +4,6 @@
 #include <climits>
 #include "Edge.h"
 
-
 class Tile
 {
 public:

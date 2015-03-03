@@ -1,6 +1,8 @@
 #ifndef _STEERING_BEHAVIOUR_H_
 #define _STEERING_BEHAVIOUR_H_
 
+#include "Globals.h"
+
 class AITank;
 
 class SteeringBehaviour
