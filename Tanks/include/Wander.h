@@ -14,5 +14,4 @@ public:
 
 	glm::vec2 GetRandomTarget();
 
-	glm::vec2 GetRandVector(glm::vec2& target);
 };
