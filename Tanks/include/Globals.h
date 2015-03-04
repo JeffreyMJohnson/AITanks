@@ -3,6 +3,11 @@
 
 #include "glm\glm.hpp"
 
+#define PI 3.14159265359
+#define RADIAN_CONVERSION PI / 180
+#define DEGREE_CONVERSION 180 / PI
+
+
 namespace MNF
 {
 	class Globals

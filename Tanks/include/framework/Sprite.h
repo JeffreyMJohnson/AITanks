@@ -13,13 +13,14 @@
 
 #include "SOIL/SOIL.h"
 
+#include "Globals.h"
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
 
-#define PI 3.14159265359
-#define RADIAN_CONVERSION PI / 180
+
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;

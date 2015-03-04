@@ -4,6 +4,7 @@
 #include "AITank.h"
 #include "Seek.h"
 #include "Flee.h"
+#include "Wander.h"
 
 #include <time.h>
 #include <iostream>
@@ -19,8 +20,6 @@ enum HEURISTIC_TYPE
 	MANHATTAN,
 	DIAGONAL
 };
-
-
 
 struct Ray
 {
@@ -109,8 +108,10 @@ glm::vec4 gridRect;
 Tank tank(vec2(20,20), vec2(200,75));
 AITank tank1(vec2(20, 20), vec2(0,0));
 AITank tank2(vec2(20, 20), vec2(0, 0));
+AITank tank3(vec2(20, 20), vec2(0, 0));
 Seek* seekBehaviour;
 Flee* fleeBehaviour;
+Wander* wanderBehaviour;
 
 Tile* mGoalNode = nullptr;
 
@@ -130,6 +131,9 @@ int main()
 	tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
 
+	tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
+
 	seekBehaviour = new Seek;
 	seekBehaviour->owner = &tank1;
 	seekBehaviour->target = &tank2;
@@ -144,6 +148,14 @@ int main()
 	tank2.mColor = RED;
 	tank2.mVisibilityRadius = 50;
 
+	wanderBehaviour = new Wander;
+	wanderBehaviour->owner = &tank3;
+	tank3.mBehaviour = wanderBehaviour;
+	wanderBehaviour->mJitter = 5;
+	wanderBehaviour->mWanderDistance = 50;
+	wanderBehaviour->mWanderRadius = 10;
+
+
 	//debug
 	//tank1.mPosition = GetRandomTilePosition();
 	//tank2.mPosition = GetRandomTilePosition();
@@ -151,19 +163,25 @@ int main()
 	tank1.mPosition = t->mPosition;
 	t = GetTile(3, 8);
 	tank2.mPosition = t->mPosition;
+	t = GetTile(0, 0);
+	tank3.mPosition = t->mPosition;
+	tank3.mVelocity = vec2(100, 100);
 
 	tank1.mMaxVelocity = 1000;
 	tank2.mMaxVelocity = 500;
+	tank3.mMaxVelocity = 1000;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
-
+	//tank3.mVelocity = vec2((rand() % (int)tank3.mMaxVelocity) + 1, (rand() % (int)tank3.mMaxVelocity) + 1);
 
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
 
 	frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
+	frk.DrawSprite(tank3.mSpriteID);
 
 	//tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
 	//frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
@@ -182,7 +200,7 @@ int main()
 		
 		frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
-
+		frk.DrawSprite(tank3.mSpriteID);
 
 		//tank.Update(frk.GetDeltaTime());
 		//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
@@ -211,9 +229,12 @@ void TankLogic(float deltaTime)
 	{
 		tank2.Update(deltaTime);
 	}
+
+	tank3.Update(deltaTime);
 	
 	IsOutOfBounds(tank1);
 	IsOutOfBounds(tank2);
+
 	AABB tank1Box = GetAABB(tank1);
 	AABB tank2Box = GetAABB(tank2);
 
@@ -224,6 +245,7 @@ void TankLogic(float deltaTime)
 
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
 
 }
 
@@ -538,6 +560,7 @@ void Destroy()
 	grid.clear();
 	delete seekBehaviour;
 	delete fleeBehaviour;
+	delete wanderBehaviour;
 }
 
 void HandleUI()

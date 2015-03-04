@@ -79,6 +79,7 @@
     <ClCompile Include="source\Seek.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\Tank.cpp" />
+    <ClCompile Include="source\Wander.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AITank.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="include\SteeringBehaviour.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />
+    <ClInclude Include="include\Wander.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source\FlatFragmentShader.glsl" />
