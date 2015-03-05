@@ -151,9 +151,9 @@ int main()
 	wanderBehaviour = new Wander;
 	wanderBehaviour->owner = &tank3;
 	tank3.mBehaviour = wanderBehaviour;
-	wanderBehaviour->mJitter = 5;
-	wanderBehaviour->mWanderDistance = 50;
-	wanderBehaviour->mWanderRadius = 10;
+	wanderBehaviour->mDistance = 300;
+	wanderBehaviour->mRadius = 50;
+	wanderBehaviour->mAngleChange = 5;
 
 
 	//debug
@@ -163,13 +163,13 @@ int main()
 	tank1.mPosition = t->mPosition;
 	t = GetTile(3, 8);
 	tank2.mPosition = t->mPosition;
-	t = GetTile(0, 0);
+	t = GetTile(10,10);
 	tank3.mPosition = t->mPosition;
 	tank3.mVelocity = vec2(100, 100);
 
 	tank1.mMaxVelocity = 1000;
 	tank2.mMaxVelocity = 500;
-	tank3.mMaxVelocity = 1000;
+	tank3.mMaxVelocity = 100;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
@@ -183,20 +183,13 @@ int main()
 	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 	frk.DrawSprite(tank3.mSpriteID);
 
-	//tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
-	//frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
-
-	//Tile* t = GetTile(GetRandomTilePosition());
-	//tank.mPosition = t->mPosition;
-	//tank.mLastNodeVisited = t;
-	//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-
 	do
 	{
 		frk.ClearScreen();
 		UpdateTiles();
 
-		TankLogic(frk.GetDeltaTime());
+		//TankLogic(frk.GetDeltaTime());
+		TankLogic(1/30.0f);
 		
 		frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
@@ -221,6 +214,7 @@ int main()
 
 void TankLogic(float deltaTime)
 {
+
 	if (!IsSeekerPaused(tank1, deltaTime))
 	{
 		tank1.Update(deltaTime);

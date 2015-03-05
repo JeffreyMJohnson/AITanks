@@ -3,15 +3,16 @@
 class Wander : public SteeringBehaviour
 {
 public:
-	float mWanderRadius;
-	float mWanderDistance;
-	float mJitter;
-	glm::vec2 mPrevTarget;
+	float mRadius;
+	float mDistance;
+	float mWanderAngle;
+	float mAngleChange;
 
 	Wander();
 
 	glm::vec2 GetForce();
 
-	glm::vec2 GetRandomTarget();
-
+private:
+	glm::vec2 GetRandomPointOnCircle(const float radius, const glm::vec2 position);
+	void SetAngle(glm::vec2& vector, float value);
 };

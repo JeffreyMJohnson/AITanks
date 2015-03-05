@@ -5,6 +5,13 @@
 
 class AITank;
 
+enum STEERING_BEHAVIOUR_TYPE
+{
+	FLEE,
+	SEEK,
+	WANDER
+};
+
 class SteeringBehaviour
 {
 public:

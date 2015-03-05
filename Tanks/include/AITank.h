@@ -7,6 +7,7 @@
 
 #include <algorithm>
 
+
 class AITank : public Tank
 {
 public:
@@ -15,6 +16,7 @@ public:
 	SteeringBehaviour* mBehaviour;
 	float mVisibilityRadius;
 	float mWaitTimer;
+	STEERING_BEHAVIOUR_TYPE mCurrentSteeringType;
 
 	AITank();
 

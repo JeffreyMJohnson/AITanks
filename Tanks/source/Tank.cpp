@@ -2,7 +2,7 @@
 
 Tank::Tank()
 {
-	Tank(glm::vec2(0, 0), glm::vec2(0, 0));
+	Tank(glm::vec2(20,20), glm::vec2(0, 0));
 };
 
 Tank::Tank(glm::vec2 a_size, glm::vec2 a_position)
