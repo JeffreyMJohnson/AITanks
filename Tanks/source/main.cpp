@@ -9,6 +9,7 @@
 #include <time.h>
 #include <iostream>
 #include <algorithm>
+#include <assert.h>
 
 typedef std::vector<Tile*>::iterator It;
 typedef glm::vec2 vec2;
@@ -137,20 +138,25 @@ int main()
 	seekBehaviour = new Seek;
 	seekBehaviour->owner = &tank1;
 	seekBehaviour->target = &tank2;
-	tank1.mBehaviour = seekBehaviour;
+	//tank1.mBehaviour = seekBehaviour;
+	tank1.SetSteeringType(SEEK);
+	tank1.SetSeekTarget(&tank2);
 	tank1.mColor = GREEN;
 	tank1.mVisibilityRadius = 50;
 
 	fleeBehaviour = new Flee;
 	fleeBehaviour->owner = &tank2;
 	fleeBehaviour->target = &tank1;
-	tank2.mBehaviour = fleeBehaviour;
+	//tank2.mBehaviour = fleeBehaviour;
+	tank2.SetSteeringType(FLEE);
+	tank2.SetFleeTarget(&tank1);
 	tank2.mColor = RED;
 	tank2.mVisibilityRadius = 50;
 
 	wanderBehaviour = new Wander;
 	wanderBehaviour->owner = &tank3;
-	tank3.mBehaviour = wanderBehaviour;
+	//tank3.mBehaviour = wanderBehaviour;
+	tank3.SetSteeringType(WANDER);
 	wanderBehaviour->mDistance = 300;
 	wanderBehaviour->mRadius = 50;
 	wanderBehaviour->mAngleChange = 5;
@@ -215,14 +221,17 @@ int main()
 void TankLogic(float deltaTime)
 {
 
-	if (!IsSeekerPaused(tank1, deltaTime))
-	{
-		tank1.Update(deltaTime);
-	}
-	if (!IsSeekerPaused(tank2, deltaTime))
-	{
-		tank2.Update(deltaTime);
-	}
+	//if (!IsSeekerPaused(tank1, deltaTime))
+	//{
+	//	tank1.Update(deltaTime);
+	//}
+	//if (!IsSeekerPaused(tank2, deltaTime))
+	//{
+	//	tank2.Update(deltaTime);
+	//}
+
+	tank1.Update(deltaTime);
+	tank2.Update(deltaTime);
 
 	tank3.Update(deltaTime);
 	
