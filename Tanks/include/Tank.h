@@ -19,6 +19,7 @@ public:
 	std::vector<Tile*> pathList;
 	float mCurrentLERPValue = 0;
 	float mMoveSpeed;
+	float mRotation;
 
 	Tank();
 

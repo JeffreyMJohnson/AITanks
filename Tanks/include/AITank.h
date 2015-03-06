@@ -28,9 +28,7 @@ public:
 	float mMaxVelocity;
 	SteeringBehaviour* mBehaviour;
 	float mVisibilityRadius;
-	float mWaitTimer;
-	
-	
+	float mWaitTimer;	
 
 	AITank();
 

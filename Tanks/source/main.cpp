@@ -237,8 +237,11 @@ void TankLogic(float deltaTime)
 	//}
 
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	frk.RotateSprite(tank1.mSpriteID, tank1.mRotation);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	frk.RotateSprite(tank2.mSpriteID, tank2.mRotation);
 	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+	frk.RotateSprite(tank3.mSpriteID, tank3.mRotation);
 
 }
 

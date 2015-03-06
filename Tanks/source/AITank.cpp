@@ -99,10 +99,13 @@ void AITank::Update(float deltaTime)
 
 
 	mVelocity = mSteeringBehaviourList[mCurrentSteeringType]->GetForce() * deltaTime;
+	
 	float magnitude = glm::length(mVelocity);
 	if (mVelocity != glm::vec2(0, 0))
 		mVelocity = glm::normalize(mVelocity) * std::min(magnitude, mMaxVelocity);
+	glm::vec2 direction = (mPosition + (mSteeringBehaviourList[mCurrentSteeringType]->GetForce())) - mPosition;
 	mPosition += mVelocity * deltaTime;
+	mRotation = atan2f(direction.y, direction.x);
 }
 
 void AITank::SetSteeringType(STEERING_BEHAVIOUR_TYPE type)
