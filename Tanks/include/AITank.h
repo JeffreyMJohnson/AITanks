@@ -8,6 +8,18 @@
 #include <algorithm>
 #include <map>
 
+struct AABB
+{
+	glm::vec2 minPoint;
+	glm::vec2 maxPoint;
+
+	AABB(glm::vec2 minPoint, glm::vec2 maxPoint)
+	{
+		this->minPoint = minPoint;
+		this->maxPoint = maxPoint;
+	}
+};
+
 
 class AITank : public Tank
 {
@@ -37,12 +49,16 @@ public:
 	void SetFleeTarget(AITank* target);
 	AITank* GetFleeTarget();
 
+	void SetIsTagged(bool isTagged);
+
+
 private:
 	STEERING_BEHAVIOUR_TYPE mCurrentSteeringType;
 	std::map<STEERING_BEHAVIOUR_TYPE, SteeringBehaviour*> mSteeringBehaviourList;
 	const float SEEK_PAUSE_TIME = 5;
 	void LoadSteeringBehaviours();
 	void InitWander(); 
+	bool IsCollided(AITank* other);
 };
 
 #endif

@@ -3,6 +3,8 @@
 #include "Flee.h"
 #include "Wander.h"
 
+
+
 AITank::AITank() : Tank()
 {
 	AITank(glm::vec2(20, 20), glm::vec2(0, 0));
@@ -29,31 +31,70 @@ AITank::~AITank()
 
 void AITank::Update(float deltaTime)
 {
-	if (mCurrentSteeringType == SEEK)
+	Seek* seek = nullptr;
+	Flee* flee = nullptr;
+
+	switch (mCurrentSteeringType)
 	{
+	case SEEK:
 		assert(dynamic_cast<Seek*>(mSteeringBehaviourList[SEEK])->target != nullptr);
-	}
-	else if (mCurrentSteeringType == FLEE)
-	{
+		seek = dynamic_cast<Seek*>(mSteeringBehaviourList[SEEK]);
+		if (seek->mIsTagged)
+		{
+			//timer logic
+			if (mWaitTimer < SEEK_PAUSE_TIME)
+			{
+				mWaitTimer += deltaTime;
+				return;
+			}
+			else
+			{
+				//reset timer and set flag
+				mWaitTimer = 0;
+				seek->mIsTagged = false;
+			}
+		}
+		if (IsCollided(seek->target))
+		{
+			AITank* target = seek->target;
+			target->SetSteeringType(SEEK);
+			target->SetSeekTarget(this);
+
+			SetSteeringType(FLEE);
+			SetFleeTarget(target);
+
+			float t = mMaxVelocity;
+			mMaxVelocity = target->mMaxVelocity;
+			target->mMaxVelocity = t;
+
+			mColor = glm::vec4(1, 0, 0, 1);
+			target->mColor = glm::vec4(0, 1, 0, 1);
+
+			target->SetIsTagged(true);
+		}
+
+		break;
+	case FLEE:
 		assert(dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE])->target != nullptr);
-	}
-	
-	
-	//is seeking and paused?
-	if (mCurrentSteeringType == SEEK && dynamic_cast<Seek*>(mSteeringBehaviourList[mCurrentSteeringType])->mIsTagged)
-	{
-		//timer logic
-		if (mWaitTimer < SEEK_PAUSE_TIME)
+		flee = dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE]);
+
+		//is seeker visible
+		if (glm::distance(mPosition, flee->target->mPosition) > mVisibilityRadius)
 		{
-			mWaitTimer += deltaTime;
-			return;
+			SetSteeringType(WANDER);
 		}
-		else
+
+		break;
+
+	case WANDER:
+		if (dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE])->target != nullptr)
 		{
-			//reset timer and set flag
-			mWaitTimer = 0;
-			dynamic_cast<Seek*>(mSteeringBehaviourList[mCurrentSteeringType])->mIsTagged = false;
+			if (glm::distance(mPosition, dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE])->target->mPosition) <= mVisibilityRadius)
+			{
+				SetSteeringType(FLEE);
+			}
 		}
+		break;
 	}
 
 
@@ -93,6 +134,11 @@ AITank* AITank::GetFleeTarget()
 	return dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE])->target;
 }
 
+void AITank::SetIsTagged(bool isTagged)
+{
+	dynamic_cast<Seek*>(mSteeringBehaviourList[SEEK])->mIsTagged = isTagged;
+}
+
 void AITank::LoadSteeringBehaviours()
 {
 	Flee* f = new Flee;
@@ -114,4 +160,14 @@ void AITank::InitWander()
 	w->mAngleChange = 5;
 	w->mRadius = 50;
 	w->mDistance = 300;
+}
+
+bool AITank::IsCollided(AITank* other)
+{
+	float hHeight = mSize.y * .5;
+	float hWidth = mSize.x * .5;
+	AABB box1(glm::vec2(mPosition.x - hWidth, mPosition.y - hHeight), glm::vec2(mPosition.x + hWidth, mPosition.y + hHeight));
+	AABB box2(glm::vec2(other->mPosition.x - hWidth, other->mPosition.y - hHeight), glm::vec2(other->mPosition.x + hWidth, other->mPosition.y + hHeight));
+
+	return MNF::Collider::AABB(box1.minPoint, box1.maxPoint, box2.minPoint, box2.maxPoint);
 }

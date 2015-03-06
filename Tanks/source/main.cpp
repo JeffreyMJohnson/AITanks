@@ -48,17 +48,7 @@ struct Plane
 	}
 };
 
-struct AABB
-{
-	vec2 minPoint;
-	vec2 maxPoint;
 
-	AABB(vec2 minPoint, vec2 maxPoint)
-	{
-		this->minPoint = minPoint;
-		this->maxPoint = maxPoint;
-	}
-};
 
 
 void CreateGrid();
@@ -135,23 +125,23 @@ int main()
 	tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
 
-	seekBehaviour = new Seek;
-	seekBehaviour->owner = &tank1;
-	seekBehaviour->target = &tank2;
+	//seekBehaviour = new Seek;
+	//seekBehaviour->owner = &tank1;
+	//seekBehaviour->target = &tank2;
 	//tank1.mBehaviour = seekBehaviour;
 	tank1.SetSteeringType(SEEK);
 	tank1.SetSeekTarget(&tank2);
 	tank1.mColor = GREEN;
-	tank1.mVisibilityRadius = 50;
+	tank1.mVisibilityRadius = 100;
 
-	fleeBehaviour = new Flee;
-	fleeBehaviour->owner = &tank2;
-	fleeBehaviour->target = &tank1;
+	//fleeBehaviour = new Flee;
+	//fleeBehaviour->owner = &tank2;
+	//fleeBehaviour->target = &tank1;
 	//tank2.mBehaviour = fleeBehaviour;
 	tank2.SetSteeringType(FLEE);
 	tank2.SetFleeTarget(&tank1);
 	tank2.mColor = RED;
-	tank2.mVisibilityRadius = 50;
+	tank2.mVisibilityRadius = 100;
 
 	wanderBehaviour = new Wander;
 	wanderBehaviour->owner = &tank3;
@@ -173,8 +163,8 @@ int main()
 	tank3.mPosition = t->mPosition;
 	tank3.mVelocity = vec2(100, 100);
 
-	tank1.mMaxVelocity = 1000;
-	tank2.mMaxVelocity = 500;
+	tank1.mMaxVelocity = 750;
+	tank2.mMaxVelocity = 700;
 	tank3.mMaxVelocity = 100;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
@@ -238,13 +228,13 @@ void TankLogic(float deltaTime)
 	IsOutOfBounds(tank1);
 	IsOutOfBounds(tank2);
 
-	AABB tank1Box = GetAABB(tank1);
-	AABB tank2Box = GetAABB(tank2);
+	//AABB tank1Box = GetAABB(tank1);
+	//AABB tank2Box = GetAABB(tank2);
 
-	if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
-	{
-		FlipTankBehaviour();
-	}
+	//if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
+	//{
+	//	FlipTankBehaviour();
+	//}
 
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
