@@ -3,6 +3,7 @@
 #include "Flee.h"
 #include "Wander.h"
 #include "Pursue.h"
+#include "Evade.h"
 
 
 
@@ -36,6 +37,8 @@ void AITank::Update(float deltaTime)
 {
 	Seek* seek = nullptr;
 	Flee* flee = nullptr;
+	Pursue* pursue = nullptr;
+	Evade* evade = nullptr;
 
 	switch (mCurrentSteeringType)
 	{
@@ -90,19 +93,63 @@ void AITank::Update(float deltaTime)
 		break;
 
 	case WANDER:
-		if (dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE])->target != nullptr)
+		if (dynamic_cast<Evade*>(mSteeringBehaviourList[EVADE])->target != nullptr)
 		{
-			if (glm::distance(mPosition, dynamic_cast<Flee*>(mSteeringBehaviourList[FLEE])->target->mPosition) <= mVisibilityRadius)
+			if (glm::distance(mPosition, dynamic_cast<Evade*>(mSteeringBehaviourList[EVADE])->target->mPosition) <= mVisibilityRadius)
 			{
-				SetSteeringType(FLEE);
+				SetSteeringType(EVADE);
 			}
 		}
 		break;
 	case PURSUE:
 		assert(dynamic_cast<Pursue*>(mSteeringBehaviourList[PURSUE])->target != nullptr);
+		pursue = dynamic_cast<Pursue*>(mSteeringBehaviourList[PURSUE]);
+		if (pursue->mIsTagged)
+		{
+			//timer logic
+			if (mWaitTimer < SEEK_PAUSE_TIME)
+			{
+				mWaitTimer += deltaTime;
+				return;
+			}
+			else
+			{
+				//reset timer and set flag
+				mWaitTimer = 0;
+				pursue->mIsTagged = false;
+			}
+		}
+		if (IsCollided(pursue->target))
+		{
+			AITank* target = pursue->target;
+			target->SetSteeringType(PURSUE);
+			target->SetPursueTarget(this);
 
+			SetSteeringType(EVADE);
+			SetEvadeTarget(target);
+
+			float t = mMaxVelocity;
+			mMaxVelocity = target->mMaxVelocity;
+			target->mMaxVelocity = t;
+
+			mColor = glm::vec4(1, 0, 0, 1);
+			target->mColor = glm::vec4(0, 1, 0, 1);
+
+			target->SetIsTagged(true);
+		}
+		break;
+	case EVADE:
+		assert(dynamic_cast<Evade*>(mSteeringBehaviourList[EVADE])->target != nullptr);
+		evade = dynamic_cast<Evade*>(mSteeringBehaviourList[EVADE]);
+
+		//is seeker visible
+		if (glm::distance(mPosition, evade->target->mPosition) > mVisibilityRadius)
+		{
+			SetSteeringType(WANDER);
+		}
 		break;
 	}
+	
 
 
 	mVelocity = mSteeringBehaviourList[mCurrentSteeringType]->GetForce() * deltaTime;
@@ -154,6 +201,11 @@ void AITank::SetPursueTarget(AITank* target)
 	dynamic_cast<Pursue*>(mSteeringBehaviourList[PURSUE])->target = target;
 }
 
+void AITank::SetEvadeTarget(AITank* target)
+{
+	dynamic_cast<Evade*>(mSteeringBehaviourList[EVADE])->target = target;
+}
+
 void AITank::LoadSteeringBehaviours()
 {
 	Flee* f = new Flee;
@@ -171,6 +223,10 @@ void AITank::LoadSteeringBehaviours()
 	Pursue* p = new Pursue;
 	p->owner = this;
 	mSteeringBehaviourList[PURSUE] = p;
+
+	Evade* e = new Evade;
+	e->owner = this;
+	mSteeringBehaviourList[EVADE] = e;
 }
 
 void AITank::InitWander()

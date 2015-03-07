@@ -50,6 +50,7 @@ public:
 	void SetIsTagged(bool isTagged);
 
 	void SetPursueTarget(AITank* target);
+	void SetEvadeTarget(AITank* target);
 
 
 private:

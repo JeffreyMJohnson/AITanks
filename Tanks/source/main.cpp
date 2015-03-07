@@ -125,8 +125,10 @@ int main()
 	tank1.mColor = GREEN;
 	tank1.mVisibilityRadius = 100;
 
-	tank2.SetSteeringType(FLEE);
-	tank2.SetFleeTarget(&tank1);
+	//tank2.SetSteeringType(FLEE);
+	//tank2.SetFleeTarget(&tank1);
+	tank2.SetSteeringType(EVADE);
+	tank2.SetEvadeTarget(&tank1);
 	tank2.mColor = RED;
 	tank2.mVisibilityRadius = 50;
 
@@ -191,15 +193,6 @@ int main()
 
 void TankLogic(float deltaTime)
 {
-
-	//if (!IsSeekerPaused(tank1, deltaTime))
-	//{
-	//	tank1.Update(deltaTime);
-	//}
-	//if (!IsSeekerPaused(tank2, deltaTime))
-	//{
-	//	tank2.Update(deltaTime);
-	//}
 
 	tank1.Update(deltaTime);
 	tank2.Update(deltaTime);

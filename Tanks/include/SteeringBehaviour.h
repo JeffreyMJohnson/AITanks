@@ -10,7 +10,8 @@ enum STEERING_BEHAVIOUR_TYPE
 	FLEE,
 	SEEK,
 	WANDER,
-	PURSUE
+	PURSUE,
+	EVADE
 };
 
 class SteeringBehaviour

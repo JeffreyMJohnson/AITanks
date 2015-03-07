@@ -70,6 +70,7 @@
   <ItemGroup>
     <ClCompile Include="source\AITank.cpp" />
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\Evade.cpp" />
     <ClCompile Include="source\Flee.cpp" />
     <ClCompile Include="source\Font.cpp" />
     <ClCompile Include="source\FontChar.cpp" />
@@ -85,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="include\AITank.h" />
     <ClInclude Include="include\Edge.h" />
+    <ClInclude Include="include\Evade.h" />
     <ClInclude Include="include\Flee.h" />
     <ClInclude Include="include\framework\Animation.h" />
     <ClInclude Include="include\framework\Font.h" />
