@@ -123,7 +123,7 @@ int main()
 	tank1.SetSteeringType(PURSUE);
 	tank1.SetPursueTarget(&tank2);
 	tank1.mColor = GREEN;
-	tank1.mVisibilityRadius = 100;
+	tank1.mVisibilityRadius = 50;
 
 	//tank2.SetSteeringType(FLEE);
 	//tank2.SetFleeTarget(&tank1);
@@ -136,18 +136,18 @@ int main()
 
 
 	//debug
-	tank1.mPosition = GetRandomTilePosition();
-	tank2.mPosition = GetRandomTilePosition();
+	//tank1.mPosition = GetRandomTilePosition();
+	//tank2.mPosition = GetRandomTilePosition();
 	Tile* t = GetTile(3, 3);
-	//tank1.mPosition = t->mPosition;
-	//t = GetTile(3, 8);
-	//tank2.mPosition = t->mPosition;
+	tank1.mPosition = t->mPosition;
+	t = GetTile(3, 5);
+	tank2.mPosition = t->mPosition;
 	t = GetTile(10,10);
 	tank3.mPosition = t->mPosition;
 	tank3.mVelocity = vec2(100, 100);
 
-	tank1.mMaxVelocity = 750;
-	tank2.mMaxVelocity = 700;
+	tank1.mMaxVelocity = 1000;
+	tank2.mMaxVelocity = 500;
 	tank3.mMaxVelocity = 700;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);

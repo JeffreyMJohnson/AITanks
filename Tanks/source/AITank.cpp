@@ -194,6 +194,7 @@ AITank* AITank::GetFleeTarget()
 void AITank::SetIsTagged(bool isTagged)
 {
 	dynamic_cast<Seek*>(mSteeringBehaviourList[SEEK])->mIsTagged = isTagged;
+	dynamic_cast<Pursue*>(mSteeringBehaviourList[PURSUE])->mIsTagged = isTagged;
 }
 
 void AITank::SetPursueTarget(AITank* target)
