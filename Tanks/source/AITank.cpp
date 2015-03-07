@@ -2,6 +2,7 @@
 #include "Seek.h"
 #include "Flee.h"
 #include "Wander.h"
+#include "Pursue.h"
 
 
 
@@ -24,9 +25,11 @@ AITank::AITank(glm::vec2 a_size, glm::vec2 a_position) : Tank(a_size, a_position
 
 AITank::~AITank()
 {
-	delete mSteeringBehaviourList[SEEK];
-	delete mSteeringBehaviourList[FLEE];
-	delete mSteeringBehaviourList[WANDER];
+	for (auto behaviour : mSteeringBehaviourList)
+	{
+		delete behaviour.second;
+	}
+	mSteeringBehaviourList.clear();
 }
 
 void AITank::Update(float deltaTime)
@@ -95,6 +98,10 @@ void AITank::Update(float deltaTime)
 			}
 		}
 		break;
+	case PURSUE:
+		assert(dynamic_cast<Pursue*>(mSteeringBehaviourList[PURSUE])->target != nullptr);
+
+		break;
 	}
 
 
@@ -142,6 +149,11 @@ void AITank::SetIsTagged(bool isTagged)
 	dynamic_cast<Seek*>(mSteeringBehaviourList[SEEK])->mIsTagged = isTagged;
 }
 
+void AITank::SetPursueTarget(AITank* target)
+{
+	dynamic_cast<Pursue*>(mSteeringBehaviourList[PURSUE])->target = target;
+}
+
 void AITank::LoadSteeringBehaviours()
 {
 	Flee* f = new Flee;
@@ -155,14 +167,18 @@ void AITank::LoadSteeringBehaviours()
 	Wander* w = new Wander;
 	w->owner = this;
 	mSteeringBehaviourList[WANDER] = w;
+
+	Pursue* p = new Pursue;
+	p->owner = this;
+	mSteeringBehaviourList[PURSUE] = p;
 }
 
 void AITank::InitWander()
 {
 	Wander* w = dynamic_cast<Wander*>(mSteeringBehaviourList[WANDER]);
-	w->mAngleChange = 5;
-	w->mRadius = 50;
-	w->mDistance = 300;
+	w->mAngleChange = 14;
+	w->mRadius = 30;
+	w->mDistance = 50;
 }
 
 bool AITank::IsCollided(AITank* other)

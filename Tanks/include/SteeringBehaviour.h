@@ -9,7 +9,8 @@ enum STEERING_BEHAVIOUR_TYPE
 {
 	FLEE,
 	SEEK,
-	WANDER
+	WANDER,
+	PURSUE
 };
 
 class SteeringBehaviour

@@ -49,6 +49,8 @@ public:
 
 	void SetIsTagged(bool isTagged);
 
+	void SetPursueTarget(AITank* target);
+
 
 private:
 	STEERING_BEHAVIOUR_TYPE mCurrentSteeringType;

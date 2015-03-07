@@ -34,12 +34,19 @@ glm::vec2 Wander::GetForce()
 	SetAngle(displacemenet, mWanderAngle);
 
 	//change wander angle a bit, so won't have same value next frame
-	int r = (rand() % (int)mAngleChange) + 1;
-	float s = (mAngleChange * .5);
+	/*adding 1 to angleChange for modulas allows the variable to be included in potential
+	random number as well as 0.  This keeps the distribution 50/50 when subtracting by half,
+	otherwise the result is weighted to the below-half side and the tank will tend to circle in
+	one direction.*/
+	
+	int r = (rand() % (mAngleChange + 1));
+	int s = (mAngleChange * .5);
+	//subtracting by half changes scale around 0, equally distributed neg/pos.
 	mWanderAngle += r - s;
 
 	//RETURN FORCE
-	glm::vec2 force = circleCenter + displacemenet;
+	//scale up because final result is scaled down by deltaTime
+	glm::vec2 force = (circleCenter + displacemenet) * 8.0f;
 	return force;
 	
 }

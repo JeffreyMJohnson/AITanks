@@ -15,6 +15,12 @@ Tank::Tank(glm::vec2 a_size, glm::vec2 a_position)
 	mRotation = 0;
 }
 
+void Tank::FlipRotation()
+{
+	mRotation += 180;
+	if (mRotation >= 360) mRotation -= 360;
+}
+
 void Tank::Update(float deltaTime)
 {
 	if (pathList.size() > 0)

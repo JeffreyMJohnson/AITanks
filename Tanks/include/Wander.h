@@ -5,8 +5,8 @@ class Wander : public SteeringBehaviour
 public:
 	float mRadius;
 	float mDistance;
-	float mWanderAngle;
-	float mAngleChange;
+	int mWanderAngle;
+	int mAngleChange;
 
 	Wander();
 

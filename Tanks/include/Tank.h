@@ -25,7 +25,10 @@ public:
 
 	Tank(glm::vec2 a_size, glm::vec2 a_position);
 
+	void FlipRotation();
+
 	virtual void Update(float deltaTime);
+
 
 };
 
