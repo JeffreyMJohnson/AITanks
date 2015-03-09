@@ -123,14 +123,14 @@ int main()
 	tank1.SetSteeringType(PURSUE);
 	tank1.SetPursueTarget(&tank2);
 	tank1.mColor = GREEN;
-	tank1.mVisibilityRadius = 50;
+	tank1.mVisibilityRadius = 100;
 
 	//tank2.SetSteeringType(FLEE);
 	//tank2.SetFleeTarget(&tank1);
 	tank2.SetSteeringType(EVADE);
 	tank2.SetEvadeTarget(&tank1);
 	tank2.mColor = RED;
-	tank2.mVisibilityRadius = 50;
+	tank2.mVisibilityRadius = 100;
 
 
 	tank3.SetSteeringType(WANDER);
