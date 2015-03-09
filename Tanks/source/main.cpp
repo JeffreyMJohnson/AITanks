@@ -151,9 +151,9 @@ int main()
 	wanderBehaviour = new Wander;
 	wanderBehaviour->owner = &tank3;
 	tank3.mBehaviour = wanderBehaviour;
-	wanderBehaviour->mJitter = 5;
-	wanderBehaviour->mWanderDistance = 50;
-	wanderBehaviour->mWanderRadius = 10;
+	wanderBehaviour->mJitter = 10000;
+	wanderBehaviour->mWanderDistance = 500;
+	wanderBehaviour->mWanderRadius = 500;
 
 
 	//debug
@@ -196,7 +196,8 @@ int main()
 		frk.ClearScreen();
 		UpdateTiles();
 
-		TankLogic(frk.GetDeltaTime());
+		//TankLogic(frk.GetDeltaTime());
+		TankLogic(1/60.0f);
 		
 		frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
