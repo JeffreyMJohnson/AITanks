@@ -17,7 +17,9 @@ enum STEERING_BEHAVIOUR_TYPE
 class SteeringBehaviour
 {
 public:
-	AITank* owner;
+	AITank* owner = nullptr;
+	float mWeight = 0;
+
 	virtual glm::vec2 GetForce() = 0;
 };
 

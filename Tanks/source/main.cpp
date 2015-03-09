@@ -122,6 +122,8 @@ int main()
 
 	tank1.SetSteeringType(PURSUE);
 	tank1.SetPursueTarget(&tank2);
+	/*tank1.mSteeringPriorityList.push_back(PURSUE);
+	tank1.mSteeringPriorityList.push_back(WANDER);*/
 	tank1.mColor = GREEN;
 	tank1.mVisibilityRadius = 100;
 
@@ -134,6 +136,11 @@ int main()
 
 
 	tank3.SetSteeringType(WANDER);
+	tank3.SetPursueTarget(&tank1);
+	tank3.mSteeringPriorityList.push_back(WANDER);
+	tank3.mSteeringPriorityList.push_back(PURSUE);
+	tank3.SetBehaviourWeight(WANDER, 0);
+	tank3.SetBehaviourWeight(PURSUE, 1);
 
 
 	//debug
@@ -141,7 +148,7 @@ int main()
 	//tank2.mPosition = GetRandomTilePosition();
 	Tile* t = GetTile(3, 3);
 	tank1.mPosition = t->mPosition;
-	t = GetTile(3, 5);
+	t = GetTile(3, 10);
 	tank2.mPosition = t->mPosition;
 	t = GetTile(10,10);
 	tank3.mPosition = t->mPosition;

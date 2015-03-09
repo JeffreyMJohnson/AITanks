@@ -40,6 +40,7 @@ void AITank::Update(float deltaTime)
 	Pursue* pursue = nullptr;
 	Evade* evade = nullptr;
 
+
 	switch (mCurrentSteeringType)
 	{
 	case SEEK:
@@ -149,15 +150,22 @@ void AITank::Update(float deltaTime)
 		}
 		break;
 	}
+	glm::vec2 direction;
+	if (mSteeringPriorityList.empty())
+	{
+		mVelocity = mSteeringBehaviourList[mCurrentSteeringType]->GetForce() * deltaTime;
+		direction = (mPosition + (mSteeringBehaviourList[mCurrentSteeringType]->GetForce())) - mPosition;
+	}
+	else
+	{
+		mVelocity = GetForce(mSteeringPriorityList) * deltaTime;
+		direction = (mPosition + (GetForce(mSteeringPriorityList)) - mPosition);
+	}
 	
-
-
-	mVelocity = mSteeringBehaviourList[mCurrentSteeringType]->GetForce() * deltaTime;
 	
 	float magnitude = glm::length(mVelocity);
-	if (mVelocity != glm::vec2(0, 0))
-		mVelocity = glm::normalize(mVelocity) * std::min(magnitude, mMaxVelocity);
-	glm::vec2 direction = (mPosition + (mSteeringBehaviourList[mCurrentSteeringType]->GetForce())) - mPosition;
+	/*if (mVelocity != glm::vec2(0, 0))
+		mVelocity = glm::normalize(mVelocity) * std::min(magnitude, mMaxVelocity);*/
 	mPosition += mVelocity * deltaTime;
 	mRotation = atan2f(direction.y, direction.x);
 }
@@ -207,6 +215,11 @@ void AITank::SetEvadeTarget(AITank* target)
 	dynamic_cast<Evade*>(mSteeringBehaviourList[EVADE])->target = target;
 }
 
+void AITank::SetBehaviourWeight(const STEERING_BEHAVIOUR_TYPE type, const float weight)
+{
+	mSteeringBehaviourList[type]->mWeight = weight;
+}
+
 void AITank::LoadSteeringBehaviours()
 {
 	Flee* f = new Flee;
@@ -246,4 +259,19 @@ bool AITank::IsCollided(AITank* other)
 	AABB box2(glm::vec2(other->mPosition.x - hWidth, other->mPosition.y - hHeight), glm::vec2(other->mPosition.x + hWidth, other->mPosition.y + hHeight));
 
 	return MNF::Collider::AABB(box1.minPoint, box1.maxPoint, box2.minPoint, box2.maxPoint);
+}
+
+glm::vec2 AITank::GetForce(const std::list<STEERING_BEHAVIOUR_TYPE>& behaviourList)
+{
+	glm::vec2 result = glm::vec2(0,0);
+	for (auto behaviour : behaviourList)
+	{
+		result += mSteeringBehaviourList[behaviour]->GetForce() * mSteeringBehaviourList[behaviour]->mWeight;
+		if (glm::length(result) > mMaxVelocity)
+		{
+			result = glm::normalize(result) * mMaxVelocity;
+			break;
+		}
+	}
+	return result;
 }

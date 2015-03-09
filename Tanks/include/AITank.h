@@ -28,7 +28,8 @@ public:
 	float mMaxVelocity;
 	SteeringBehaviour* mBehaviour;
 	float mVisibilityRadius;
-	float mWaitTimer;	
+	float mWaitTimer;
+	std::list<STEERING_BEHAVIOUR_TYPE> mSteeringPriorityList;
 
 	AITank();
 
@@ -52,6 +53,8 @@ public:
 	void SetPursueTarget(AITank* target);
 	void SetEvadeTarget(AITank* target);
 
+	void SetBehaviourWeight(const STEERING_BEHAVIOUR_TYPE type, const float weight);
+
 
 private:
 	STEERING_BEHAVIOUR_TYPE mCurrentSteeringType;
@@ -60,6 +63,7 @@ private:
 	void LoadSteeringBehaviours();
 	void InitWander(); 
 	bool IsCollided(AITank* other);
+	glm::vec2 GetForce(const std::list<STEERING_BEHAVIOUR_TYPE>& behaviourList);
 };
 
 #endif
