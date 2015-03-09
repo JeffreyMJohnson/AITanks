@@ -1,36 +1,67 @@
 #include "Wander.h"
 #include "AITank.h"
 
+/*
+This algorithm was derived using the article http://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-wander--gamedev-1624
+I found it much more explanatory than our lecture docs.
+*/
+
 Wander::Wander()
 {
-	mWanderRadius = 0;
-	mWanderDistance = 0;
-	mJitter = 0;
-	mPrevTarget = glm::vec2(0, 0);
+	mRadius = 0;
+	mDistance = 0;
+	mWanderAngle = 0.0f;
+	mAngleChange = 0;
 }
 
 glm::vec2 Wander::GetForce()
 {
-	glm::vec2 randTarget = GetRandomTarget();
-	glm::vec2 jitterVec;
-	float theta = rand() % 360;
+	//CIRCLE CENTER POSITION
+	//calculate center of circle, because it's in front of owner, use the velocity as a guide.
+	glm::vec2 circleCenter = owner->mVelocity;
+	//normalize into vector with only direction
+	circleCenter = glm::normalize(circleCenter);
+	//scale vector by the distance the circle is from owner for correct magnitude.
+	circleCenter *= mDistance;
 
-	jitterVec.x = randTarget.x + cosf(theta * RADIAN_CONVERSION) * mJitter;
-	jitterVec.y = randTarget.y + sinf(theta * RADIAN_CONVERSION) * mJitter;
-	jitterVec = glm::normalize(jitterVec + randTarget) * mWanderRadius;
-	jitterVec += owner->mPosition + mWanderDistance;
+	//DISPLACEMENT FORCE - responsible for left/right turn
+	//use vector aligned with y axis
+	glm::vec2 displacemenet(0, -1);
+	//scale it by circle radius
+	displacemenet *= mRadius;
 
-	if (jitterVec - owner->mPosition == glm::vec2(0, 0))
-		return glm::vec2(0, 0);
-	glm::vec2 force = glm::normalize(jitterVec - owner->mPosition);
-	force *= owner->mMaxVelocity;
-	return force - owner->mVelocity;
+	//randomly change vector direction by making it change it's current angle.
+	SetAngle(displacemenet, mWanderAngle);
+
+	//change wander angle a bit, so won't have same value next frame
+	/*adding 1 to angleChange for modulas allows the variable to be included in potential
+	random number as well as 0.  This keeps the distribution 50/50 when subtracting by half,
+	otherwise the result is weighted to the below-half side and the tank will tend to circle in
+	one direction.*/
+	
+	int r = (rand() % (mAngleChange + 1));
+	int s = (mAngleChange * .5);
+	//subtracting by half changes scale around 0, equally distributed neg/pos.
+	mWanderAngle += r - s;
+
+	//RETURN FORCE
+	//scale up because final result is scaled down by deltaTime
+	glm::vec2 force = (circleCenter + displacemenet) * 8.0f;
+	return force;
+	
 }
 
-glm::vec2 Wander::GetRandomTarget()
+void Wander::SetAngle(glm::vec2& vector, float value)
 {
-	glm::vec2 wanderCirclePos = owner->mPosition + mWanderDistance;
-	float x = wanderCirclePos.x + mWanderRadius * cosf((rand() % 360) * RADIAN_CONVERSION);
-	float y = wanderCirclePos.y + mWanderRadius * sinf((rand() % 360) * RADIAN_CONVERSION);
-	return glm::vec2(x,y);
+	float length = glm::length(vector);
+	vector.x = cosf(value * RADIAN_CONVERSION) * length;
+	vector.y = sinf(value * RADIAN_CONVERSION) * length;
 }
+
+glm::vec2 Wander::GetRandomPointOnCircle(const float radius, const glm::vec2 position)
+{
+	float x = radius * cosf((rand() % 360) * RADIAN_CONVERSION);
+	float y = radius * sinf((rand() % 360) * RADIAN_CONVERSION);
+	return glm::vec2(x, y) + position;
+}
+

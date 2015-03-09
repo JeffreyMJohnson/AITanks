@@ -64,6 +64,8 @@ public:
 
 	void SetScale(const float scaleX, const float scaleY);
 
+	void SetRotation(const float angle);
+
 	void Draw();
 
 	void Draw(glm::vec4& a_color);

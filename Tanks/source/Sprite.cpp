@@ -172,6 +172,13 @@ void Sprite::SetScale(const float scaleX, const float scaleY)
 	scale.y = scaleY;
 	UpdateTransform();
 }
+
+void Sprite::SetRotation(const float angle)
+{
+	rotZ = angle;
+	UpdateTransform();
+}
+
 void Sprite::Draw()
 {
 	//set state

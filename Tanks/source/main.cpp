@@ -9,6 +9,7 @@
 #include <time.h>
 #include <iostream>
 #include <algorithm>
+#include <assert.h>
 
 typedef std::vector<Tile*>::iterator It;
 typedef glm::vec2 vec2;
@@ -47,17 +48,7 @@ struct Plane
 	}
 };
 
-struct AABB
-{
-	vec2 minPoint;
-	vec2 maxPoint;
 
-	AABB(vec2 minPoint, vec2 maxPoint)
-	{
-		this->minPoint = minPoint;
-		this->maxPoint = maxPoint;
-	}
-};
 
 
 void CreateGrid();
@@ -87,8 +78,6 @@ std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
 vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
 bool IsOutOfBounds(AITank& tank);
-void FlipTankBehaviour();
-bool IsSeekerPaused(AITank& tank, float deltaTime);
 
 
 const int GRID_ROWS = 25;
@@ -109,9 +98,6 @@ Tank tank(vec2(20,20), vec2(200,75));
 AITank tank1(vec2(20, 20), vec2(0,0));
 AITank tank2(vec2(20, 20), vec2(0, 0));
 AITank tank3(vec2(20, 20), vec2(0, 0));
-Seek* seekBehaviour;
-Flee* fleeBehaviour;
-Wander* wanderBehaviour;
 
 Tile* mGoalNode = nullptr;
 
@@ -134,26 +120,20 @@ int main()
 	tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
 	frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
 
-	seekBehaviour = new Seek;
-	seekBehaviour->owner = &tank1;
-	seekBehaviour->target = &tank2;
-	tank1.mBehaviour = seekBehaviour;
+	tank1.SetSteeringType(PURSUE);
+	tank1.SetPursueTarget(&tank2);
 	tank1.mColor = GREEN;
 	tank1.mVisibilityRadius = 50;
 
-	fleeBehaviour = new Flee;
-	fleeBehaviour->owner = &tank2;
-	fleeBehaviour->target = &tank1;
-	tank2.mBehaviour = fleeBehaviour;
+	//tank2.SetSteeringType(FLEE);
+	//tank2.SetFleeTarget(&tank1);
+	tank2.SetSteeringType(EVADE);
+	tank2.SetEvadeTarget(&tank1);
 	tank2.mColor = RED;
 	tank2.mVisibilityRadius = 50;
 
-	wanderBehaviour = new Wander;
-	wanderBehaviour->owner = &tank3;
-	tank3.mBehaviour = wanderBehaviour;
-	wanderBehaviour->mJitter = 10000;
-	wanderBehaviour->mWanderDistance = 500;
-	wanderBehaviour->mWanderRadius = 500;
+
+	tank3.SetSteeringType(WANDER);
 
 
 	//debug
@@ -161,15 +141,15 @@ int main()
 	//tank2.mPosition = GetRandomTilePosition();
 	Tile* t = GetTile(3, 3);
 	tank1.mPosition = t->mPosition;
-	t = GetTile(3, 8);
+	t = GetTile(3, 5);
 	tank2.mPosition = t->mPosition;
-	t = GetTile(0, 0);
+	t = GetTile(10,10);
 	tank3.mPosition = t->mPosition;
 	tank3.mVelocity = vec2(100, 100);
 
 	tank1.mMaxVelocity = 1000;
 	tank2.mMaxVelocity = 500;
-	tank3.mMaxVelocity = 1000;
+	tank3.mMaxVelocity = 700;
 
 	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
 	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
@@ -183,21 +163,13 @@ int main()
 	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 	frk.DrawSprite(tank3.mSpriteID);
 
-	//tank.mSpriteID = frk.CreateSprite(tank.mSize.x, tank.mSize.y, ".\\resources\\textures\\tank.png", true);
-	//frk.SetSpriteUV(tank.mSpriteID, .008, .016, .121, .109);
-
-	//Tile* t = GetTile(GetRandomTilePosition());
-	//tank.mPosition = t->mPosition;
-	//tank.mLastNodeVisited = t;
-	//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
-
 	do
 	{
 		frk.ClearScreen();
 		UpdateTiles();
 
 		//TankLogic(frk.GetDeltaTime());
-		TankLogic(1/60.0f);
+		TankLogic(1/30.0f);
 		
 		frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
@@ -222,88 +194,33 @@ int main()
 
 void TankLogic(float deltaTime)
 {
-	if (!IsSeekerPaused(tank1, deltaTime))
-	{
-		tank1.Update(deltaTime);
-	}
-	if (!IsSeekerPaused(tank2, deltaTime))
-	{
-		tank2.Update(deltaTime);
-	}
+
+	tank1.Update(deltaTime);
+	tank2.Update(deltaTime);
 
 	tank3.Update(deltaTime);
 	
 	IsOutOfBounds(tank1);
 	IsOutOfBounds(tank2);
 
-	AABB tank1Box = GetAABB(tank1);
-	AABB tank2Box = GetAABB(tank2);
+	//AABB tank1Box = GetAABB(tank1);
+	//AABB tank2Box = GetAABB(tank2);
 
-	if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
-	{
-		FlipTankBehaviour();
-	}
+	//if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
+	//{
+	//	FlipTankBehaviour();
+	//}
 
 	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	frk.RotateSprite(tank1.mSpriteID, tank1.mRotation);
 	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	frk.RotateSprite(tank2.mSpriteID, tank2.mRotation);
 	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+	frk.RotateSprite(tank3.mSpriteID, tank3.mRotation);
 
 }
 
-bool IsSeekerPaused(AITank& tank, float deltaTime)
-{
-	if (tank.mBehaviour == seekBehaviour && seekBehaviour->mIsTagged)
-	{
-		if (tank.mWaitTimer < 3)
-		{
-			tank.mWaitTimer += deltaTime;
-			return true;
-		}
-		else
-		{
-			tank.mWaitTimer = 0;
-			seekBehaviour->mIsTagged = false;
-			return false;
-		}
-	}
-	return false;
-}
 
-void FlipTankBehaviour()
-{
-	//tank1 seek, tank2 flee
-	if (tank1.mBehaviour == seekBehaviour)
-	{
-		seekBehaviour->owner = &tank2;
-		seekBehaviour->target = &tank1;
-		fleeBehaviour->owner = &tank1;
-		fleeBehaviour->target = &tank2;
-		tank1.mBehaviour = fleeBehaviour;
-		tank2.mBehaviour = seekBehaviour;
-		float t = tank1.mMaxVelocity;
-		tank1.mMaxVelocity = tank2.mMaxVelocity;
-		tank2.mMaxVelocity = t;
-		tank1.mColor = RED;
-		tank2.mColor = GREEN;
-		seekBehaviour->mIsTagged = true;
-	}
-	//tank1 flee, tank2 seek
-	else
-	{
-		seekBehaviour->owner = &tank1;
-		seekBehaviour->target = &tank2;
-		fleeBehaviour->owner = &tank2;
-		fleeBehaviour->target = &tank1;
-		tank1.mBehaviour = seekBehaviour;
-		tank2.mBehaviour = fleeBehaviour;
-		float t = tank1.mMaxVelocity;
-		tank1.mMaxVelocity = tank2.mMaxVelocity;
-		tank2.mMaxVelocity = t;
-		tank1.mColor = GREEN;
-		tank2.mColor = RED;
-		seekBehaviour->mIsTagged = true;
-	}
-}
 
 bool IsOutOfBounds(AITank& tank)
 {
@@ -331,6 +248,7 @@ bool IsOutOfBounds(AITank& tank)
 	}
 	return result;
 }
+
 
 Tile* GetNearestTile(float xPos, float yPos)
 {
@@ -559,9 +477,6 @@ void Destroy()
 		delete t;
 	}
 	grid.clear();
-	delete seekBehaviour;
-	delete fleeBehaviour;
-	delete wanderBehaviour;
 }
 
 void HandleUI()

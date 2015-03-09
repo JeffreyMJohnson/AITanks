@@ -117,6 +117,16 @@ public:
 	void MoveSprite(unsigned int spriteID, const float xPosition, const float yPosition);
 
 	/**
+	Rotate the given sprite by the given angle around the z axis.
+
+	__note::the angle is expected in degrees.__
+	####parameters
+	`spriteID` - ID returned from `CreateSprite()` for sprite to rotate.\n
+	`angle` - Angle in degrees to rotate the sprite.
+	*/
+	void RotateSprite(unsigned int spriteId, const float angle);
+
+	/**
 	Draw the given sprite on the screen.
 	####parameters
 	`spriteID` - ID returned from `CreateSprite()` for sprite to draw.\n

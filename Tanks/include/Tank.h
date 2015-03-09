@@ -19,12 +19,16 @@ public:
 	std::vector<Tile*> pathList;
 	float mCurrentLERPValue = 0;
 	float mMoveSpeed;
+	float mRotation;
 
 	Tank();
 
 	Tank(glm::vec2 a_size, glm::vec2 a_position);
 
+	void FlipRotation();
+
 	virtual void Update(float deltaTime);
+
 
 };
 

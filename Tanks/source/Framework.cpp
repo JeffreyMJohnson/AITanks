@@ -66,6 +66,11 @@ void Framework::MoveSprite(unsigned int spriteID, const float xPosition, const f
 	mSpriteList[spriteID]->SetTranslation(glm::vec3(xPosition, yPosition, 0));
 }
 
+void Framework::RotateSprite(unsigned int spriteId, const float angle)
+{
+	mSpriteList[spriteId]->SetRotation(angle);
+}
+
 
 void Framework::SetSpriteUV(const unsigned int spriteID, const float minX, const float minY, const float maxX, const float maxY)
 {
