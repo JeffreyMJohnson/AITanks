@@ -1,4 +1,4 @@
-#include "framework/Framework.h";
+#include "framework/Framework.h"
 
 
 void Framework::Initialize(const int screenWidth, const int screenHeight, const char* title)
@@ -28,13 +28,13 @@ void Framework::Initialize(const int screenWidth, const int screenHeight, const 
 
 void Framework::Shutdown()
 {
-	for (int i = 0; i < mSpriteList.size(); i++)
+	for (unsigned int i = 0; i < mSpriteList.size(); i++)
 	{
 		delete mSpriteList[i];
 	}
 	mSpriteList.clear();
 
-	for (int i = 0; i < mAnimationList.size(); i++)
+	for (unsigned int i = 0; i < mAnimationList.size(); i++)
 	{
 		delete mAnimationList[i];
 	}

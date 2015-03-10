@@ -5,6 +5,7 @@
 #include <list>
 #include "Globals.h"
 #include "Tile.h"
+#define GLM_FORCE_PURE
 #include "glm/gtx/compatibility.hpp"
 
 class Tank

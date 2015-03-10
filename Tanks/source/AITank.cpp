@@ -4,6 +4,7 @@
 #include "Wander.h"
 #include "Pursue.h"
 #include "Evade.h"
+#include "Separation.h"
 
 
 
@@ -22,6 +23,7 @@ AITank::AITank(glm::vec2 a_size, glm::vec2 a_position) : Tank(a_size, a_position
 	mCurrentSteeringType = WANDER;
 	LoadSteeringBehaviours();
 	InitWander();
+	mNeighborhoodRadius = 0;
 }
 
 AITank::~AITank()
@@ -180,6 +182,11 @@ STEERING_BEHAVIOUR_TYPE AITank::GetSteeringType()
 	return mCurrentSteeringType;
 }
 
+SteeringBehaviour& AITank::GetBehaviour(STEERING_BEHAVIOUR_TYPE type)
+{
+	return *mSteeringBehaviourList[type];
+}
+
 void AITank::SetSeekTarget(AITank* target)
 {
 	dynamic_cast<Seek*>(mSteeringBehaviourList[SEEK])->target = target;
@@ -241,6 +248,10 @@ void AITank::LoadSteeringBehaviours()
 	Evade* e = new Evade;
 	e->owner = this;
 	mSteeringBehaviourList[EVADE] = e;
+
+	Separation* sep = new Separation;
+	sep->owner = this;
+	mSteeringBehaviourList[SEPARATIION] = sep;
 }
 
 void AITank::InitWander()

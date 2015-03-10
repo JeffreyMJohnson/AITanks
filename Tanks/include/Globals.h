@@ -4,8 +4,8 @@
 #include "glm\glm.hpp"
 
 #define PI 3.14159265359
-#define RADIAN_CONVERSION PI / 180
-#define DEGREE_CONVERSION 180 / PI
+#define RADIAN_CONVERSION PI / 180.0f
+#define DEGREE_CONVERSION 180.0f / PI
 
 
 namespace MNF

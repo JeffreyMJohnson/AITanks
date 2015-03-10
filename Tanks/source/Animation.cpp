@@ -39,10 +39,10 @@ void Animation::LoadData(const char* spriteSheetDataFile)
 			{
 				Frame f;
 				f.number = std::atoi(frame.attribute("id").value());
-				f.UV.x = std::atof(frame.attribute("minX").value());
-				f.UV.y = std::atof(frame.attribute("minY").value());
-				f.UV.z = std::atof(frame.attribute("maxX").value());
-				f.UV.w = std::atof(frame.attribute("maxY").value());
+				f.UV.x = (float)std::atof(frame.attribute("minX").value());
+				f.UV.y = (float)std::atof(frame.attribute("minY").value());
+				f.UV.z = (float)std::atof(frame.attribute("maxX").value());
+				f.UV.w = (float)std::atof(frame.attribute("maxY").value());
 				framesList.push_back(f);
 			}
 			mFrameData[frames.attribute("name").value()] = framesList;
@@ -64,10 +64,10 @@ void Animation::LoadData(const char* spriteSheetDataFile)
 				Frame f;
 				f.number = id;
 				//need to compute UV and the normalize
-				f.UV.x = std::atof(frame.attribute("x").value()) / sheetWidth;
-				f.UV.y = std::atof(frame.attribute("y").value()) / sheetHeight;
-				f.UV.z = (f.UV.x + std::atof(frame.attribute("width").value())) / sheetWidth;
-				f.UV.w = (f.UV.y + std::atof(frame.attribute("height").value())) / sheetHeight;
+				f.UV.x = (float)std::atof(frame.attribute("x").value()) / sheetWidth;
+				f.UV.y = (float)std::atof(frame.attribute("y").value()) / sheetHeight;
+				f.UV.z = (f.UV.x + (float)std::atof(frame.attribute("width").value())) / sheetWidth;
+				f.UV.w = (f.UV.y + (float)std::atof(frame.attribute("height").value())) / sheetHeight;
 				framesList.push_back(f);
 				id++;
 			}
@@ -80,7 +80,7 @@ void Animation::LoadData(const char* spriteSheetDataFile)
 
 void Animation::Update(double deltaTime)
 {
-	const float speed = .1;
+	const float speed = .1f;
 	mElapsedTime += deltaTime;
 
 	if (mElapsedTime > mFrameDuration)
@@ -96,7 +96,7 @@ void Animation::Update(double deltaTime)
 			mCurrentFrame++;
 		}
 	}
-	mSprite.SetSpriteUV(mFrameData[mAnimationState][mCurrentFrame].UV.x, mFrameData[mAnimationState][mCurrentFrame].UV.y, mFrameData[mAnimationState][mCurrentFrame].UV.z, mFrameData[mAnimationState][mCurrentFrame].UV.w);
+	mSprite.SetSpriteUV(mFrameData[mAnimationState][(unsigned int)mCurrentFrame].UV.x, mFrameData[mAnimationState][(unsigned int)mCurrentFrame].UV.y, mFrameData[mAnimationState][(unsigned int)mCurrentFrame].UV.z, mFrameData[mAnimationState][(unsigned int)mCurrentFrame].UV.w);
 }
 
 void Animation::SwitchDirection()

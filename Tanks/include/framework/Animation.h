@@ -25,7 +25,7 @@ public:
 	std::string mAnimationState;
 	std::string mSpriteSheetFile;
 	std::string mFilePath;
-	const float mFrameDuration = (1.0 / 15.0);
+	const float mFrameDuration = (1.0f / 15.0f);
 	double mElapsedTime = 0;
 
 	Animation();

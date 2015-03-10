@@ -79,6 +79,7 @@
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Pursue.cpp" />
     <ClCompile Include="source\Seek.cpp" />
+    <ClCompile Include="source\Separation.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\Tank.cpp" />
     <ClCompile Include="source\Wander.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="include\Globals.h" />
     <ClInclude Include="include\Pursue.h" />
     <ClInclude Include="include\Seek.h" />
+    <ClInclude Include="include\Separation.h" />
     <ClInclude Include="include\SteeringBehaviour.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />

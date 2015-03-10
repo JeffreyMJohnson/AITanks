@@ -4,7 +4,7 @@
 #include "Tank.h"
 #include "SteeringBehaviour.h"
 
-
+#define GLM_FORCE_PURE
 #include <algorithm>
 #include <map>
 
@@ -30,6 +30,7 @@ public:
 	float mVisibilityRadius;
 	float mWaitTimer;
 	std::list<STEERING_BEHAVIOUR_TYPE> mSteeringPriorityList;
+	float mNeighborhoodRadius;
 
 	AITank();
 
@@ -41,6 +42,8 @@ public:
 
 	void AITank::SetSteeringType(STEERING_BEHAVIOUR_TYPE type);
 	STEERING_BEHAVIOUR_TYPE AITank::GetSteeringType();
+
+	SteeringBehaviour& GetBehaviour(STEERING_BEHAVIOUR_TYPE type);
 
 	void SetSeekTarget(AITank* target);
 	AITank* GetSeekTarget();

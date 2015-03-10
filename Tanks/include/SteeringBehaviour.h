@@ -11,14 +11,15 @@ enum STEERING_BEHAVIOUR_TYPE
 	SEEK,
 	WANDER,
 	PURSUE,
-	EVADE
+	EVADE,
+	SEPARATIION
 };
 
 class SteeringBehaviour
 {
 public:
 	AITank* owner = nullptr;
-	float mWeight = 0;
+	float mWeight = 1;
 
 	virtual glm::vec2 GetForce() = 0;
 };

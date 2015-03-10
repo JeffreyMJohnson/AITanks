@@ -10,7 +10,7 @@ Wander::Wander()
 {
 	mRadius = 0;
 	mDistance = 0;
-	mWanderAngle = 0.0f;
+	mWanderAngle = 0;
 	mAngleChange = 0;
 }
 

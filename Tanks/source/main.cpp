@@ -5,6 +5,7 @@
 #include "Seek.h"
 #include "Flee.h"
 #include "Wander.h"
+#include "Separation.h"
 
 #include <time.h>
 #include <iostream>
@@ -12,6 +13,7 @@
 #include <assert.h>
 
 typedef std::vector<Tile*>::iterator It;
+#define GLM_FORCE_PURE
 typedef glm::vec2 vec2;
 
 
@@ -78,6 +80,7 @@ std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
 vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
 bool IsOutOfBounds(AITank& tank);
+void CreateTanks();
 
 
 const int GRID_ROWS = 25;
@@ -94,10 +97,13 @@ std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
 glm::vec4 gridRect;
 
-Tank tank(vec2(20,20), vec2(200,75));
-AITank tank1(vec2(20, 20), vec2(0,0));
-AITank tank2(vec2(20, 20), vec2(0, 0));
-AITank tank3(vec2(20, 20), vec2(0, 0));
+std::vector<AITank*> tankList;
+
+
+//Tank tank(vec2(20,20), vec2(200,75));
+//AITank tank1(vec2(20, 20), vec2(0,0));
+//AITank tank2(vec2(20, 20), vec2(0, 0));
+//AITank tank3(vec2(20, 20), vec2(0, 0));
 
 Tile* mGoalNode = nullptr;
 
@@ -105,70 +111,72 @@ Tile* mGoalNode = nullptr;
 
 int main()
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
 	CreateGrid();
+	CreateTanks();
+
 	
-	tank1.mSpriteID = frk.CreateSprite(tank1.mSize.x, tank1.mSize.y, ".\\resources\\textures\\tank.png", true);
-	frk.SetSpriteUV(tank1.mSpriteID, .008, .016, .121, .109);
-	tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
-	frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
+	//tank1.mSpriteID = frk.CreateSprite(tank1.mSize.x, tank1.mSize.y, ".\\resources\\textures\\tank.png", true);
+	//frk.SetSpriteUV(tank1.mSpriteID, .008, .016, .121, .109);
+	//tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
+	//frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
 
-	tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
-	frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
+	//tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
+	//frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
 
-	tank1.SetSteeringType(PURSUE);
-	tank1.SetPursueTarget(&tank2);
-	/*tank1.mSteeringPriorityList.push_back(PURSUE);
-	tank1.mSteeringPriorityList.push_back(WANDER);*/
-	tank1.mColor = GREEN;
-	tank1.mVisibilityRadius = 100;
+	//tank1.SetSteeringType(PURSUE);
+	//tank1.SetPursueTarget(&tank2);
+	///*tank1.mSteeringPriorityList.push_back(PURSUE);
+	//tank1.mSteeringPriorityList.push_back(WANDER);*/
+	//tank1.mColor = GREEN;
+	//tank1.mVisibilityRadius = 100;
 
-	//tank2.SetSteeringType(FLEE);
-	//tank2.SetFleeTarget(&tank1);
-	tank2.SetSteeringType(EVADE);
-	tank2.SetEvadeTarget(&tank1);
-	tank2.mColor = RED;
-	tank2.mVisibilityRadius = 100;
-
-
-	tank3.SetSteeringType(WANDER);
-	tank3.SetPursueTarget(&tank1);
-	tank3.mSteeringPriorityList.push_back(WANDER);
-	tank3.mSteeringPriorityList.push_back(PURSUE);
-	tank3.SetBehaviourWeight(WANDER, 1);
-	tank3.SetBehaviourWeight(PURSUE, 0);
+	////tank2.SetSteeringType(FLEE);
+	////tank2.SetFleeTarget(&tank1);
+	//tank2.SetSteeringType(EVADE);
+	//tank2.SetEvadeTarget(&tank1);
+	//tank2.mColor = RED;
+	//tank2.mVisibilityRadius = 100;
 
 
-	//debug
-	//tank1.mPosition = GetRandomTilePosition();
-	//tank2.mPosition = GetRandomTilePosition();
-	Tile* t = GetTile(3, 3);
-	tank1.mPosition = t->mPosition;
-	t = GetTile(3, 10);
-	tank2.mPosition = t->mPosition;
-	t = GetTile(10,10);
-	tank3.mPosition = t->mPosition;
-	tank3.mVelocity = vec2(100, 100);
+	//tank3.SetSteeringType(WANDER);
+	//tank3.SetPursueTarget(&tank1);
+	//tank3.mSteeringPriorityList.push_back(WANDER);
+	//tank3.mSteeringPriorityList.push_back(PURSUE);
+	//tank3.SetBehaviourWeight(WANDER, 1);
+	//tank3.SetBehaviourWeight(PURSUE, 0);
 
-	tank1.mMaxVelocity = 1000;
-	tank2.mMaxVelocity = 500;
-	tank3.mMaxVelocity = 700;
 
-	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
-	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
-	//tank3.mVelocity = vec2((rand() % (int)tank3.mMaxVelocity) + 1, (rand() % (int)tank3.mMaxVelocity) + 1);
+	////debug
+	////tank1.mPosition = GetRandomTilePosition();
+	////tank2.mPosition = GetRandomTilePosition();
+	//Tile* t = GetTile(3, 3);
+	//tank1.mPosition = t->mPosition;
+	//t = GetTile(3, 10);
+	//tank2.mPosition = t->mPosition;
+	//t = GetTile(10,10);
+	//tank3.mPosition = t->mPosition;
+	//tank3.mVelocity = vec2(100, 100);
 
-	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
-	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
-	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+	//tank1.mMaxVelocity = 1000;
+	//tank2.mMaxVelocity = 500;
+	//tank3.mMaxVelocity = 700;
 
-	frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
-	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
-	frk.DrawSprite(tank3.mSpriteID);
+	//tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
+	//tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
+	////tank3.mVelocity = vec2((rand() % (int)tank3.mMaxVelocity) + 1, (rand() % (int)tank3.mMaxVelocity) + 1);
+
+	//frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	//frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	//frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+
+	//frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
+	//frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
+	//frk.DrawSprite(tank3.mSpriteID);
 
 	do
 	{
@@ -178,9 +186,9 @@ int main()
 		//TankLogic(frk.GetDeltaTime());
 		TankLogic(1/30.0f);
 		
-		frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
-		frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
-		frk.DrawSprite(tank3.mSpriteID);
+		//frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
+		//frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
+		//frk.DrawSprite(tank3.mSpriteID);
 
 		//tank.Update(frk.GetDeltaTime());
 		//frk.MoveSprite(tank.mSpriteID, tank.mPosition.x, tank.mPosition.y);
@@ -201,29 +209,38 @@ int main()
 
 void TankLogic(float deltaTime)
 {
+	for (auto tank : tankList)
+	{
+		tank->Update(deltaTime);
+		IsOutOfBounds(*tank);
+		frk.MoveSprite(tank->mSpriteID, tank->mPosition.x, tank->mPosition.y);
+		frk.RotateSprite(tank->mSpriteID, tank->mRotation);
+		frk.DrawSprite(tank->mSpriteID);
+	}
 
-	tank1.Update(deltaTime);
-	tank2.Update(deltaTime);
 
-	tank3.Update(deltaTime);
-	
-	IsOutOfBounds(tank1);
-	IsOutOfBounds(tank2);
+	//tank1.Update(deltaTime);
+	//tank2.Update(deltaTime);
 
-	//AABB tank1Box = GetAABB(tank1);
-	//AABB tank2Box = GetAABB(tank2);
+	//tank3.Update(deltaTime);
+	//
+	//IsOutOfBounds(tank1);
+	//IsOutOfBounds(tank2);
 
-	//if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
-	//{
-	//	FlipTankBehaviour();
-	//}
+	////AABB tank1Box = GetAABB(tank1);
+	////AABB tank2Box = GetAABB(tank2);
 
-	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
-	frk.RotateSprite(tank1.mSpriteID, tank1.mRotation);
-	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
-	frk.RotateSprite(tank2.mSpriteID, tank2.mRotation);
-	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
-	frk.RotateSprite(tank3.mSpriteID, tank3.mRotation);
+	////if (MNF::Collider::AABB(tank1Box.minPoint, tank1Box.maxPoint, tank2Box.minPoint, tank2Box.maxPoint))
+	////{
+	////	FlipTankBehaviour();
+	////}
+
+	//frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	//frk.RotateSprite(tank1.mSpriteID, tank1.mRotation);
+	//frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	//frk.RotateSprite(tank2.mSpriteID, tank2.mRotation);
+	//frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+	//frk.RotateSprite(tank3.mSpriteID, tank3.mRotation);
 
 }
 
@@ -260,7 +277,7 @@ bool IsOutOfBounds(AITank& tank)
 Tile* GetNearestTile(float xPos, float yPos)
 {
 	Tile* result = nullptr;
-	float dx = INT_MAX;
+	float dx = (float)INT_MAX;
 	for (auto tile : grid)
 	{
 		if (glm::distance(tile->mPosition, vec2(xPos, yPos)) < dx)
@@ -289,8 +306,8 @@ void CreateGrid()
 	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
 
 	vec2 startPos(200, 75);
-	gridRect.x = startPos.x - (tileSize.x * .5);
-	gridRect.y = startPos.y - (tileSize.y * .5);
+	gridRect.x = startPos.x - (tileSize.x * .5f);
+	gridRect.y = startPos.y - (tileSize.y * .5f);
 	vec2 position = startPos;
 	for (int row = 0; row < GRID_ROWS; row++)
 	{
@@ -320,8 +337,8 @@ void CreateGrid()
 		position.y += tileSize.y;
 	}
 	Tile* t = grid.back();
-	gridRect.z = t->mPosition.x + (tileSize.x * .5);
-	gridRect.w = t->mPosition.y + (tileSize.y * .5);
+	gridRect.z = t->mPosition.x + (tileSize.x * .5f);
+	gridRect.w = t->mPosition.y + (tileSize.y * .5f);
 	LoadGridEdges();
 	//LoadGridEdgesDiagonal();
 	//LoadGridEdgesOneWay();
@@ -492,41 +509,41 @@ void HandleUI()
 	{
 		quit = true;
 	}
-	double xPos = 0;
-	double yPos = 0;
-	if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && tank.mGoalNode == nullptr)
-	{
-		ResetTiles();
-		//check if current node is old goal node and change color
-		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
-		Tile* t = GetNearestTile(xPos, yPos);
-		t->mColor = RED;
-		mGoalNode = t;
-		//tank.mGoalNode = t;
-		AStarPathFind(false);
+	//double xPos = 0;
+	//double yPos = 0;
+	//if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && tank.mGoalNode == nullptr)
+	//{
+	//	ResetTiles();
+	//	//check if current node is old goal node and change color
+	//	GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
+	//	Tile* t = GetNearestTile(xPos, yPos);
+	//	t->mColor = RED;
+	//	mGoalNode = t;
+	//	//tank.mGoalNode = t;
+	//	AStarPathFind(false);
 
-	}
+	//}
 }
 
 void AutoRun()
 {
 
-	if (tank.mGoalNode == nullptr)
-	{
-		ResetTiles();
-		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
-		
-		Tile* t = nullptr;
-		while (t == nullptr)
-		{
-			t = GetRandomTile();
-			if (t->mColor == BROWN) t = nullptr;
-		}
-		t->mColor = RED;
-		mGoalNode = t;
-		AStarPathFind(true);
-		//ThetaStarPathFind();
-	}
+	//if (tank.mGoalNode == nullptr)
+	//{
+	//	ResetTiles();
+	//	GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
+	//	
+	//	Tile* t = nullptr;
+	//	while (t == nullptr)
+	//	{
+	//		t = GetRandomTile();
+	//		if (t->mColor == BROWN) t = nullptr;
+	//	}
+	//	t->mColor = RED;
+	//	mGoalNode = t;
+	//	AStarPathFind(true);
+	//	//ThetaStarPathFind();
+	//}
 }
 
 void ResetTiles()
@@ -566,7 +583,7 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 	
 }
 
-void ThetaStarPathFind()
+void ThetaStarPathFind(Tank& tank)
 {
 	std::list<Tile*> priorityQ;
 	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
@@ -600,7 +617,7 @@ void ThetaStarPathFind()
 					{
 						neighbor->mPathParentNode = current->mPathParentNode;
 						neighbor->mGScore = current->mGScore + neighbor->mWeight;
-						neighbor->mFScore = fScore;
+						neighbor->mFScore = (int)fScore;
 					}
 				}
 				else
@@ -611,7 +628,7 @@ void ThetaStarPathFind()
 					{
 						neighbor->mPathParentNode = current;
 						neighbor->mGScore = current->mGScore + neighbor->mWeight;
-						neighbor->mFScore = fScore;
+						neighbor->mFScore = (int)fScore;
 					}
 				}
 				if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end() && neighbor->mPathParentNode != nullptr)
@@ -638,7 +655,7 @@ void ThetaStarPathFind()
 	}
 }
 
-void AStarPathFind(bool smoothPath)
+void AStarPathFind(bool smoothPath, Tank& tank)
 {
 	std::list<Tile*> priorityQ;
 	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
@@ -672,7 +689,7 @@ void AStarPathFind(bool smoothPath)
 				{
 					neighbor->mPathParentNode = current;
 					neighbor->mGScore = current->mGScore + neighbor->mWeight;
-					neighbor->mFScore = fScore;
+					neighbor->mFScore = (int)fScore;
 					if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end())
 					{
 						priorityQ.push_back(neighbor);
@@ -775,15 +792,15 @@ bool HasStraightLine(Tile* start, Tile* goal)
 
 AABB GetAABB(Tile* tile)
 {
-	float hHeight = tile->mSize.y * .5;
-	float hWidth = tile->mSize.x * .5;
+	float hHeight = tile->mSize.y * .5f;
+	float hWidth = tile->mSize.x * .5f;
 	return AABB(vec2(tile->mPosition.x - hWidth, tile->mPosition.y - hHeight), vec2(tile->mPosition.x + hWidth, tile->mPosition.y + hHeight));
 }
 
 AABB GetAABB(Tank& tank)
 {
-	float hHeight = tank.mSize.y * .5;
-	float hWidth = tank.mSize.x * .5;
+	float hHeight = tank.mSize.y * .5f;
+	float hWidth = tank.mSize.x * .5f;
 	return AABB(vec2(tank.mPosition.x - hWidth, tank.mPosition.y - hHeight), vec2(tank.mPosition.x + hWidth, tank.mPosition.y + hHeight));
 }
 
@@ -818,4 +835,27 @@ bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit)
 	exit = glm::min(far.x, far.y);
 
 	return (exit > 0.0f && enter < exit);
+}
+
+void CreateTanks()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		AITank* t = new AITank(glm::vec2(20,20), glm::vec2(100,100));
+		t->mSpriteID = frk.CreateSprite(t->mSize.x, t->mSize.y, ".\\resources\\textures\\tank.png", true);
+		frk.SetSpriteUV(t->mSpriteID, .008f, .016f, .121f, .109f);
+		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
+		t->mSteeringPriorityList.push_back(SEPARATIION);
+		t->SetSteeringType(SEPARATIION);
+		//Wander* w = dynamic_cast<Wander*>(&t->GetBehaviour(WANDER));
+		//w->mDistance = 100;
+		//w->mRadius = 50;
+		//w->mDistance = 50;
+		t->mNeighborhoodRadius = 100;
+		t->mPosition = GetTile(i + 2, 5)->mPosition;
+		t->mVelocity = glm::vec2(100, 100);
+		t->mMaxVelocity = 100;
+		
+		tankList.push_back(t);
+	}
 }
