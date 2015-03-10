@@ -139,8 +139,8 @@ int main()
 	tank3.SetPursueTarget(&tank1);
 	tank3.mSteeringPriorityList.push_back(WANDER);
 	tank3.mSteeringPriorityList.push_back(PURSUE);
-	tank3.SetBehaviourWeight(WANDER, 0);
-	tank3.SetBehaviourWeight(PURSUE, 1);
+	tank3.SetBehaviourWeight(WANDER, 1);
+	tank3.SetBehaviourWeight(PURSUE, 0);
 
 
 	//debug
