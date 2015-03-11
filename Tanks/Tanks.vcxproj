@@ -83,6 +83,7 @@
     <ClCompile Include="source\Seek.cpp" />
     <ClCompile Include="source\Separation.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
+    <ClCompile Include="source\SteeringManager.cpp" />
     <ClCompile Include="source\Tank.cpp" />
     <ClCompile Include="source\Wander.cpp" />
   </ItemGroup>
@@ -100,10 +101,12 @@
     <ClInclude Include="include\framework\Framework.h" />
     <ClInclude Include="include\framework\Sprite.h" />
     <ClInclude Include="include\Globals.h" />
+    <ClInclude Include="include\IBoid.h" />
     <ClInclude Include="include\Pursue.h" />
     <ClInclude Include="include\Seek.h" />
     <ClInclude Include="include\Separation.h" />
     <ClInclude Include="include\SteeringBehaviour.h" />
+    <ClInclude Include="include\SteeringManager.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />
     <ClInclude Include="include\Wander.h" />
