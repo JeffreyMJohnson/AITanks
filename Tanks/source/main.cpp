@@ -6,6 +6,8 @@
 #include "Flee.h"
 #include "Wander.h"
 #include "Separation.h"
+#include "Alignment.h"
+#include "Cohesion.h"
 
 #include <time.h>
 #include <iostream>
@@ -844,18 +846,26 @@ void CreateTanks()
 		AITank* t = new AITank(glm::vec2(20,20), glm::vec2(100,100));
 		t->mSpriteID = frk.CreateSprite(t->mSize.x, t->mSize.y, ".\\resources\\textures\\tank.png", true);
 		frk.SetSpriteUV(t->mSpriteID, .008f, .016f, .121f, .109f);
-		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
-		t->mSteeringPriorityList.push_back(SEPARATIION);
-		t->SetSteeringType(SEPARATIION);
-		//Wander* w = dynamic_cast<Wander*>(&t->GetBehaviour(WANDER));
-		//w->mDistance = 100;
-		//w->mRadius = 50;
-		//w->mDistance = 50;
+		//dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
+		
+		//t->mSteeringPriorityList.push_back(SEPARATIION);
+		//t->SetSteeringType(SEPARATIION);
+		dynamic_cast<Alignment*>(&t->GetBehaviour(ALIGNMENT))->mTankList = &tankList;
+		dynamic_cast<Alignment*>(&t->GetBehaviour(ALIGNMENT))->mWeight = .33F;
+		t->mSteeringPriorityList.push_back(ALIGNMENT);
+		//t->SetSteeringType(ALIGNMENT);
 		t->mNeighborhoodRadius = 100;
 		t->mPosition = GetTile(i + 2, 5)->mPosition;
 		t->mVelocity = glm::vec2(100, 100);
 		t->mMaxVelocity = 100;
+
+		t->mSteeringPriorityList.push_back(COHESION);
+		dynamic_cast<Cohesion*>(&t->GetBehaviour(COHESION))->mTankList = &tankList;
+		dynamic_cast<Cohesion*>(&t->GetBehaviour(COHESION))->mWeight = .33F;
 		
+		t->mSteeringPriorityList.push_back(SEPARATIION);
+		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
+		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mWeight = .33F;
 		tankList.push_back(t);
 	}
 }

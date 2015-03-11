@@ -31,7 +31,7 @@ glm::vec2 Wander::GetForce()
 	displacemenet *= mRadius;
 
 	//randomly change vector direction by making it change it's current angle.
-	SetAngle(displacemenet, mWanderAngle);
+	SetAngle(displacemenet, (float)mWanderAngle);
 
 	//change wander angle a bit, so won't have same value next frame
 	/*adding 1 to angleChange for modulas allows the variable to be included in potential
@@ -40,7 +40,7 @@ glm::vec2 Wander::GetForce()
 	one direction.*/
 	
 	int r = (rand() % (mAngleChange + 1));
-	int s = (mAngleChange * .5);
+	int s = (int)(mAngleChange * .5f);
 	//subtracting by half changes scale around 0, equally distributed neg/pos.
 	mWanderAngle += r - s;
 

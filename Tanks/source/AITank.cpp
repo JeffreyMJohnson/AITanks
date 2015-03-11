@@ -5,6 +5,8 @@
 #include "Pursue.h"
 #include "Evade.h"
 #include "Separation.h"
+#include "Alignment.h"
+#include "Cohesion.h"
 
 
 
@@ -252,6 +254,14 @@ void AITank::LoadSteeringBehaviours()
 	Separation* sep = new Separation;
 	sep->owner = this;
 	mSteeringBehaviourList[SEPARATIION] = sep;
+
+	Alignment* a = new Alignment;
+	a->owner = this;
+	mSteeringBehaviourList[ALIGNMENT] = a;
+
+	Cohesion* c = new Cohesion;
+	c->owner = this;
+	mSteeringBehaviourList[COHESION] = c;
 }
 
 void AITank::InitWander()
