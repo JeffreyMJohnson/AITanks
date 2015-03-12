@@ -79,6 +79,7 @@
     <ClCompile Include="source\FontManager.cpp" />
     <ClCompile Include="source\Framework.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Prey.cpp" />
     <ClCompile Include="source\Pursue.cpp" />
     <ClCompile Include="source\Seek.cpp" />
     <ClCompile Include="source\Separation.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="include\framework\Sprite.h" />
     <ClInclude Include="include\Globals.h" />
     <ClInclude Include="include\IBoid.h" />
+    <ClInclude Include="include\Prey.h" />
     <ClInclude Include="include\Pursue.h" />
     <ClInclude Include="include\Seek.h" />
     <ClInclude Include="include\Separation.h" />

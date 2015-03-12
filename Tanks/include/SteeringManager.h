@@ -27,7 +27,7 @@ private:
 	const float CIRCLE_DISTANCE = 50;
 	const float CIRCLE_RADIUS = 100;
 	const int ANGLE_CHANGE = 10;
-	const float WANDER_FORCE_SCALE = 8.0f;
+	const float WANDER_FORCE_SCALE = .5f;
 	
 	float mWanderAngle_ = 0.0f;
 	
@@ -37,4 +37,8 @@ private:
 	vec DoEvade(IBoid& target);
 	vec DoPursuit(IBoid& target);
 	void SetAngle(vec& vector, float value);
+	/*
+	Returns vector2 with a magnitude no longer than given value.
+	*/
+	void Truncate(vec& original, float max);
 }; 

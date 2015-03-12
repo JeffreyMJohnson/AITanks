@@ -8,6 +8,7 @@
 #include "Separation.h"
 #include "Alignment.h"
 #include "Cohesion.h"
+#include "Prey.h"
 
 #include <time.h>
 #include <iostream>
@@ -120,8 +121,10 @@ int main()
 
 	CreateGrid();
 	CreateTanks();
+	vec2 tilePos = GetTile(10, 10)->mPosition;
+	Prey p1(&frk, tilePos);
 
-	
+
 	//tank1.mSpriteID = frk.CreateSprite(tank1.mSize.x, tank1.mSize.y, ".\\resources\\textures\\tank.png", true);
 	//frk.SetSpriteUV(tank1.mSpriteID, .008, .016, .121, .109);
 	//tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
@@ -187,6 +190,9 @@ int main()
 
 		//TankLogic(frk.GetDeltaTime());
 		TankLogic(1/30.0f);
+
+		p1.Update();
+		p1.Draw();
 		
 		//frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 		//frk.DrawSprite(tank2.mSpriteID, tank2.mColor);

@@ -33,15 +33,30 @@ void SteeringManager::Pursuit(IBoid& target)
 
 void SteeringManager::Update()
 {
-	vec velocity = mHost->GetVelocity();
-	vec position = mHost->GetPosition();
+	vec& velocity = mHost->GetVelocity();
+	vec& position = mHost->GetPosition();
 
-	//mSteering mHost->GetMaxVelocity());
+	Truncate(mSteering, mHost->GetMaxVelocity());
+	mSteering *= (1 / mHost->GetMass());
+
+	velocity += mSteering;
+	Truncate(velocity, mHost->GetMaxVelocity());
+	
+	position += mHost->GetVelocity();
 }
 
 void SteeringManager::Reset()
 {
 
+}
+
+void SteeringManager::Truncate(vec& original, float max)
+{
+	if (glm::length(original) > max)
+	{
+		original = glm::normalize(original);
+		original *= max;
+	}
 }
 
 
