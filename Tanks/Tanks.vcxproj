@@ -78,6 +78,7 @@
     <ClCompile Include="source\FontChar.cpp" />
     <ClCompile Include="source\FontManager.cpp" />
     <ClCompile Include="source\Framework.cpp" />
+    <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Prey.cpp" />
     <ClCompile Include="source\Pursue.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SteeringManager.cpp" />
     <ClCompile Include="source\Tank.cpp" />
+    <ClCompile Include="source\Tile.cpp" />
     <ClCompile Include="source\Wander.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +104,7 @@
     <ClInclude Include="include\framework\Framework.h" />
     <ClInclude Include="include\framework\Sprite.h" />
     <ClInclude Include="include\Globals.h" />
+    <ClInclude Include="include\Grid.h" />
     <ClInclude Include="include\IBoid.h" />
     <ClInclude Include="include\Prey.h" />
     <ClInclude Include="include\Pursue.h" />

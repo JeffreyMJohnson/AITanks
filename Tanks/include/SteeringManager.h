@@ -37,8 +37,6 @@ private:
 	vec DoEvade(IBoid& target);
 	vec DoPursuit(IBoid& target);
 	void SetAngle(vec& vector, float value);
-	/*
-	Returns vector2 with a magnitude no longer than given value.
-	*/
+
 	void Truncate(vec& original, float max);
 }; 

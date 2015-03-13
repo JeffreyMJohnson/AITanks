@@ -50,6 +50,9 @@ void SteeringManager::Reset()
 
 }
 
+/*
+Returns vector2 with a magnitude no longer than given value.
+*/
 void SteeringManager::Truncate(vec& original, float max)
 {
 	if (glm::length(original) > max)

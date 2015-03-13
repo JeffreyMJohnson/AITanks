@@ -37,6 +37,7 @@ private:
 	const float HEIGHT = 20.0f;
 	const float MASS = 1.0f;
 	const float MAX_VELOCITY = 1.0f;
+
 };
 
 #endif

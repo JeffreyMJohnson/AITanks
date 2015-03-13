@@ -22,14 +22,6 @@ Prey::~Prey()
 
 void Prey::Update()
 {
-	//mVelocity = glm::normalize(mVelocity);
-	//mVelocity *= MAX_VELOCITY;
-	//mVelocity *= (1 / MASS);
-
-	//mVelocity = glm::min(mVelocity, MAX_VELOCITY);
-
-	//mPosition = mPosition + mVelocity;
-
 	mSteering->Wander();
 	mSteering->Update();
 

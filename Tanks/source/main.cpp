@@ -56,18 +56,18 @@ struct Plane
 
 
 
-void CreateGrid();
-void LoadGridEdges();
+//void CreateGrid();
+//void LoadGridEdges();
 void LoadGridEdgesDiagonal();
 void LoadGridEdgesOneWay();
 void Destroy();
-Tile* GetTile(vec2 position);
-Tile* GetTile(int a_row, int a_col);
-void UpdateTiles();
-Tile* GetRandomTile();
-vec2 GetRandomTilePosition();
+//Tile* GetTile(vec2 position);
+//Tile* GetTile(int a_row, int a_col);
+//void UpdateTiles();
+//Tile* GetRandomTile();
+//vec2 GetRandomTilePosition();
 void HandleUI();
-Tile* GetNearestTile(float xPos, float yPos);
+//Tile* GetNearestTile(float xPos, float yPos);
 bool SortOnFScore(Tile* lhs, Tile* rhs);
 void ThetaStarPathFind();
 void AStarPathFind(bool smoothPath);
@@ -86,8 +86,8 @@ bool IsOutOfBounds(AITank& tank);
 void CreateTanks();
 
 
-const int GRID_ROWS = 25;
-const int GRID_COLS = 25;
+//const int GRID_ROWS = 25;
+//const int GRID_COLS = 25;
 const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
 const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
 const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
@@ -98,7 +98,7 @@ Framework frk;
 bool quit = false;
 std::vector<Tile*> grid;
 unsigned int mTileSpriteID;
-glm::vec4 gridRect;
+//glm::vec4 gridRect;
 
 std::vector<AITank*> tankList;
 
@@ -282,100 +282,100 @@ bool IsOutOfBounds(AITank& tank)
 }
 
 
-Tile* GetNearestTile(float xPos, float yPos)
-{
-	Tile* result = nullptr;
-	float dx = (float)INT_MAX;
-	for (auto tile : grid)
-	{
-		if (glm::distance(tile->mPosition, vec2(xPos, yPos)) < dx)
-		{
-			result = tile;
-			dx = glm::distance(tile->mPosition, vec2(xPos, yPos));
-		}
-	}
-	return result;
-}
+//Tile* GetNearestTile(float xPos, float yPos)
+//{
+//	Tile* result = nullptr;
+//	float dx = (float)INT_MAX;
+//	for (auto tile : grid)
+//	{
+//		if (glm::distance(tile->mPosition, vec2(xPos, yPos)) < dx)
+//		{
+//			result = tile;
+//			dx = glm::distance(tile->mPosition, vec2(xPos, yPos));
+//		}
+//	}
+//	return result;
+//}
 
-Tile* GetRandomTile()
-{
-	return grid[rand() % grid.size()];
-}
+//Tile* GetRandomTile()
+//{
+//	return grid[rand() % grid.size()];
+//}
 
-vec2 GetRandomTilePosition()
-{
-	return GetRandomTile()->mPosition;
-}
+//vec2 GetRandomTilePosition()
+//{
+//	return GetRandomTile()->mPosition;
+//}
 
-void CreateGrid()
-{
-	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
-	vec2 tileSize(25, 25);
-	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
+//void CreateGrid()
+//{
+//	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
+//	vec2 tileSize(25, 25);
+//	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
+//
+//	vec2 startPos(200, 75);
+//	gridRect.x = startPos.x - (tileSize.x * .5f);
+//	gridRect.y = startPos.y - (tileSize.y * .5f);
+//	vec2 position = startPos;
+//	for (int row = 0; row < GRID_ROWS; row++)
+//	{
+//		for (int col = 0; col < GRID_COLS; col++)
+//		{
+//			Tile* t = new Tile(row, col);
+//			t->mSize = tileSize;
+//			t->mPosition = position;
+//			grid.push_back(t);
+//			if (col == GRID_COLS - 1)
+//			{
+//				position.x = startPos.x;
+//			}
+//			else
+//			{
+//				position.x += tileSize.x;
+//			}
+//			//see if wall
+//			if ((rand() % 100) + 1 <= wallProbability)
+//			{
+//				t->mColor = BROWN;
+//				t->mWeight = INT_MAX;
+//				t->mIsWalkable = false;
+//			}
+//
+//		}
+//		position.y += tileSize.y;
+//	}
+//	Tile* t = grid.back();
+//	gridRect.z = t->mPosition.x + (tileSize.x * .5f);
+//	gridRect.w = t->mPosition.y + (tileSize.y * .5f);
+//	LoadGridEdges();
+//	//LoadGridEdgesDiagonal();
+//	//LoadGridEdgesOneWay();
+//}
 
-	vec2 startPos(200, 75);
-	gridRect.x = startPos.x - (tileSize.x * .5f);
-	gridRect.y = startPos.y - (tileSize.y * .5f);
-	vec2 position = startPos;
-	for (int row = 0; row < GRID_ROWS; row++)
-	{
-		for (int col = 0; col < GRID_COLS; col++)
-		{
-			Tile* t = new Tile(row, col);
-			t->mSize = tileSize;
-			t->mPosition = position;
-			grid.push_back(t);
-			if (col == GRID_COLS - 1)
-			{
-				position.x = startPos.x;
-			}
-			else
-			{
-				position.x += tileSize.x;
-			}
-			//see if wall
-			if ((rand() % 100) + 1 <= wallProbability)
-			{
-				t->mColor = BROWN;
-				t->mWeight = INT_MAX;
-				t->mIsWalkable = false;
-			}
+//void UpdateTiles()
+//{
+//	for (auto tile : grid)
+//	{
+//		frk.MoveSprite(mTileSpriteID, tile->mPosition.x, tile->mPosition.y);
+//		frk.DrawSprite(mTileSpriteID, tile->mColor);
+//	}
+//}
 
-		}
-		position.y += tileSize.y;
-	}
-	Tile* t = grid.back();
-	gridRect.z = t->mPosition.x + (tileSize.x * .5f);
-	gridRect.w = t->mPosition.y + (tileSize.y * .5f);
-	LoadGridEdges();
-	//LoadGridEdgesDiagonal();
-	//LoadGridEdgesOneWay();
-}
-
-void UpdateTiles()
-{
-	for (auto tile : grid)
-	{
-		frk.MoveSprite(mTileSpriteID, tile->mPosition.x, tile->mPosition.y);
-		frk.DrawSprite(mTileSpriteID, tile->mColor);
-	}
-}
-
-Tile* GetTile(vec2 position)
-{
-	for (auto tile : grid)
-	{
-		if (tile->mPosition == position)
-			return tile;
-	}
-	return nullptr;
-}
-
-Tile* GetTile(int a_row, int a_col)
-{
-	return grid[a_row * GRID_ROWS + a_col];
-
-}
+//Tile* GetTile(vec2 position)
+//{
+//	for (auto tile : grid)
+//	{
+//		if (tile->mPosition == position)
+//			return tile;
+//	}
+//	return nullptr;
+//}
+//
+//Tile* GetTile(int a_row, int a_col)
+//{
+//	return grid[a_row * GRID_ROWS + a_col];
+//
+//}
 
 void LoadGridEdges()
 {
@@ -499,16 +499,16 @@ void LoadGridEdgesDiagonal()
 
 void Destroy()
 {
-	for (auto t : grid)
-	{
-		for (auto edge : t->mEdges)
-		{
-			delete edge;
-		}
-		t->mEdges.clear();
-		delete t;
-	}
-	grid.clear();
+	//for (auto t : grid)
+	//{
+	//	for (auto edge : t->mEdges)
+	//	{
+	//		delete edge;
+	//	}
+	//	t->mEdges.clear();
+	//	delete t;
+	//}
+	//grid.clear();
 }
 
 void HandleUI()
