@@ -8,17 +8,17 @@
 #include <algorithm>
 #include <map>
 
-struct AABB
-{
-	glm::vec2 minPoint;
-	glm::vec2 maxPoint;
-
-	AABB(glm::vec2 minPoint, glm::vec2 maxPoint)
-	{
-		this->minPoint = minPoint;
-		this->maxPoint = maxPoint;
-	}
-};
+//struct AABB
+//{
+//	glm::vec2 minPoint;
+//	glm::vec2 maxPoint;
+//
+//	AABB(glm::vec2 minPoint, glm::vec2 maxPoint)
+//	{
+//		this->minPoint = minPoint;
+//		this->maxPoint = maxPoint;
+//	}
+//};
 
 
 class AITank : public Tank

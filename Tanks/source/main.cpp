@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include "framework/Framework.h"
-#include "Tile.h"
+#include "Grid.h"
 #include "AITank.h"
 #include "Seek.h"
 #include "Flee.h"
@@ -27,34 +27,31 @@ enum HEURISTIC_TYPE
 	DIAGONAL
 };
 
-struct Ray
-{
-	vec2 origin;
-	vec2 direction;
-
-	Ray(vec2 origin, vec2 direction)
-	{
-		this->origin = origin;
-		this->direction = direction;
-	}
-
-
-};
-
-struct Plane
-{
-	vec2 point;
-	vec2 normal;
-
-	Plane(vec2 point, vec2 normal)
-	{
-		this->point = point;
-		this->normal = normal;
-	}
-};
-
-
-
+//struct Ray
+//{
+//	vec2 origin;
+//	vec2 direction;
+//
+//	Ray(vec2 origin, vec2 direction)
+//	{
+//		this->origin = origin;
+//		this->direction = direction;
+//	}
+//
+//
+//};
+//
+//struct Plane
+//{
+//	vec2 point;
+//	vec2 normal;
+//
+//	Plane(vec2 point, vec2 normal)
+//	{
+//		this->point = point;
+//		this->normal = normal;
+//	}
+//};
 
 //void CreateGrid();
 //void LoadGridEdges();
@@ -71,18 +68,18 @@ void HandleUI();
 bool SortOnFScore(Tile* lhs, Tile* rhs);
 void ThetaStarPathFind();
 void AStarPathFind(bool smoothPath);
-bool HasStraightLine(Tile* start, Tile* goal);
-void ResetTiles();
+//bool HasStraightLine(Tile* start, Tile* goal);
+//void ResetTiles();
 void AutoRun();
 float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
-bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t);
-bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit);
-AABB GetAABB(Tile* tile);
-AABB GetAABB(Tank& tank);
-std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
-vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
+//bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t);
+//bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit);
+//AABB GetAABB(Tile* tile);
+MNF::Collider::AABB GetAABB(Tank& tank);
+//std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
+//vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
-bool IsOutOfBounds(AITank& tank);
+//bool IsOutOfBounds(AITank& tank);
 void CreateTanks();
 
 
@@ -96,8 +93,10 @@ const glm::vec4 BROWN = glm::vec4(0.501, 0.152, 0.039, 1.0f);
 
 Framework frk;
 bool quit = false;
-std::vector<Tile*> grid;
-unsigned int mTileSpriteID;
+
+Grid grid(&frk);
+//std::vector<Tile*> grid;
+//unsigned int mTileSpriteID;
 //glm::vec4 gridRect;
 
 std::vector<AITank*> tankList;
@@ -119,74 +118,79 @@ int main()
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
-	CreateGrid();
+//	CreateGrid();
+	//this needs to be called after the framework is initialized or exception is popped
+	grid.Initialize();
 	CreateTanks();
-	vec2 tilePos = GetTile(10, 10)->mPosition;
+	vec2 tilePos = grid.GetTile(10, 10)->mPosition;
 	Prey p1(&frk, tilePos);
 
+	/*
+	tank1.mSpriteID = frk.CreateSprite(tank1.mSize.x, tank1.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank1.mSpriteID, .008, .016, .121, .109);
+	tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
 
-	//tank1.mSpriteID = frk.CreateSprite(tank1.mSize.x, tank1.mSize.y, ".\\resources\\textures\\tank.png", true);
-	//frk.SetSpriteUV(tank1.mSpriteID, .008, .016, .121, .109);
-	//tank2.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
-	//frk.SetSpriteUV(tank2.mSpriteID, .008, .016, .121, .109);
+	tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
 
-	//tank3.mSpriteID = frk.CreateSprite(tank2.mSize.x, tank2.mSize.y, ".\\resources\\textures\\tank.png", true);
-	//frk.SetSpriteUV(tank3.mSpriteID, .008, .016, .121, .109);
+	tank1.SetSteeringType(PURSUE);
+	tank1.SetPursueTarget(&tank2);
+	/*tank1.mSteeringPriorityList.push_back(PURSUE);
+	tank1.mSteeringPriorityList.push_back(WANDER);
+	tank1.mColor = GREEN;
+	tank1.mVisibilityRadius = 100;
 
-	//tank1.SetSteeringType(PURSUE);
-	//tank1.SetPursueTarget(&tank2);
-	///*tank1.mSteeringPriorityList.push_back(PURSUE);
-	//tank1.mSteeringPriorityList.push_back(WANDER);*/
-	//tank1.mColor = GREEN;
-	//tank1.mVisibilityRadius = 100;
-
-	////tank2.SetSteeringType(FLEE);
-	////tank2.SetFleeTarget(&tank1);
-	//tank2.SetSteeringType(EVADE);
-	//tank2.SetEvadeTarget(&tank1);
-	//tank2.mColor = RED;
-	//tank2.mVisibilityRadius = 100;
-
-
-	//tank3.SetSteeringType(WANDER);
-	//tank3.SetPursueTarget(&tank1);
-	//tank3.mSteeringPriorityList.push_back(WANDER);
-	//tank3.mSteeringPriorityList.push_back(PURSUE);
-	//tank3.SetBehaviourWeight(WANDER, 1);
-	//tank3.SetBehaviourWeight(PURSUE, 0);
+	//tank2.SetSteeringType(FLEE);
+	//tank2.SetFleeTarget(&tank1);
+	tank2.SetSteeringType(EVADE);
+	tank2.SetEvadeTarget(&tank1);
+	tank2.mColor = RED;
+	tank2.mVisibilityRadius = 100;
 
 
-	////debug
-	////tank1.mPosition = GetRandomTilePosition();
-	////tank2.mPosition = GetRandomTilePosition();
-	//Tile* t = GetTile(3, 3);
-	//tank1.mPosition = t->mPosition;
-	//t = GetTile(3, 10);
-	//tank2.mPosition = t->mPosition;
-	//t = GetTile(10,10);
-	//tank3.mPosition = t->mPosition;
-	//tank3.mVelocity = vec2(100, 100);
+	tank3.SetSteeringType(WANDER);
+	tank3.SetPursueTarget(&tank1);
+	tank3.mSteeringPriorityList.push_back(WANDER);
+	tank3.mSteeringPriorityList.push_back(PURSUE);
+	tank3.SetBehaviourWeight(WANDER, 1);
+	tank3.SetBehaviourWeight(PURSUE, 0);
 
-	//tank1.mMaxVelocity = 1000;
-	//tank2.mMaxVelocity = 500;
-	//tank3.mMaxVelocity = 700;
 
-	//tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
-	//tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
-	////tank3.mVelocity = vec2((rand() % (int)tank3.mMaxVelocity) + 1, (rand() % (int)tank3.mMaxVelocity) + 1);
+	//debug
+	//tank1.mPosition = GetRandomTilePosition();
+	//tank2.mPosition = GetRandomTilePosition();
+	Tile* t = GetTile(3, 3);
+	tank1.mPosition = t->mPosition;
+	t = GetTile(3, 10);
+	tank2.mPosition = t->mPosition;
+	t = GetTile(10,10);
+	tank3.mPosition = t->mPosition;
+	tank3.mVelocity = vec2(100, 100);
 
-	//frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
-	//frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
-	//frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+	tank1.mMaxVelocity = 1000;
+	tank2.mMaxVelocity = 500;
+	tank3.mMaxVelocity = 700;
 
-	//frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
-	//frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
-	//frk.DrawSprite(tank3.mSpriteID);
+	tank1.mVelocity = vec2((rand() % (int)tank1.mMaxVelocity) + 1, (rand() % (int)tank1.mMaxVelocity) + 1);
+	tank2.mVelocity = vec2((rand() % (int)tank2.mMaxVelocity) + 1, (rand() % (int)tank2.mMaxVelocity) + 1);
+	//tank3.mVelocity = vec2((rand() % (int)tank3.mMaxVelocity) + 1, (rand() % (int)tank3.mMaxVelocity) + 1);
+
+	frk.MoveSprite(tank1.mSpriteID, tank1.mPosition.x, tank1.mPosition.y);
+	frk.MoveSprite(tank2.mSpriteID, tank2.mPosition.x, tank2.mPosition.y);
+	frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
+
+	frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
+	frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
+	frk.DrawSprite(tank3.mSpriteID);
+	*/
 
 	do
 	{
 		frk.ClearScreen();
-		UpdateTiles();
+		//UpdateTiles();
+		grid.Update();
+		grid.Draw();
 
 		//TankLogic(frk.GetDeltaTime());
 		TankLogic(1/30.0f);
@@ -220,13 +224,13 @@ void TankLogic(float deltaTime)
 	for (auto tank : tankList)
 	{
 		tank->Update(deltaTime);
-		IsOutOfBounds(*tank);
+		grid.IsOutOfBounds(tank->mPosition, tank->mSize);
 		frk.MoveSprite(tank->mSpriteID, tank->mPosition.x, tank->mPosition.y);
 		frk.RotateSprite(tank->mSpriteID, tank->mRotation);
 		frk.DrawSprite(tank->mSpriteID);
 	}
 
-
+	/*
 	//tank1.Update(deltaTime);
 	//tank2.Update(deltaTime);
 
@@ -249,37 +253,37 @@ void TankLogic(float deltaTime)
 	//frk.RotateSprite(tank2.mSpriteID, tank2.mRotation);
 	//frk.MoveSprite(tank3.mSpriteID, tank3.mPosition.x, tank3.mPosition.y);
 	//frk.RotateSprite(tank3.mSpriteID, tank3.mRotation);
-
+	*/
 }
 
 
 
-bool IsOutOfBounds(AITank& tank)
-{
-	bool result = false;
-	if (tank.mPosition.x < gridRect.x)
-	{
-		tank.mPosition.x = gridRect.z;
-		result = true;
-	}
-	else if (tank.mPosition.x > gridRect.z)
-	{
-		tank.mPosition.x = gridRect.x;
-		result = true;
-	}
-
-	if (tank.mPosition.y < gridRect.y)
-	{
-		tank.mPosition.y = gridRect.w;
-		result = true;
-	}
-	else if (tank.mPosition.y > gridRect.w)
-	{
-		tank.mPosition.y = gridRect.y;
-		result = true;
-	}
-	return result;
-}
+//bool IsOutOfBounds(AITank& tank)
+//{
+//	bool result = false;
+//	if (tank.mPosition.x < gridRect.x)
+//	{
+//		tank.mPosition.x = gridRect.z;
+//		result = true;
+//	}
+//	else if (tank.mPosition.x > gridRect.z)
+//	{
+//		tank.mPosition.x = gridRect.x;
+//		result = true;
+//	}
+//
+//	if (tank.mPosition.y < gridRect.y)
+//	{
+//		tank.mPosition.y = gridRect.w;
+//		result = true;
+//	}
+//	else if (tank.mPosition.y > gridRect.w)
+//	{
+//		tank.mPosition.y = gridRect.y;
+//		result = true;
+//	}
+//	return result;
+//}
 
 
 //Tile* GetNearestTile(float xPos, float yPos)
@@ -377,125 +381,125 @@ bool IsOutOfBounds(AITank& tank)
 //
 //}
 
-void LoadGridEdges()
-{
-	for (auto tile : grid)
-	{
-		//north edge
-		if (tile->rowPos + 1 < GRID_ROWS)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
-			tile->mEdges.push_back(e);
-		}
-		//south edge
-		if (tile->rowPos - 1 >= 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
-			tile->mEdges.push_back(e);
-		}
-		//east edge
-		if (tile->colPos + 1 < GRID_COLS)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
-			tile->mEdges.push_back(e);
-		}
-		//west edge
-		if (tile->colPos - 1 >= 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
-			tile->mEdges.push_back(e);
-		}
-	}
-}
+//void LoadGridEdges()
+//{
+//	for (auto tile : grid)
+//	{
+//		//north edge
+//		if (tile->rowPos + 1 < GRID_ROWS)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
+//			tile->mEdges.push_back(e);
+//		}
+//		//south edge
+//		if (tile->rowPos - 1 >= 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
+//			tile->mEdges.push_back(e);
+//		}
+//		//east edge
+//		if (tile->colPos + 1 < GRID_COLS)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
+//			tile->mEdges.push_back(e);
+//		}
+//		//west edge
+//		if (tile->colPos - 1 >= 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
+//			tile->mEdges.push_back(e);
+//		}
+//	}
+//}
 
-void LoadGridEdgesOneWay()
-{
-	for (auto tile : grid)
-	{
-		//north edge
-		if (tile->rowPos + 1 < GRID_ROWS && GetTile(tile->rowPos + 1, tile->colPos)->mEdges.size() == 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
-			tile->mEdges.push_back(e);
-		}
-		//south edge
-		if (tile->rowPos - 1 >= 0 && GetTile(tile->rowPos - 1, tile->colPos)->mEdges.size() == 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
-			tile->mEdges.push_back(e);
-		}
-		//east edge
-		if (tile->colPos + 1 < GRID_COLS && GetTile(tile->rowPos, tile->colPos + 1)->mEdges.size() == 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
-			tile->mEdges.push_back(e);
-		}
-		//west edge
-		if (tile->colPos - 1 >= 0 && GetTile(tile->rowPos, tile->colPos - 1)->mEdges.size() == 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
-			tile->mEdges.push_back(e);
-		}
-	}
-}
-
-void LoadGridEdgesDiagonal()
-{
-	LoadGridEdges();
-
-	for (auto tile : grid)
-	{
-		//north-east
-		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos + 1 < GRID_COLS)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos + 1);
-			tile->mEdges.push_back(e);
-		}
-		//north-west
-		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos - 1 >= 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos - 1);
-			tile->mEdges.push_back(e);
-		}
-
-		//south-east
-		if (tile->rowPos - 1 >= 0 && tile->colPos + 1 < GRID_COLS)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos + 1);
-			tile->mEdges.push_back(e);
-		}
-		//south-west
-		if (tile->rowPos - 1 >= 0 && tile->colPos - 1 >= 0)
-		{
-			Edge* e = new Edge();
-			e->mStart = tile;
-			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos - 1);
-			tile->mEdges.push_back(e);
-		}
-	}
-}
+//void LoadGridEdgesOneWay()
+//{
+//	for (auto tile : grid)
+//	{
+//		//north edge
+//		if (tile->rowPos + 1 < GRID_ROWS && GetTile(tile->rowPos + 1, tile->colPos)->mEdges.size() == 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
+//			tile->mEdges.push_back(e);
+//		}
+//		//south edge
+//		if (tile->rowPos - 1 >= 0 && GetTile(tile->rowPos - 1, tile->colPos)->mEdges.size() == 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
+//			tile->mEdges.push_back(e);
+//		}
+//		//east edge
+//		if (tile->colPos + 1 < GRID_COLS && GetTile(tile->rowPos, tile->colPos + 1)->mEdges.size() == 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
+//			tile->mEdges.push_back(e);
+//		}
+//		//west edge
+//		if (tile->colPos - 1 >= 0 && GetTile(tile->rowPos, tile->colPos - 1)->mEdges.size() == 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
+//			tile->mEdges.push_back(e);
+//		}
+//	}
+//}
+//
+//void LoadGridEdgesDiagonal()
+//{
+//	LoadGridEdges();
+//
+//	for (auto tile : grid)
+//	{
+//		//north-east
+//		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos + 1 < GRID_COLS)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos + 1);
+//			tile->mEdges.push_back(e);
+//		}
+//		//north-west
+//		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos - 1 >= 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos - 1);
+//			tile->mEdges.push_back(e);
+//		}
+//
+//		//south-east
+//		if (tile->rowPos - 1 >= 0 && tile->colPos + 1 < GRID_COLS)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos + 1);
+//			tile->mEdges.push_back(e);
+//		}
+//		//south-west
+//		if (tile->rowPos - 1 >= 0 && tile->colPos - 1 >= 0)
+//		{
+//			Edge* e = new Edge();
+//			e->mStart = tile;
+//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos - 1);
+//			tile->mEdges.push_back(e);
+//		}
+//	}
+//}
 
 void Destroy()
 {
@@ -554,17 +558,17 @@ void AutoRun()
 	//}
 }
 
-void ResetTiles()
-{
-	for (auto tile : grid)
-	{
-		tile->mIsVisited = false;
-		tile->mGScore = INT_MAX;
-		tile->mFScore = 0;
-		tile->mPathParentNode = nullptr;
-		if (tile->mColor != BROWN) tile->mColor = WHITE;
-	}
-}
+//void ResetTiles()
+//{
+//	for (auto tile : grid)
+//	{
+//		tile->mIsVisited = false;
+//		tile->mGScore = INT_MAX;
+//		tile->mFScore = 0;
+//		tile->mPathParentNode = nullptr;
+//		if (tile->mColor != BROWN) tile->mColor = WHITE;
+//	}
+//}
 
 bool SortOnFScore(Tile* lhs, Tile* rhs)
 {
@@ -591,259 +595,259 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 	
 }
 
-void ThetaStarPathFind(Tank& tank)
-{
-	std::list<Tile*> priorityQ;
-	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
-	priorityQ.push_front(startTile);
-	startTile->mGScore = 0;
-	startTile->mPathParentNode = startTile;
+//void ThetaStarPathFind(Tank& tank)
+//{
+//	std::list<Tile*> priorityQ;
+//	Tile* startTile = grid.GetNearestTile(tank.mPosition);
+//	priorityQ.push_front(startTile);
+//	startTile->mGScore = 0;
+//	startTile->mPathParentNode = startTile;
+//
+//	while (!priorityQ.empty())
+//	{
+//		priorityQ.sort(SortOnFScore);
+//		Tile* current = priorityQ.front();
+//		priorityQ.pop_front();
+//
+//		current->mIsVisited = true;
+//		if (current != startTile && current != mGoalNode && current->mIsWalkable)
+//		{
+//			current->mColor = glm::vec4(1, 1, 0, 1);
+//		}
+//
+//		if (current == mGoalNode)
+//			break;
+//		for (auto edge : current->mEdges)
+//		{
+//			Tile* neighbor = edge->mEnd;
+//			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
+//			{
+//				if (grid.HasStraightLine(current->mPathParentNode, neighbor))
+//				{
+//					float fScore = current->mPathParentNode->mGScore + glm::distance(current->mPathParentNode->mPosition, neighbor->mPosition) + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+//					if (fScore < neighbor->mGScore)
+//					{
+//						neighbor->mPathParentNode = current->mPathParentNode;
+//						neighbor->mGScore = current->mGScore + neighbor->mWeight;
+//						neighbor->mFScore = (int)fScore;
+//					}
+//				}
+//				else
+//				{
+//					float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+//					//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
+//					if (fScore < neighbor->mGScore)
+//					{
+//						neighbor->mPathParentNode = current;
+//						neighbor->mGScore = current->mGScore + neighbor->mWeight;
+//						neighbor->mFScore = (int)fScore;
+//					}
+//				}
+//				if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end() && neighbor->mPathParentNode != nullptr)
+//				{
+//					priorityQ.push_back(neighbor);
+//				}
+//			}
+//		}
+//
+//	}
+//	if (mGoalNode->mPathParentNode == nullptr)
+//	{
+//		//no solution
+//		return;
+//	}
+//
+//	tank.pathList.push_back(mGoalNode);
+//	Tile* parent = mGoalNode->mPathParentNode;
+//	tank.pathList.insert(tank.pathList.begin(), parent);
+//	while (parent != startTile)
+//	{
+//		parent = parent->mPathParentNode;
+//		tank.pathList.insert(tank.pathList.begin(), parent);
+//	}
+//}
+//
+//void AStarPathFind(bool smoothPath, Tank& tank)
+//{
+//	std::list<Tile*> priorityQ;
+//	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
+//	priorityQ.push_front(startTile);
+//	startTile->mGScore = 0;
+//	startTile->mPathParentNode = startTile;
+//
+//	while (!priorityQ.empty())
+//	{
+//		priorityQ.sort(SortOnFScore);
+//		Tile* current = priorityQ.front();
+//		priorityQ.pop_front();
+//
+//		current->mIsVisited = true;
+//		if (current != startTile && current != mGoalNode && current->mIsWalkable)
+//		{
+//			current->mColor = glm::vec4(1, 1, 0, 1);
+//		}
+//
+//		if (current == mGoalNode)
+//			break;
+//
+//		for (auto edge : current->mEdges)
+//		{
+//			Tile* neighbor = edge->mEnd;
+//			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
+//			{
+//				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
+//				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
+//				if (fScore < neighbor->mGScore)
+//				{
+//					neighbor->mPathParentNode = current;
+//					neighbor->mGScore = current->mGScore + neighbor->mWeight;
+//					neighbor->mFScore = (int)fScore;
+//					if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end())
+//					{
+//						priorityQ.push_back(neighbor);
+//					}
+//				}
+//			}
+//		}
+//
+//	}
+//	if (mGoalNode->mPathParentNode == nullptr)
+//	{
+//		//no solution
+//		return;
+//	}
+//
+//	tank.pathList.push_back(mGoalNode);
+//	Tile* parent = mGoalNode->mPathParentNode;
+//	tank.pathList.insert(tank.pathList.begin(), parent);
+//	while (parent != startTile)
+//	{
+//		parent = parent->mPathParentNode;
+//		tank.pathList.insert(tank.pathList.begin(), parent);
+//	}
+//
+//	if (smoothPath)
+//	{
+//
+//		if (tank.pathList.size() < 3)
+//			return;
+//		Tile* start = *tank.pathList.begin();
+//		Tile* end = *(tank.pathList.begin() + 2);
+//
+//		//std::find(tank.pathList.begin(), tank.pathList.end(), start)
+//		//std::find(tank.pathList.begin(), tank.pathList.end(), end)
+//		while (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
+//		{
+//			if (HasStraightLine(start, end))
+//			{
+//				//remove node after start
+//				tank.pathList.erase(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
+//				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
+//				{
+//					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
+//				}				
+//			}
+//			else
+//			{
+//				start = *(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
+//				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
+//				{
+//					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
+//				}
+//			}
+//		}
+//	}
+//}
 
-	while (!priorityQ.empty())
-	{
-		priorityQ.sort(SortOnFScore);
-		Tile* current = priorityQ.front();
-		priorityQ.pop_front();
+//std::vector<Tile*> GetTilesInLine(MNF::Collider::Ray& ray, Tile* end)
+//{
+//	std::vector<Tile*> result;
+//	vec2 currentPosition = ray.origin;
+//	Tile* currentTile = nullptr;
+//
+//	while (currentTile != end)
+//	{
+//		currentPosition += end->mSize * ray.direction;
+//		currentTile = GetNearestTile(currentPosition.x, currentPosition.y);
+//		if (std::find(result.begin(), result.end(), currentTile) == result.end())
+//		{
+//			result.push_back(currentTile);
+//		}
+//		
+//	}
+//	return result;
+//}
 
-		current->mIsVisited = true;
-		if (current != startTile && current != mGoalNode && current->mIsWalkable)
-		{
-			current->mColor = glm::vec4(1, 1, 0, 1);
-		}
+//bool HasStraightLine(Tile* start, Tile* goal)
+//{
+//	Ray ray(start->mPosition, GetRayDirection(start->mPosition, goal->mPosition));
+//	//need to check every object for collision
+//	std::vector<Tile*> nodeList = GetTilesInLine(ray, goal);
+//	for (Tile* tile : nodeList)
+//	{
+//		//only need to check non walkable objects
+//		if (!tile->mIsWalkable)
+//		{
+//			AABB box = GetAABB(tile);
+//			float enter = 0.0f;
+//			float exit = 0.0f;
+//			if (RayAABBIntersect(ray, box, enter, exit))
+//			{
+//				//if collision true, no straight line
+//				return false;
+//			}
+//		}
+//	}
+//	//no collisions found
+//	return true;
+//}
 
-		if (current == mGoalNode)
-			break;
-		for (auto edge : current->mEdges)
-		{
-			Tile* neighbor = edge->mEnd;
-			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
-			{
-				if (HasStraightLine(current->mPathParentNode, neighbor))
-				{
-					float fScore = current->mPathParentNode->mGScore + glm::distance(current->mPathParentNode->mPosition, neighbor->mPosition) + GetHeuristic(DISTANCE, neighbor, mGoalNode);
-					if (fScore < neighbor->mGScore)
-					{
-						neighbor->mPathParentNode = current->mPathParentNode;
-						neighbor->mGScore = current->mGScore + neighbor->mWeight;
-						neighbor->mFScore = (int)fScore;
-					}
-				}
-				else
-				{
-					float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
-					//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
-					if (fScore < neighbor->mGScore)
-					{
-						neighbor->mPathParentNode = current;
-						neighbor->mGScore = current->mGScore + neighbor->mWeight;
-						neighbor->mFScore = (int)fScore;
-					}
-				}
-				if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end() && neighbor->mPathParentNode != nullptr)
-				{
-					priorityQ.push_back(neighbor);
-				}
-			}
-		}
+//AABB GetAABB(Tile* tile)
+//{
+//	float hHeight = tile->mSize.y * .5f;
+//	float hWidth = tile->mSize.x * .5f;
+//	return AABB(vec2(tile->mPosition.x - hWidth, tile->mPosition.y - hHeight), vec2(tile->mPosition.x + hWidth, tile->mPosition.y + hHeight));
+//}
 
-	}
-	if (mGoalNode->mPathParentNode == nullptr)
-	{
-		//no solution
-		return;
-	}
-
-	tank.pathList.push_back(mGoalNode);
-	Tile* parent = mGoalNode->mPathParentNode;
-	tank.pathList.insert(tank.pathList.begin(), parent);
-	while (parent != startTile)
-	{
-		parent = parent->mPathParentNode;
-		tank.pathList.insert(tank.pathList.begin(), parent);
-	}
-}
-
-void AStarPathFind(bool smoothPath, Tank& tank)
-{
-	std::list<Tile*> priorityQ;
-	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
-	priorityQ.push_front(startTile);
-	startTile->mGScore = 0;
-	startTile->mPathParentNode = startTile;
-
-	while (!priorityQ.empty())
-	{
-		priorityQ.sort(SortOnFScore);
-		Tile* current = priorityQ.front();
-		priorityQ.pop_front();
-
-		current->mIsVisited = true;
-		if (current != startTile && current != mGoalNode && current->mIsWalkable)
-		{
-			current->mColor = glm::vec4(1, 1, 0, 1);
-		}
-
-		if (current == mGoalNode)
-			break;
-
-		for (auto edge : current->mEdges)
-		{
-			Tile* neighbor = edge->mEnd;
-			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
-			{
-				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
-				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
-				if (fScore < neighbor->mGScore)
-				{
-					neighbor->mPathParentNode = current;
-					neighbor->mGScore = current->mGScore + neighbor->mWeight;
-					neighbor->mFScore = (int)fScore;
-					if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end())
-					{
-						priorityQ.push_back(neighbor);
-					}
-				}
-			}
-		}
-
-	}
-	if (mGoalNode->mPathParentNode == nullptr)
-	{
-		//no solution
-		return;
-	}
-
-	tank.pathList.push_back(mGoalNode);
-	Tile* parent = mGoalNode->mPathParentNode;
-	tank.pathList.insert(tank.pathList.begin(), parent);
-	while (parent != startTile)
-	{
-		parent = parent->mPathParentNode;
-		tank.pathList.insert(tank.pathList.begin(), parent);
-	}
-
-	if (smoothPath)
-	{
-
-		if (tank.pathList.size() < 3)
-			return;
-		Tile* start = *tank.pathList.begin();
-		Tile* end = *(tank.pathList.begin() + 2);
-
-		//std::find(tank.pathList.begin(), tank.pathList.end(), start)
-		//std::find(tank.pathList.begin(), tank.pathList.end(), end)
-		while (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
-		{
-			if (HasStraightLine(start, end))
-			{
-				//remove node after start
-				tank.pathList.erase(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
-				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
-				{
-					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
-				}				
-			}
-			else
-			{
-				start = *(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
-				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
-				{
-					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
-				}
-			}
-		}
-	}
-}
-
-std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end)
-{
-	std::vector<Tile*> result;
-	vec2 currentPosition = ray.origin;
-	Tile* currentTile = nullptr;
-
-	while (currentTile != end)
-	{
-		currentPosition += end->mSize * ray.direction;
-		currentTile = GetNearestTile(currentPosition.x, currentPosition.y);
-		if (std::find(result.begin(), result.end(), currentTile) == result.end())
-		{
-			result.push_back(currentTile);
-		}
-		
-	}
-	return result;
-}
-
-bool HasStraightLine(Tile* start, Tile* goal)
-{
-	Ray ray(start->mPosition, GetRayDirection(start->mPosition, goal->mPosition));
-	//need to check every object for collision
-	std::vector<Tile*> nodeList = GetTilesInLine(ray, goal);
-	for (Tile* tile : nodeList)
-	{
-		//only need to check non walkable objects
-		if (!tile->mIsWalkable)
-		{
-			AABB box = GetAABB(tile);
-			float enter = 0.0f;
-			float exit = 0.0f;
-			if (RayAABBIntersect(ray, box, enter, exit))
-			{
-				//if collision true, no straight line
-				return false;
-			}
-		}
-	}
-	//no collisions found
-	return true;
-}
-
-AABB GetAABB(Tile* tile)
-{
-	float hHeight = tile->mSize.y * .5f;
-	float hWidth = tile->mSize.x * .5f;
-	return AABB(vec2(tile->mPosition.x - hWidth, tile->mPosition.y - hHeight), vec2(tile->mPosition.x + hWidth, tile->mPosition.y + hHeight));
-}
-
-AABB GetAABB(Tank& tank)
+MNF::Collider::AABB GetAABB(Tank& tank)
 {
 	float hHeight = tank.mSize.y * .5f;
 	float hWidth = tank.mSize.x * .5f;
-	return AABB(vec2(tank.mPosition.x - hWidth, tank.mPosition.y - hHeight), vec2(tank.mPosition.x + hWidth, tank.mPosition.y + hHeight));
+	return MNF::Collider::AABB(vec2(tank.mPosition.x - hWidth, tank.mPosition.y - hHeight), vec2(tank.mPosition.x + hWidth, tank.mPosition.y + hHeight));
 }
 
-bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t)
-{
-	float denom = glm::dot(plane.normal, ray.direction);
-	if (denom > 1e-6)
-	{
-		vec2 point_origin = plane.point - ray.origin;
-		t = glm::dot(point_origin, plane.normal) / denom;
-		return (t >= 0);
-	}
-	return false;
+//bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t)
+//{
+//	float denom = glm::dot(plane.normal, ray.direction);
+//	if (denom > 1e-6)
+//	{
+//		vec2 point_origin = plane.point - ray.origin;
+//		t = glm::dot(point_origin, plane.normal) / denom;
+//		return (t >= 0);
+//	}
+//	return false;
+//
+//}
 
-}
-
-vec2 GetRayDirection(const vec2& pointA, const vec2& pointB)
-{
-	return glm::normalize(pointB - pointA);
-}
+//vec2 GetRayDirection(const vec2& pointA, const vec2& pointB)
+//{
+//	return glm::normalize(pointB - pointA);
+//}
 
 
-bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit)
-{
-	vec2 min = (box.minPoint - ray.origin) / ray.direction;
-	vec2 max = (box.maxPoint - ray.origin) / ray.direction;
-
-	vec2 near = glm::min(min, max);
-	vec2 far = glm::max(min, max);
-
-	enter = glm::max(glm::max(near.x, near.y), 0.0f);
-	exit = glm::min(far.x, far.y);
-
-	return (exit > 0.0f && enter < exit);
-}
+//bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit)
+//{
+//	vec2 min = (box.minPoint - ray.origin) / ray.direction;
+//	vec2 max = (box.maxPoint - ray.origin) / ray.direction;
+//
+//	vec2 near = glm::min(min, max);
+//	vec2 far = glm::max(min, max);
+//
+//	enter = glm::max(glm::max(near.x, near.y), 0.0f);
+//	exit = glm::min(far.x, far.y);
+//
+//	return (exit > 0.0f && enter < exit);
+//}
 
 void CreateTanks()
 {
@@ -861,7 +865,7 @@ void CreateTanks()
 		t->mSteeringPriorityList.push_back(ALIGNMENT);
 		//t->SetSteeringType(ALIGNMENT);
 		t->mNeighborhoodRadius = 100;
-		t->mPosition = GetTile(i + 2, 5)->mPosition;
+		t->mPosition = grid.GetTile(i + 2, 5)->mPosition;
 		t->mVelocity = glm::vec2(100, 100);
 		t->mMaxVelocity = 100;
 

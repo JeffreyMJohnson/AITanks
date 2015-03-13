@@ -276,10 +276,10 @@ bool AITank::IsCollided(AITank* other)
 {
 	float hHeight = mSize.y * .5;
 	float hWidth = mSize.x * .5;
-	AABB box1(glm::vec2(mPosition.x - hWidth, mPosition.y - hHeight), glm::vec2(mPosition.x + hWidth, mPosition.y + hHeight));
-	AABB box2(glm::vec2(other->mPosition.x - hWidth, other->mPosition.y - hHeight), glm::vec2(other->mPosition.x + hWidth, other->mPosition.y + hHeight));
+	MNF::Collider::AABB box1(glm::vec2(mPosition.x - hWidth, mPosition.y - hHeight), glm::vec2(mPosition.x + hWidth, mPosition.y + hHeight));
+	MNF::Collider::AABB box2(glm::vec2(other->mPosition.x - hWidth, other->mPosition.y - hHeight), glm::vec2(other->mPosition.x + hWidth, other->mPosition.y + hHeight));
 
-	return MNF::Collider::AABB(box1.minPoint, box1.maxPoint, box2.minPoint, box2.maxPoint);
+	return MNF::Collider::AABBCollide(box1, box2);
 }
 
 glm::vec2 AITank::GetForce(const std::list<STEERING_BEHAVIOUR_TYPE>& behaviourList)

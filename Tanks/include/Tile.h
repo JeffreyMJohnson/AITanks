@@ -22,9 +22,9 @@ public:
 	bool mIsWalkable;
 
 	//MAGIC NUMBERS
-	static const float HEIGHT;
-	static const float WIDTH;
-	static const char* TEXTURE_PATH;
+	//const float HEIGHT = 25.0f;
+	//const float WIDTH = 25.0f;
+	//const char* TEXTURE_PATH = ".\\resources\\textures\\Basic.png";
 
 	Tile(int a_rowPos, int a_colPos);
 
@@ -32,9 +32,5 @@ private:
 
 
 };
-
-const float Tile::HEIGHT = 25.0f;
-const float Tile::WIDTH = 25.0f;
-const char* Tile::TEXTURE_PATH = ".\\resources\\textures\\Basic.png";
 
 #endif

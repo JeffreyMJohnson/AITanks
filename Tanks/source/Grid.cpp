@@ -6,6 +6,11 @@ Grid::Grid(Framework* framework)
 	srand(time(nullptr));
 }
 
+void Grid::Initialize()
+{
+	CreateGrid();
+}
+
 Grid::~Grid()
 {
 	for (auto t : mTileList)
@@ -29,6 +34,7 @@ void Grid::Draw()
 {
 	for (auto tile : mTileList)
 	{
+		mFramework->MoveSprite(tile->mSpriteID, tile->mPosition.x, tile->mPosition.y);
 		mFramework->DrawSprite(tile->mSpriteID, tile->mColor);
 	}
 }
@@ -36,9 +42,9 @@ void Grid::Draw()
 void Grid::CreateGrid()
 {
 
-	glm::vec2 tileSize(Tile::WIDTH, Tile::HEIGHT);
+	glm::vec2 tileSize(TILE_WIDTH, TILE_HEIGHT);
 
-	unsigned int spriteId = mFramework->CreateSprite(tileSize.x, tileSize.y, Tile::TEXTURE_PATH, true);
+	unsigned int spriteId = mFramework->CreateSprite(tileSize.x, tileSize.y, TILE_TEXTURE_PATH, true);
 
 	//vec2 startPos(200, 75);
 	Grid::gridRect.x = Grid::startPosition.x - (tileSize.x * .5f);
@@ -75,7 +81,7 @@ void Grid::CreateGrid()
 	Tile* t = mTileList.back();
 	gridRect.z = t->mPosition.x + (tileSize.x * .5f);
 	gridRect.w = t->mPosition.y + (tileSize.y * .5f);
-	//LoadGridEdges();
+	LoadGridEdges();
 }
 
 void Grid::LoadGridEdges()
@@ -156,7 +162,14 @@ Tile* Grid::GetNearestTile(glm::vec2 screenPosition)
 
 void Grid::ResetTiles()
 {
-
+	for (auto tile : mTileList)
+	{
+		tile->mIsVisited = false;
+		tile->mGScore = INT_MAX;
+		tile->mFScore = 0;
+		tile->mPathParentNode = nullptr;
+		if (tile->mColor != glm::vec4(0.501, 0.152, 0.039, 1.0f)) tile->mColor = glm::vec4(1, 1, 1, 1);
+	}
 }
 
 bool Grid::IsOutOfBounds(glm::vec2 position, glm::vec2 size = glm::vec2(0, 0))
@@ -170,4 +183,59 @@ bool Grid::IsOutOfBounds(glm::vec2 position, glm::vec2 size = glm::vec2(0, 0))
 		position.y - halfSize.y >= gridRect.y &&
 		position.y + halfSize.y <= gridRect.w
 		);
+}
+
+std::vector<Tile*> Grid::GetTilesInLine(MNF::Collider::Ray& ray, Tile* end)
+{
+	std::vector<Tile*> result;
+	glm::vec2 currentPosition = ray.origin;
+	Tile* currentTile = nullptr;
+
+	while (currentTile != end)
+	{
+		currentPosition += end->mSize * ray.direction;
+		currentTile = GetNearestTile(currentPosition);
+		if (std::find(result.begin(), result.end(), currentTile) == result.end())
+		{
+			result.push_back(currentTile);
+		}
+		
+	}
+	return result;
+}
+
+bool Grid::HasStraightLine(Tile* start, Tile* goal)
+{
+	MNF::Collider::Ray ray(start->mPosition, GetRayDirection(start->mPosition, goal->mPosition));
+	//need to check every object for collision
+	std::vector<Tile*> nodeList = GetTilesInLine(ray, goal);
+	for (Tile* tile : nodeList)
+	{
+		//only need to check non walkable objects
+		if (!tile->mIsWalkable)
+		{
+			MNF::Collider::AABB box = GetAABB(tile);
+			float enter = 0.0f;
+			float exit = 0.0f;
+			if (MNF::Collider::RayAABBIntersect(ray, box, enter, exit))
+			{
+				//if collision true, no straight line
+				return false;
+			}
+		}
+	}
+	//no collisions found
+	return true;
+}
+
+MNF::Collider::AABB Grid::GetAABB(Tile* tile)
+{
+	float hHeight = tile->mSize.y * .5f;
+	float hWidth = tile->mSize.x * .5f;
+	return MNF::Collider::AABB(glm::vec2(tile->mPosition.x - hWidth, tile->mPosition.y - hHeight), glm::vec2(tile->mPosition.x + hWidth, tile->mPosition.y + hHeight));
+}
+
+glm::vec2 Grid::GetRayDirection(const glm::vec2& pointA, const glm::vec2& pointB)
+{
+	return glm::normalize(pointB - pointA);
 }

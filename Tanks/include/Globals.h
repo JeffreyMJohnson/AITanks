@@ -20,6 +20,45 @@ namespace MNF
 	class Collider
 	{
 	public:
+		struct Ray
+		{
+			glm::vec2 origin;
+			glm::vec2 direction;
+
+			Ray(glm::vec2 origin, glm::vec2 direction)
+			{
+				this->origin = origin;
+				this->direction = direction;
+			}
+
+
+		};
+
+		struct AABB
+		{
+			glm::vec2 minPoint;
+			glm::vec2 maxPoint;
+
+			AABB(glm::vec2 minPoint, glm::vec2 maxPoint)
+			{
+				this->minPoint = minPoint;
+				this->maxPoint = maxPoint;
+			}
+		};
+
+		struct Plane
+		{
+			glm::vec2 point;
+			glm::vec2 normal;
+
+			Plane(glm::vec2 point, glm::vec2 normal)
+			{
+				this->point = point;
+				this->normal = normal;
+			}
+		};
+
+
 		static bool CircleCircle(const glm::vec2& circle1Position, const float& circle1Radius, const glm::vec2& circle2Position, const float& circle2Radius)
 		{
 			float distance = glm::distance(circle1Position, circle2Position);
@@ -30,13 +69,44 @@ namespace MNF
 			return false;
 		}
 
-		static bool AABB(const glm::vec2& box1Min, const glm::vec2& box1Max, const glm::vec2& box2Min, const glm::vec2& box2Max)
+		static bool AABBCollide(const AABB& box1, const AABB& box2)
 		{
-			if (box1Min.x > box2Max.x || box2Min.x > box1Max.x)
+			if (box1.minPoint.x > box2.maxPoint.x || box2.minPoint.x > box1.maxPoint.x)
+			{
 				return false;
-			if (box1Min.y > box2Max.y || box2Min.y > box1Max.y)
+			}
+			if (box1.minPoint.y > box2.maxPoint.y || box2.minPoint.y > box1.maxPoint.y)
+			{
 				return false;
+			}
 			return true;
+		}
+
+		static bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit)
+		{
+			glm::vec2 min = (box.minPoint - ray.origin) / ray.direction;
+			glm::vec2 max = (box.maxPoint - ray.origin) / ray.direction;
+
+			glm::vec2 near = glm::min(min, max);
+			glm::vec2 far = glm::max(min, max);
+
+			enter = glm::max(glm::max(near.x, near.y), 0.0f);
+			exit = glm::min(far.x, far.y);
+
+			return (exit > 0.0f && enter < exit);
+		}
+
+		static bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t)
+		{
+			float denom = glm::dot(plane.normal, ray.direction);
+			if (denom > 1e-6)
+			{
+				glm::vec2 point_origin = plane.point - ray.origin;
+				t = glm::dot(point_origin, plane.normal) / denom;
+				return (t >= 0);
+			}
+			return false;
+
 		}
 	};
 
