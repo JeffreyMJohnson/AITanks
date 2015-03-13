@@ -53,38 +53,19 @@ enum HEURISTIC_TYPE
 //	}
 //};
 
-//void CreateGrid();
-//void LoadGridEdges();
 void LoadGridEdgesDiagonal();
 void LoadGridEdgesOneWay();
 void Destroy();
-//Tile* GetTile(vec2 position);
-//Tile* GetTile(int a_row, int a_col);
-//void UpdateTiles();
-//Tile* GetRandomTile();
-//vec2 GetRandomTilePosition();
 void HandleUI();
-//Tile* GetNearestTile(float xPos, float yPos);
 bool SortOnFScore(Tile* lhs, Tile* rhs);
 void ThetaStarPathFind();
 void AStarPathFind(bool smoothPath);
-//bool HasStraightLine(Tile* start, Tile* goal);
-//void ResetTiles();
 void AutoRun();
 float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
-//bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t);
-//bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit);
-//AABB GetAABB(Tile* tile);
 MNF::Collider::AABB GetAABB(Tank& tank);
-//std::vector<Tile*> GetTilesInLine(Ray& ray, Tile* end);
-//vec2 GetRayDirection(const vec2& pointA, const vec2& pointB);
 void TankLogic(float deltaTime);
-//bool IsOutOfBounds(AITank& tank);
 void CreateTanks();
 
-
-//const int GRID_ROWS = 25;
-//const int GRID_COLS = 25;
 const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
 const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
 const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
@@ -95,9 +76,6 @@ Framework frk;
 bool quit = false;
 
 Grid grid(&frk);
-//std::vector<Tile*> grid;
-//unsigned int mTileSpriteID;
-//glm::vec4 gridRect;
 
 std::vector<AITank*> tankList;
 
@@ -118,9 +96,9 @@ int main()
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
-//	CreateGrid();
 	//this needs to be called after the framework is initialized or exception is popped
 	grid.Initialize();
+
 	CreateTanks();
 	vec2 tilePos = grid.GetTile(10, 10)->mPosition;
 	Prey p1(&frk, tilePos);
@@ -188,7 +166,7 @@ int main()
 	do
 	{
 		frk.ClearScreen();
-		//UpdateTiles();
+		
 		grid.Update();
 		grid.Draw();
 
@@ -256,263 +234,8 @@ void TankLogic(float deltaTime)
 	*/
 }
 
-
-
-//bool IsOutOfBounds(AITank& tank)
-//{
-//	bool result = false;
-//	if (tank.mPosition.x < gridRect.x)
-//	{
-//		tank.mPosition.x = gridRect.z;
-//		result = true;
-//	}
-//	else if (tank.mPosition.x > gridRect.z)
-//	{
-//		tank.mPosition.x = gridRect.x;
-//		result = true;
-//	}
-//
-//	if (tank.mPosition.y < gridRect.y)
-//	{
-//		tank.mPosition.y = gridRect.w;
-//		result = true;
-//	}
-//	else if (tank.mPosition.y > gridRect.w)
-//	{
-//		tank.mPosition.y = gridRect.y;
-//		result = true;
-//	}
-//	return result;
-//}
-
-
-//Tile* GetNearestTile(float xPos, float yPos)
-//{
-//	Tile* result = nullptr;
-//	float dx = (float)INT_MAX;
-//	for (auto tile : grid)
-//	{
-//		if (glm::distance(tile->mPosition, vec2(xPos, yPos)) < dx)
-//		{
-//			result = tile;
-//			dx = glm::distance(tile->mPosition, vec2(xPos, yPos));
-//		}
-//	}
-//	return result;
-//}
-
-//Tile* GetRandomTile()
-//{
-//	return grid[rand() % grid.size()];
-//}
-
-//vec2 GetRandomTilePosition()
-//{
-//	return GetRandomTile()->mPosition;
-//}
-
-//void CreateGrid()
-//{
-//	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
-//	vec2 tileSize(25, 25);
-//	mTileSpriteID = frk.CreateSprite(tileSize.x, tileSize.y, ".\\resources\\textures\\Basic.png", true);
-//
-//	vec2 startPos(200, 75);
-//	gridRect.x = startPos.x - (tileSize.x * .5f);
-//	gridRect.y = startPos.y - (tileSize.y * .5f);
-//	vec2 position = startPos;
-//	for (int row = 0; row < GRID_ROWS; row++)
-//	{
-//		for (int col = 0; col < GRID_COLS; col++)
-//		{
-//			Tile* t = new Tile(row, col);
-//			t->mSize = tileSize;
-//			t->mPosition = position;
-//			grid.push_back(t);
-//			if (col == GRID_COLS - 1)
-//			{
-//				position.x = startPos.x;
-//			}
-//			else
-//			{
-//				position.x += tileSize.x;
-//			}
-//			//see if wall
-//			if ((rand() % 100) + 1 <= wallProbability)
-//			{
-//				t->mColor = BROWN;
-//				t->mWeight = INT_MAX;
-//				t->mIsWalkable = false;
-//			}
-//
-//		}
-//		position.y += tileSize.y;
-//	}
-//	Tile* t = grid.back();
-//	gridRect.z = t->mPosition.x + (tileSize.x * .5f);
-//	gridRect.w = t->mPosition.y + (tileSize.y * .5f);
-//	LoadGridEdges();
-//	//LoadGridEdgesDiagonal();
-//	//LoadGridEdgesOneWay();
-//}
-
-//void UpdateTiles()
-//{
-//	for (auto tile : grid)
-//	{
-//		frk.MoveSprite(mTileSpriteID, tile->mPosition.x, tile->mPosition.y);
-//		frk.DrawSprite(mTileSpriteID, tile->mColor);
-//	}
-//}
-
-//Tile* GetTile(vec2 position)
-//{
-//	for (auto tile : grid)
-//	{
-//		if (tile->mPosition == position)
-//			return tile;
-//	}
-//	return nullptr;
-//}
-//
-//Tile* GetTile(int a_row, int a_col)
-//{
-//	return grid[a_row * GRID_ROWS + a_col];
-//
-//}
-
-//void LoadGridEdges()
-//{
-//	for (auto tile : grid)
-//	{
-//		//north edge
-//		if (tile->rowPos + 1 < GRID_ROWS)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
-//			tile->mEdges.push_back(e);
-//		}
-//		//south edge
-//		if (tile->rowPos - 1 >= 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
-//			tile->mEdges.push_back(e);
-//		}
-//		//east edge
-//		if (tile->colPos + 1 < GRID_COLS)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
-//			tile->mEdges.push_back(e);
-//		}
-//		//west edge
-//		if (tile->colPos - 1 >= 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
-//			tile->mEdges.push_back(e);
-//		}
-//	}
-//}
-
-//void LoadGridEdgesOneWay()
-//{
-//	for (auto tile : grid)
-//	{
-//		//north edge
-//		if (tile->rowPos + 1 < GRID_ROWS && GetTile(tile->rowPos + 1, tile->colPos)->mEdges.size() == 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos);
-//			tile->mEdges.push_back(e);
-//		}
-//		//south edge
-//		if (tile->rowPos - 1 >= 0 && GetTile(tile->rowPos - 1, tile->colPos)->mEdges.size() == 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos);
-//			tile->mEdges.push_back(e);
-//		}
-//		//east edge
-//		if (tile->colPos + 1 < GRID_COLS && GetTile(tile->rowPos, tile->colPos + 1)->mEdges.size() == 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos, tile->colPos + 1);
-//			tile->mEdges.push_back(e);
-//		}
-//		//west edge
-//		if (tile->colPos - 1 >= 0 && GetTile(tile->rowPos, tile->colPos - 1)->mEdges.size() == 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos, tile->colPos - 1);
-//			tile->mEdges.push_back(e);
-//		}
-//	}
-//}
-//
-//void LoadGridEdgesDiagonal()
-//{
-//	LoadGridEdges();
-//
-//	for (auto tile : grid)
-//	{
-//		//north-east
-//		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos + 1 < GRID_COLS)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos + 1);
-//			tile->mEdges.push_back(e);
-//		}
-//		//north-west
-//		if (tile->rowPos + 1 < GRID_ROWS && tile->colPos - 1 >= 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos + 1, tile->colPos - 1);
-//			tile->mEdges.push_back(e);
-//		}
-//
-//		//south-east
-//		if (tile->rowPos - 1 >= 0 && tile->colPos + 1 < GRID_COLS)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos + 1);
-//			tile->mEdges.push_back(e);
-//		}
-//		//south-west
-//		if (tile->rowPos - 1 >= 0 && tile->colPos - 1 >= 0)
-//		{
-//			Edge* e = new Edge();
-//			e->mStart = tile;
-//			e->mEnd = GetTile(tile->rowPos - 1, tile->colPos - 1);
-//			tile->mEdges.push_back(e);
-//		}
-//	}
-//}
-
 void Destroy()
 {
-	//for (auto t : grid)
-	//{
-	//	for (auto edge : t->mEdges)
-	//	{
-	//		delete edge;
-	//	}
-	//	t->mEdges.clear();
-	//	delete t;
-	//}
-	//grid.clear();
 }
 
 void HandleUI()
@@ -533,7 +256,6 @@ void HandleUI()
 	//	mGoalNode = t;
 	//	//tank.mGoalNode = t;
 	//	AStarPathFind(false);
-
 	//}
 }
 
@@ -557,18 +279,6 @@ void AutoRun()
 	//	//ThetaStarPathFind();
 	//}
 }
-
-//void ResetTiles()
-//{
-//	for (auto tile : grid)
-//	{
-//		tile->mIsVisited = false;
-//		tile->mGScore = INT_MAX;
-//		tile->mFScore = 0;
-//		tile->mPathParentNode = nullptr;
-//		if (tile->mColor != BROWN) tile->mColor = WHITE;
-//	}
-//}
 
 bool SortOnFScore(Tile* lhs, Tile* rhs)
 {
@@ -816,38 +526,6 @@ MNF::Collider::AABB GetAABB(Tank& tank)
 	return MNF::Collider::AABB(vec2(tank.mPosition.x - hWidth, tank.mPosition.y - hHeight), vec2(tank.mPosition.x + hWidth, tank.mPosition.y + hHeight));
 }
 
-//bool RayPlaneIntersect(Ray& ray, Plane& plane, float& t)
-//{
-//	float denom = glm::dot(plane.normal, ray.direction);
-//	if (denom > 1e-6)
-//	{
-//		vec2 point_origin = plane.point - ray.origin;
-//		t = glm::dot(point_origin, plane.normal) / denom;
-//		return (t >= 0);
-//	}
-//	return false;
-//
-//}
-
-//vec2 GetRayDirection(const vec2& pointA, const vec2& pointB)
-//{
-//	return glm::normalize(pointB - pointA);
-//}
-
-
-//bool RayAABBIntersect(Ray& ray, AABB& box, float& enter, float& exit)
-//{
-//	vec2 min = (box.minPoint - ray.origin) / ray.direction;
-//	vec2 max = (box.maxPoint - ray.origin) / ray.direction;
-//
-//	vec2 near = glm::min(min, max);
-//	vec2 far = glm::max(min, max);
-//
-//	enter = glm::max(glm::max(near.x, near.y), 0.0f);
-//	exit = glm::min(far.x, far.y);
-//
-//	return (exit > 0.0f && enter < exit);
-//}
 
 void CreateTanks()
 {
