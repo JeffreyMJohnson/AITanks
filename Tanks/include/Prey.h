@@ -8,7 +8,7 @@
 
 typedef glm::vec2 vec;
 
-class Prey : IBoid
+class Prey : public IBoid
 {
 public:
 	Framework* mFramework;

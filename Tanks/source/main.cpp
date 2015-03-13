@@ -9,6 +9,7 @@
 #include "Alignment.h"
 #include "Cohesion.h"
 #include "Prey.h"
+#include "Tank2.h"
 
 #include <time.h>
 #include <iostream>
@@ -53,6 +54,7 @@ enum HEURISTIC_TYPE
 //	}
 //};
 
+void Initialize();
 void LoadGridEdgesDiagonal();
 void LoadGridEdgesOneWay();
 void Destroy();
@@ -77,7 +79,7 @@ bool quit = false;
 
 Grid grid(&frk);
 
-std::vector<AITank*> tankList;
+std::vector<Tank2*> tankList;
 
 
 //Tank tank(vec2(20,20), vec2(200,75));
@@ -96,10 +98,8 @@ int main()
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
-	//this needs to be called after the framework is initialized or exception is popped
-	grid.Initialize();
+	Initialize();
 
-	CreateTanks();
 	vec2 tilePos = grid.GetTile(10, 10)->mPosition;
 	Prey p1(&frk, tilePos);
 
@@ -170,8 +170,12 @@ int main()
 		grid.Update();
 		grid.Draw();
 
+		
+
 		//TankLogic(frk.GetDeltaTime());
 		TankLogic(1/30.0f);
+		tankList[0]->Draw();
+
 
 		p1.Update();
 		p1.Draw();
@@ -201,11 +205,15 @@ void TankLogic(float deltaTime)
 {
 	for (auto tank : tankList)
 	{
+		tank->Update();
+		tank->Draw();
+		/*
 		tank->Update(deltaTime);
 		grid.IsOutOfBounds(tank->mPosition, tank->mSize);
 		frk.MoveSprite(tank->mSpriteID, tank->mPosition.x, tank->mPosition.y);
 		frk.RotateSprite(tank->mSpriteID, tank->mRotation);
 		frk.DrawSprite(tank->mSpriteID);
+		*/
 	}
 
 	/*
@@ -529,6 +537,16 @@ MNF::Collider::AABB GetAABB(Tank& tank)
 
 void CreateTanks()
 {
+	Tank2* t = new Tank2(&frk, grid.GetTile(5, 5)->mPosition);
+	
+	tankList.push_back(t);
+
+	Tank2* t2 = new Tank2(&frk, grid.GetTile(10, 10)->mPosition);
+	tankList.push_back(t2);
+	t->SetHunter(*t2);
+	t2->SetTarget(*t);
+
+	/*
 	for (int i = 0; i < 10; i++)
 	{
 		AITank* t = new AITank(glm::vec2(20,20), glm::vec2(100,100));
@@ -556,4 +574,13 @@ void CreateTanks()
 		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mWeight = .33F;
 		tankList.push_back(t);
 	}
+	*/
+}
+
+void Initialize()
+{
+	//this needs to be called after the framework is initialized or exception is popped
+	grid.Initialize();
+
+	CreateTanks();
 }

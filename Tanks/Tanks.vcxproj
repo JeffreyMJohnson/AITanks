@@ -87,6 +87,7 @@
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SteeringManager.cpp" />
     <ClCompile Include="source\Tank.cpp" />
+    <ClCompile Include="source\Tank2.cpp" />
     <ClCompile Include="source\Tile.cpp" />
     <ClCompile Include="source\Wander.cpp" />
   </ItemGroup>
@@ -113,6 +114,7 @@
     <ClInclude Include="include\SteeringBehaviour.h" />
     <ClInclude Include="include\SteeringManager.h" />
     <ClInclude Include="include\Tank.h" />
+    <ClInclude Include="include\Tank2.h" />
     <ClInclude Include="include\Tile.h" />
     <ClInclude Include="include\Wander.h" />
   </ItemGroup>
