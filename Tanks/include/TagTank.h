@@ -43,7 +43,8 @@ private:
 	bool mIsTagged = false;
 	float mWaitTimer = 0.0f;
 
-	const float SEEK_PAUSE_TIME = 3.0f;
+	const float SEEK_PAUSE_TIME = 5.0f;
+	const float VISIBILITY_RADIUS = 100.0f;
 };
 
 #endif

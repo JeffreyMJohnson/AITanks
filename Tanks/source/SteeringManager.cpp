@@ -97,6 +97,15 @@ vec SteeringManager::DoWander()
 	//CIRCLE CENTER POSITION
 	//calculate center of circle, because it's in front of owner, use the velocity as a guide.
 	vec circleCenter = mHost->GetVelocity();
+	//take care od edge case velocity = 0;
+	if (circleCenter == vec(0, 0))
+	{
+		//50/50 chance of being positive or negative
+		float x = (rand() % 11) - 5.0f;
+		float y = (rand() % 11) - 5.0f;
+		circleCenter = glm::normalize(vec(x, y)) * mHost->GetMaxVelocity();
+	}
+
 	//normalize into vector with only direction
 	circleCenter = glm::normalize(circleCenter);
 	//scale vector by the distance the circle is from owner for correct magnitude.

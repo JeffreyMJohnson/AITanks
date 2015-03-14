@@ -118,7 +118,12 @@ void TagTank::Update(float timeDelta)
 	}
 	else
 	{
+		//if (glm::distance(mPosition, tagPartner->mPosition) > VISIBILITY_RADIUS)
+		//{
+		//	mSteering->Wander();
+		//}
 		mSteering->Flee(tagPartner->mPosition);
+		mSteering->Wander();
 	}
 	mSteering->Update();
 	mFramework->MoveSprite(mSpriteId, mPosition.x, mPosition.y);
