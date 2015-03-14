@@ -544,12 +544,14 @@ void CreateTanks()
 {
 	TagTank* tom = new TagTank;
 	TagTank* jerry = new TagTank;
-	tom->Initialize(&frk, grid.GetTile(5, 5)->mPosition, glm::vec2(20, 20), glm::vec4(0, 1, 0, 1), jerry, false);
+	tom->Initialize(&frk, grid.GetTile(10, 10)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), jerry, true);
 	tom->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
 	tom->mBounds = grid.gridRect;
-	jerry->Initialize(&frk, grid.GetTile(15, 15)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), tom, true);
+	tom->mMaxVelocity = 2.0f;
+	jerry->Initialize(&frk, grid.GetTile(15, 15)->mPosition, glm::vec2(20, 20), glm::vec4(0, 1, 0, 1), tom, false);
 	jerry->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
 	jerry->mBounds = grid.gridRect;
+	jerry->mMaxVelocity = 1.0f;
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
 

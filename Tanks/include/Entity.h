@@ -15,6 +15,7 @@ public:
 	glm::vec2 mSize;
 	glm::vec4 mColor;
 
+
 	void Initialize(Framework* framework);
 	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size);
 	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color);

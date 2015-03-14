@@ -5,6 +5,7 @@
 #include "SteeringManager.h"
 #include "IBoid.h"
 
+typedef MNF::Collider::AABB AABB;
 
 /*
 This class has steering logic for playing tag with another TagTank object.
@@ -17,11 +18,11 @@ public:
 	glm::vec2 mVelocity;
 	float mMass = 1.0f;
 	float mMaxVelocity = 1.0f;
-	SteeringManager* mSteering;
+	
 	TagTank* tagPartner;
 	bool isSeeking;
 	glm::vec4 mBounds;
-	
+
 
 	~TagTank();
 
@@ -38,7 +39,11 @@ public:
 	void Update(float timeDelta);
 	void Draw();
 private:
+	SteeringManager* mSteering;
+	bool mIsTagged = false;
+	float mWaitTimer = 0.0f;
 
+	const float SEEK_PAUSE_TIME = 3.0f;
 };
 
 #endif

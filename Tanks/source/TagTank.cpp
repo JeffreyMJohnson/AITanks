@@ -2,6 +2,7 @@
 #include "Grid.h"
 
 
+
 TagTank::~TagTank()
 {
 	delete mSteering;
@@ -13,6 +14,7 @@ void TagTank::Initialize(Framework* framework, TagTank* tagPartner, bool isSeeki
 	this->isSeeking = isSeeking;
 	mSteering = new SteeringManager(this);
 	Entity::Initialize(framework);
+
 }
 
 void TagTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, TagTank* tagPartner, bool isSeeking)
@@ -76,8 +78,42 @@ void TagTank::Update(float timeDelta)
 		mPosition.y = mBounds.y + halfSize.y;
 	}
 
+	//timer logic
+	if (mIsTagged)
+	{
+		if (mWaitTimer < SEEK_PAUSE_TIME)
+		{
+			mWaitTimer += timeDelta;
+			return;
+		}
+		else
+		{
+			mWaitTimer = 0.0f;
+			mIsTagged = false;
+		}
+	}
+
 	if (isSeeking)
 	{
+		
+		//tag logic
+		if (MNF::Collider::AABBCollide(AABB(mPosition - (mSize  * 0.5f), mPosition + (mSize * 0.5f)), 
+			AABB(tagPartner->mPosition - (tagPartner->mSize  * 0.5f), tagPartner->mPosition + (tagPartner->mSize * 0.5f))))
+		{
+			isSeeking = false;
+			tagPartner->isSeeking = true;
+			float t = mMaxVelocity;
+			mMaxVelocity = tagPartner->mMaxVelocity;
+			tagPartner->mMaxVelocity = t;
+
+			glm::vec4 c = mColor;
+			mColor = tagPartner->mColor;
+			tagPartner->mColor = c;
+
+			tagPartner->mIsTagged = true;
+			
+		}
+
 		mSteering->Seek(tagPartner->mPosition);
 	}
 	else

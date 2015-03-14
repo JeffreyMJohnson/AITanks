@@ -39,6 +39,8 @@ namespace MNF
 			glm::vec2 minPoint;
 			glm::vec2 maxPoint;
 
+			AABB(){};
+
 			AABB(glm::vec2 minPoint, glm::vec2 maxPoint)
 			{
 				this->minPoint = minPoint;
