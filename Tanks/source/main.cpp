@@ -546,8 +546,10 @@ void CreateTanks()
 	TagTank* jerry = new TagTank;
 	tom->Initialize(&frk, grid.GetTile(5, 5)->mPosition, glm::vec2(20, 20), glm::vec4(0, 1, 0, 1), jerry, false);
 	tom->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
+	tom->mBounds = grid.gridRect;
 	jerry->Initialize(&frk, grid.GetTile(15, 15)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), tom, true);
 	jerry->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
+	jerry->mBounds = grid.gridRect;
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
 

@@ -20,6 +20,8 @@ public:
 	SteeringManager* mSteering;
 	TagTank* tagPartner;
 	bool isSeeking;
+	glm::vec4 mBounds;
+	
 
 	~TagTank();
 

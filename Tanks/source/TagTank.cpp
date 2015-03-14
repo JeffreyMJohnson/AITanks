@@ -1,4 +1,5 @@
 #include "TagTank.h"
+#include "Grid.h"
 
 
 TagTank::~TagTank()
@@ -54,6 +55,27 @@ float TagTank::GetMass()
 //Entity interface methods
 void TagTank::Update(float timeDelta)
 {
+	assert(mBounds != glm::vec4(0,0,0,0));
+	///check if inbounds
+	glm::vec2 halfSize = mSize * 0.5f;
+	
+	if (mPosition.x - halfSize.x < mBounds.x)//west
+	{
+		mPosition.x = mBounds.z - halfSize.x;
+	}
+	else if (mPosition.y - halfSize.y < mBounds.y)//south
+	{
+		mPosition.y = mBounds.w - halfSize.y;
+	}
+	else if (mPosition.x + halfSize.x > mBounds.z)//east
+	{
+		mPosition.x = mBounds.x + halfSize.x;
+	}
+	else if (mPosition.y + halfSize.y > mBounds.w)//north
+	{
+		mPosition.y = mBounds.y + halfSize.y;
+	}
+
 	if (isSeeking)
 	{
 		mSteering->Seek(tagPartner->mPosition);
