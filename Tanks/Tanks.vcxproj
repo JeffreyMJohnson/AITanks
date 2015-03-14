@@ -72,6 +72,7 @@
     <ClCompile Include="source\Alignment.cpp" />
     <ClCompile Include="source\Animation.cpp" />
     <ClCompile Include="source\Cohesion.cpp" />
+    <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Evade.cpp" />
     <ClCompile Include="source\Flee.cpp" />
     <ClCompile Include="source\Font.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="source\Separation.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SteeringManager.cpp" />
+    <ClCompile Include="source\TagTank.cpp" />
     <ClCompile Include="source\Tank.cpp" />
     <ClCompile Include="source\Tank2.cpp" />
     <ClCompile Include="source\Tile.cpp" />
@@ -96,6 +98,7 @@
     <ClInclude Include="include\Alignment.h" />
     <ClInclude Include="include\Cohesion.h" />
     <ClInclude Include="include\Edge.h" />
+    <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Evade.h" />
     <ClInclude Include="include\Flee.h" />
     <ClInclude Include="include\framework\Animation.h" />
@@ -113,6 +116,7 @@
     <ClInclude Include="include\Separation.h" />
     <ClInclude Include="include\SteeringBehaviour.h" />
     <ClInclude Include="include\SteeringManager.h" />
+    <ClInclude Include="include\TagTank.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tank2.h" />
     <ClInclude Include="include\Tile.h" />

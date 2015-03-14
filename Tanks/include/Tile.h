@@ -2,6 +2,7 @@
 #define _TILE_H_
 #include <vector>
 #include <climits>
+#define GLM_FORCE_PURE
 #include "glm\glm.hpp"
 #include "Edge.h"
 

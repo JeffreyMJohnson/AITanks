@@ -6,7 +6,7 @@ SteeringManager::SteeringManager(IBoid* host)
 	mSteering = vec(0, 0);
 }
 
-void SteeringManager::Seek(vec target, float slowingRadius = 20.0f)
+void SteeringManager::Seek(vec target, float slowingRadius)
 {
 	mSteering += DoSeek(target, slowingRadius);
 }
@@ -71,7 +71,7 @@ vec SteeringManager::DoSeek(vec target, float slowingRadius = 0.0f)
 
 	vec desired = target - mHost->GetPosition();
 	distance = glm::length(desired);
-	glm::normalize(desired);
+	desired = glm::normalize(desired);
 
 	if (distance <= slowingRadius)
 	{

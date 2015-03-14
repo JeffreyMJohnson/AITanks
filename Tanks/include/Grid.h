@@ -1,6 +1,5 @@
 #ifndef _GRID_H_
 #define _GRID_H_
-#include "glm\glm.hpp"
 #include "Globals.h"
 #include "framework\Framework.h"
 #include "Tile.h"

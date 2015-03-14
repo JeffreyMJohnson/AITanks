@@ -1,5 +1,6 @@
 #ifndef _FONT_CHAR_H_
 #define _FONT_CHAR_H_
+#define GLM_FORCE_PURE
 #include "glm\glm.hpp"
 
 

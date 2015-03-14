@@ -3,6 +3,7 @@
 
 #include "pugixml\pugixml.hpp"
 #include "Sprite.h"
+#define GLM_FORCE_PURE
 #include "glm\glm.hpp"
 
 #include <vector>

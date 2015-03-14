@@ -1,5 +1,8 @@
-#include "IBoid.h"
+#ifndef _STEERING_MANAGER_H_
+#define _STEERING_MANAGER_H_
+
 #include "Globals.h"
+#include "IBoid.h"
 
 typedef glm::vec2 vec;
 
@@ -12,7 +15,7 @@ public:
 
 	SteeringManager(IBoid* host);
 
-	void Seek(vec target, float slowingRadius);
+	void Seek(vec target, float slowingRadius = 20.0f);
 	void Flee(vec target);
 	void Wander();
 	void Evade(IBoid& target);
@@ -21,6 +24,8 @@ public:
 	void Update();
 
 	void Reset();
+
+	
 
 private:
 	//MAGIC NUMBERS 
@@ -40,3 +45,5 @@ private:
 
 	void Truncate(vec& original, float max);
 }; 
+
+#endif

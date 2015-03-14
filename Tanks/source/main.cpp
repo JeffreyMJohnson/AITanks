@@ -10,6 +10,7 @@
 #include "Cohesion.h"
 #include "Prey.h"
 #include "Tank2.h"
+#include "TagTank.h"
 
 #include <time.h>
 #include <iostream>
@@ -79,7 +80,7 @@ bool quit = false;
 
 Grid grid(&frk);
 
-std::vector<Tank2*> tankList;
+std::vector<Entity*> tankList;
 
 
 //Tank tank(vec2(20,20), vec2(200,75));
@@ -94,7 +95,7 @@ Tile* mGoalNode = nullptr;
 int main()
 {
 	srand((unsigned int)time(NULL));
-	
+
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(1, 1, 1, 1);
 
@@ -166,20 +167,19 @@ int main()
 	do
 	{
 		frk.ClearScreen();
-		
+
 		grid.Update();
 		grid.Draw();
 
-		
+
 
 		//TankLogic(frk.GetDeltaTime());
-		TankLogic(1/30.0f);
-		tankList[0]->Draw();
+		TankLogic(1 / 30.0f);
 
 
 		p1.Update();
 		p1.Draw();
-		
+
 		//frk.DrawSprite(tank1.mSpriteID, tank1.mColor);
 		//frk.DrawSprite(tank2.mSpriteID, tank2.mColor);
 		//frk.DrawSprite(tank3.mSpriteID);
@@ -205,7 +205,7 @@ void TankLogic(float deltaTime)
 {
 	for (auto tank : tankList)
 	{
-		tank->Update();
+		tank->Update(frk.GetDeltaTime());
 		tank->Draw();
 		/*
 		tank->Update(deltaTime);
@@ -244,6 +244,11 @@ void TankLogic(float deltaTime)
 
 void Destroy()
 {
+	for (auto e : tankList)
+	{
+		delete e;
+	}
+	tankList.clear();
 }
 
 void HandleUI()
@@ -310,7 +315,7 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 		break;
 	}
 	return result;
-	
+
 }
 
 //void ThetaStarPathFind(Tank& tank)
@@ -537,42 +542,52 @@ MNF::Collider::AABB GetAABB(Tank& tank)
 
 void CreateTanks()
 {
+	TagTank* tom = new TagTank;
+	TagTank* jerry = new TagTank;
+	tom->Initialize(&frk, grid.GetTile(5, 5)->mPosition, glm::vec2(20, 20), glm::vec4(0, 1, 0, 1), jerry, false);
+	tom->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
+	jerry->Initialize(&frk, grid.GetTile(15, 15)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), tom, true);
+	jerry->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
+	tankList.push_back(tom);
+	tankList.push_back(jerry);
+
+	/*
 	Tank2* t = new Tank2(&frk, grid.GetTile(5, 5)->mPosition);
-	
+
 	tankList.push_back(t);
 
 	Tank2* t2 = new Tank2(&frk, grid.GetTile(10, 10)->mPosition);
 	tankList.push_back(t2);
 	t->SetHunter(*t2);
 	t2->SetTarget(*t);
-
+	*/
 	/*
 	for (int i = 0; i < 10; i++)
 	{
-		AITank* t = new AITank(glm::vec2(20,20), glm::vec2(100,100));
-		t->mSpriteID = frk.CreateSprite(t->mSize.x, t->mSize.y, ".\\resources\\textures\\tank.png", true);
-		frk.SetSpriteUV(t->mSpriteID, .008f, .016f, .121f, .109f);
-		//dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
-		
-		//t->mSteeringPriorityList.push_back(SEPARATIION);
-		//t->SetSteeringType(SEPARATIION);
-		dynamic_cast<Alignment*>(&t->GetBehaviour(ALIGNMENT))->mTankList = &tankList;
-		dynamic_cast<Alignment*>(&t->GetBehaviour(ALIGNMENT))->mWeight = .33F;
-		t->mSteeringPriorityList.push_back(ALIGNMENT);
-		//t->SetSteeringType(ALIGNMENT);
-		t->mNeighborhoodRadius = 100;
-		t->mPosition = grid.GetTile(i + 2, 5)->mPosition;
-		t->mVelocity = glm::vec2(100, 100);
-		t->mMaxVelocity = 100;
+	AITank* t = new AITank(glm::vec2(20,20), glm::vec2(100,100));
+	t->mSpriteID = frk.CreateSprite(t->mSize.x, t->mSize.y, ".\\resources\\textures\\tank.png", true);
+	frk.SetSpriteUV(t->mSpriteID, .008f, .016f, .121f, .109f);
+	//dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
 
-		t->mSteeringPriorityList.push_back(COHESION);
-		dynamic_cast<Cohesion*>(&t->GetBehaviour(COHESION))->mTankList = &tankList;
-		dynamic_cast<Cohesion*>(&t->GetBehaviour(COHESION))->mWeight = .33F;
-		
-		t->mSteeringPriorityList.push_back(SEPARATIION);
-		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
-		dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mWeight = .33F;
-		tankList.push_back(t);
+	//t->mSteeringPriorityList.push_back(SEPARATIION);
+	//t->SetSteeringType(SEPARATIION);
+	dynamic_cast<Alignment*>(&t->GetBehaviour(ALIGNMENT))->mTankList = &tankList;
+	dynamic_cast<Alignment*>(&t->GetBehaviour(ALIGNMENT))->mWeight = .33F;
+	t->mSteeringPriorityList.push_back(ALIGNMENT);
+	//t->SetSteeringType(ALIGNMENT);
+	t->mNeighborhoodRadius = 100;
+	t->mPosition = grid.GetTile(i + 2, 5)->mPosition;
+	t->mVelocity = glm::vec2(100, 100);
+	t->mMaxVelocity = 100;
+
+	t->mSteeringPriorityList.push_back(COHESION);
+	dynamic_cast<Cohesion*>(&t->GetBehaviour(COHESION))->mTankList = &tankList;
+	dynamic_cast<Cohesion*>(&t->GetBehaviour(COHESION))->mWeight = .33F;
+
+	t->mSteeringPriorityList.push_back(SEPARATIION);
+	dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mTankList = &tankList;
+	dynamic_cast<Separation*>(&t->GetBehaviour(SEPARATIION))->mWeight = .33F;
+	tankList.push_back(t);
 	}
 	*/
 }

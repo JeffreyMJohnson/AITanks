@@ -3,7 +3,6 @@
 
 #include "Font.h"
 #include "Sprite.h"
-#include "glm\glm.hpp"
 
 #include <string>
 

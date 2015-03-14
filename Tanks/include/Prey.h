@@ -1,7 +1,6 @@
 #ifndef _PREY_H_
 #define _PREY_H_
 
-#include "glm\glm.hpp"
 #include "framework\Framework.h"
 #include "IBoid.h"
 #include "SteeringManager.h"

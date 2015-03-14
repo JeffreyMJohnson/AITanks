@@ -1,6 +1,6 @@
 #ifndef _GLOBALS_H_
 #define _GLOBALS_H_
-
+#define GLM_FORCE_PURE
 #include "glm\glm.hpp"
 
 #define PI 3.14159265359f

@@ -1,6 +1,6 @@
 #ifndef _I_BOLD_H_
 #define _I_BOLD_H_
-
+#define GLM_FORCE_PURE
 #include "glm\glm.hpp"
 
 class IBoid
