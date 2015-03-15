@@ -68,39 +68,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\AITank.cpp" />
-    <ClCompile Include="source\Alignment.cpp" />
     <ClCompile Include="source\Animation.cpp" />
-    <ClCompile Include="source\Cohesion.cpp" />
     <ClCompile Include="source\Entity.cpp" />
-    <ClCompile Include="source\Evade.cpp" />
-    <ClCompile Include="source\Flee.cpp" />
     <ClCompile Include="source\Font.cpp" />
     <ClCompile Include="source\FontChar.cpp" />
     <ClCompile Include="source\FontManager.cpp" />
     <ClCompile Include="source\Framework.cpp" />
     <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\Prey.cpp" />
-    <ClCompile Include="source\Pursue.cpp" />
-    <ClCompile Include="source\Seek.cpp" />
-    <ClCompile Include="source\Separation.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\SteeringManager.cpp" />
     <ClCompile Include="source\TagTank.cpp" />
+    <ClCompile Include="source\pathFinder.cpp" />
     <ClCompile Include="source\Tank.cpp" />
-    <ClCompile Include="source\Tank2.cpp" />
     <ClCompile Include="source\Tile.cpp" />
-    <ClCompile Include="source\Wander.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AITank.h" />
-    <ClInclude Include="include\Alignment.h" />
-    <ClInclude Include="include\Cohesion.h" />
     <ClInclude Include="include\Edge.h" />
     <ClInclude Include="include\Entity.h" />
-    <ClInclude Include="include\Evade.h" />
-    <ClInclude Include="include\Flee.h" />
+    <ClInclude Include="include\FlockTank.h" />
     <ClInclude Include="include\framework\Animation.h" />
     <ClInclude Include="include\framework\Font.h" />
     <ClInclude Include="include\framework\FontChar.h" />
@@ -110,17 +96,10 @@
     <ClInclude Include="include\Globals.h" />
     <ClInclude Include="include\Grid.h" />
     <ClInclude Include="include\IBoid.h" />
-    <ClInclude Include="include\Prey.h" />
-    <ClInclude Include="include\Pursue.h" />
-    <ClInclude Include="include\Seek.h" />
-    <ClInclude Include="include\Separation.h" />
-    <ClInclude Include="include\SteeringBehaviour.h" />
     <ClInclude Include="include\SteeringManager.h" />
     <ClInclude Include="include\TagTank.h" />
     <ClInclude Include="include\Tank.h" />
-    <ClInclude Include="include\Tank2.h" />
     <ClInclude Include="include\Tile.h" />
-    <ClInclude Include="include\Wander.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source\FlatFragmentShader.glsl" />

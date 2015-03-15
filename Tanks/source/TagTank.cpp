@@ -5,7 +5,7 @@
 
 TagTank::~TagTank()
 {
-	delete mSteering;
+	//delete mSteering;
 }
 
 void TagTank::Initialize(Framework* framework, TagTank* tagPartner, bool isSeeking)
@@ -33,26 +33,26 @@ void TagTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& s
 	Entity::Initialize(framework, position, size, color);
 }
 
-//IBoid interface methods
-glm::vec2& TagTank::GetVelocity()
-{
-	return mVelocity;
-}
-
-float TagTank::GetMaxVelocity()
-{
-	return mMaxVelocity;
-}
-
-glm::vec2& TagTank::GetPosition()
-{
-	return mPosition;
-}
-
-float TagTank::GetMass()
-{
-	return mMass;
-}
+////IBoid interface methods
+//glm::vec2& TagTank::GetVelocity()
+//{
+//	return mVelocity;
+//}
+//
+//float TagTank::GetMaxVelocity()
+//{
+//	return mMaxVelocity;
+//}
+//
+//glm::vec2& TagTank::GetPosition()
+//{
+//	return mPosition;
+//}
+//
+//float TagTank::GetMass()
+//{
+//	return mMass;
+//}
 
 //Entity interface methods
 void TagTank::Update(float timeDelta)

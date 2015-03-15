@@ -15,6 +15,8 @@ public:
 	glm::vec2 mSize;
 	glm::vec4 mColor;
 
+	//needs to be virtual so derived class destructors are called.
+	virtual ~Entity(){};
 
 	void Initialize(Framework* framework);
 	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size);

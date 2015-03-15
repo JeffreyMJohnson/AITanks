@@ -1,34 +1,37 @@
 #ifndef _TANK_H_
 #define _TANK_H_
 
-#include <vector>
-#include <list>
-#include "Globals.h"
-#include "Tile.h"
-#define GLM_FORCE_PURE
-#include "glm/gtx/compatibility.hpp"
+#include "Entity.h"
+#include "SteeringManager.h"
+#include "IBoid.h"
 
-class Tank
+typedef MNF::Collider::AABB AABB;
+
+class Tank :
+	public Entity,
+	public IBoid
 {
 public:
-	unsigned int mSpriteID;
-	glm::vec2 mPosition;
-	glm::vec2 mSize;
-	glm::vec4 mColor;
-	Tile* mGoalNode;
-	Tile* mLastNodeVisited;
-	std::vector<Tile*> pathList;
-	float mCurrentLERPValue = 0;
-	float mMoveSpeed;
-	float mRotation;
+	glm::vec2 mVelocity;
+	float mMass = 1.0f;
+	float mMaxVelocity = 1.0f;
+	float mRotationAngle = 0.0f;
+	glm::vec4 mBounds;
 
-	Tank();
+	~Tank();
 
-	Tank(glm::vec2 a_size, glm::vec2 a_position);
+	//IBoid interface methods
+	glm::vec2& GetVelocity();
+	float GetMaxVelocity();
+	glm::vec2& GetPosition();
+	float GetMass();
 
-	void FlipRotation();
+	//Entity interface methods
+	void Update(float timeDelta){};
+	void Draw(){};
 
-	virtual void Update(float deltaTime);
+protected:
+	SteeringManager* mSteering;
 
 
 };
