@@ -5,6 +5,8 @@
 #include "SteeringManager.h"
 #include "IBoid.h"
 
+#include <assert.h>
+
 typedef MNF::Collider::AABB AABB;
 
 class Tank :
@@ -20,6 +22,10 @@ public:
 
 	~Tank();
 
+	void Initialize(Framework* framework);
+	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size);
+	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color);
+
 	//IBoid interface methods
 	glm::vec2& GetVelocity();
 	float GetMaxVelocity();
@@ -32,7 +38,7 @@ public:
 
 protected:
 	SteeringManager* mSteering;
-
+	void InBoundsLogic();
 
 };
 

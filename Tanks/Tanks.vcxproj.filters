@@ -69,6 +69,9 @@
     <ClCompile Include="source\Grid.cpp">
       <Filter>Source Files\grid</Filter>
     </ClCompile>
+    <ClCompile Include="source\WanderTank.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Globals.h">
@@ -119,15 +122,18 @@
     <ClInclude Include="include\Tile.h">
       <Filter>Header Files\grid</Filter>
     </ClInclude>
+    <ClInclude Include="include\WanderTank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="source\FlatFragmentShader.glsl">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="source\TexturedFragmentShader.glsl">
       <Filter>Source Files\framework</Filter>
     </None>
     <None Include="source\VertexShader.glsl">
+      <Filter>Source Files\framework</Filter>
+    </None>
+    <None Include="source\FlatFragmentShader.glsl">
       <Filter>Source Files\framework</Filter>
     </None>
   </ItemGroup>

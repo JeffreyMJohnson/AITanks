@@ -23,6 +23,7 @@ public:
 	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color);
 
 	void SetSpriteId(unsigned int spriteId);
+	void Entity::SetSpriteId(unsigned int spriteId, glm::vec4 spriteUV);
 	void SetSpriteId(const char* texturePath);
 	void SetSpriteId(const char* texturePath, glm::vec4 spriteUV);
 

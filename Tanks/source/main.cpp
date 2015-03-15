@@ -2,6 +2,7 @@
 #include "framework/Framework.h"
 #include "Grid.h"
 #include "TagTank.h"
+#include "WanderTank.h"
 
 #include <time.h>
 #include <iostream>
@@ -405,6 +406,17 @@ void CreateTanks()
 	jerry->mMaxVelocity = 1.0f;
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
+
+	//10 wander tanks 
+	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
+	for (int i = 0; i < 5; i++)
+	{
+		WanderTank* w = new WanderTank;
+		w->Initialize(&frk, grid.GetRandomTile()->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));
+		w->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
+		w->mBounds = grid.gridRect;
+		tankList.push_back(w);
+	}
 }
 
 void Initialize()

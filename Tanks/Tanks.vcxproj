@@ -82,6 +82,7 @@
     <ClCompile Include="source\pathFinder.cpp" />
     <ClCompile Include="source\Tank.cpp" />
     <ClCompile Include="source\Tile.cpp" />
+    <ClCompile Include="source\WanderTank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Edge.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="include\TagTank.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />
+    <ClInclude Include="include\WanderTank.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source\FlatFragmentShader.glsl" />

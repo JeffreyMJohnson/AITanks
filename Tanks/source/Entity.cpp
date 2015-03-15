@@ -24,6 +24,12 @@ void Entity::SetSpriteId(unsigned int spriteId)
 	mFramework->SetSpriteUV(mSpriteId, 0, 0, 1, 1);
 }
 
+void Entity::SetSpriteId(unsigned int spriteId, glm::vec4 spriteUV)
+{
+	mSpriteId = spriteId;
+	mFramework->SetSpriteUV(mSpriteId, spriteUV.x, spriteUV.y, spriteUV.z, spriteUV.w);
+}
+
 void Entity::SetSpriteId(const char* texturePath)
 {
 
