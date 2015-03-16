@@ -25,6 +25,7 @@ public:
 	void Pursuit(IBoid& target);
 	void Separate();
 	void Alignment();
+	void Cohesion();
 	void Update();
 
 	void Reset();
@@ -47,6 +48,7 @@ private:
 	vec DoPursuit(IBoid& target);
 	vec DoSeparate();
 	vec DoAlignment();
+	vec DoCohesion();
 
 	void SetAngle(vec& vector, float value);
 

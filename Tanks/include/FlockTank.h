@@ -9,8 +9,9 @@ class FlockTank :
 {
 public:
 	std::vector<Entity*>* mEntityList;
-	const float REPULSION_FORCE = 1.0f;
-	const float NEIGHBOR_RADIUS = 100.0f;
+	const float REPULSION_FORCE = 5.0f;
+	const float COHESION_FORCE = 4.0f;
+	const float NEIGHBOR_RADIUS = 35.0f;
 
 	void Initialize(Framework* framework, std::vector<Entity*>* entityList);
 	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, std::vector<Entity*>* entityList);

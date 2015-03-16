@@ -427,9 +427,9 @@ void CreateTanks()
 	}
 	*/
 	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 25; i++)
 	{
-		vec position = grid.GetTile(i + 2, 4)->mPosition;
+		vec position = grid.GetRandomTile()->mPosition;
 		FlockTank* t = new FlockTank;
 		t->Initialize(&frk, position, vec(20, 20), glm::vec4(0, 0, 1, 1), &tankList);
 		t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));

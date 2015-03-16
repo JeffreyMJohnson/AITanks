@@ -22,6 +22,7 @@ void FlockTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2&
 void FlockTank::Update(float timeDelta)
 {
 	InBoundsLogic();
+	mSteering->Cohesion();
 	mSteering->Separate();
 	mSteering->Alignment();
 	mSteering->Update();

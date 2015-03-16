@@ -42,6 +42,11 @@ void SteeringManager::Alignment()
 	mSteering += DoAlignment();
 }
 
+void SteeringManager::Cohesion()
+{
+	mSteering += DoCohesion();
+}
+
 void SteeringManager::Update()
 {
 	vec& velocity = mHost->GetVelocity();
@@ -188,7 +193,8 @@ vec SteeringManager::DoSeparate()
 	}
 	//check for divide by zero!
 	if (numNeighbors == 0)
-		return vec(0, 0);
+		//return vec(0, 0);
+		return DoWander();
 	force = force / (float)numNeighbors;
 	return force;
 		
@@ -223,10 +229,44 @@ vec SteeringManager::DoAlignment()
 	}
 	//check for divide by zero!
 	if (numNeighbors == 0)
-		return vec(0, 0);
+		return DoWander();
+		//return -host->mVelocity;
 	force = force / (float)numNeighbors;
 
 	return force - host->mVelocity;
+}
+
+vec SteeringManager::DoCohesion()
+{
+	vec force;
+	int numNeighbors = 0;
+	vec averagePosition;
+	FlockTank* host = dynamic_cast<FlockTank*>(mHost);
+	assert(host != nullptr);
+	for (Entity* entity : *host->mEntityList)
+	{
+		FlockTank* t = dynamic_cast<FlockTank*>(entity);
+		//check if the entity is not a FlockTank or is the host itself, if so skip it
+		if (t == nullptr || entity == dynamic_cast<Entity*>(mHost))
+		{
+			continue;
+		}
+
+		float distance = glm::length(host->mPosition - entity->mPosition);
+		//check if in neghborhood radius
+		if (distance <= host->NEIGHBOR_RADIUS)
+		{
+			averagePosition += entity->mPosition;
+			numNeighbors++;
+		}
+	}
+	//divide by zero check
+	if (numNeighbors == 0)
+	{
+		return DoWander();
+	}
+	averagePosition /= numNeighbors;
+	return glm::normalize(averagePosition - host->mPosition) / (glm::length(averagePosition - host->mPosition) * host->COHESION_FORCE);
 }
 
 void SteeringManager::SetAngle(glm::vec2& vector, float value)
