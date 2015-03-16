@@ -70,6 +70,7 @@
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
     <ClCompile Include="source\Entity.cpp" />
+    <ClCompile Include="source\FlockTank.cpp" />
     <ClCompile Include="source\Font.cpp" />
     <ClCompile Include="source\FontChar.cpp" />
     <ClCompile Include="source\FontManager.cpp" />

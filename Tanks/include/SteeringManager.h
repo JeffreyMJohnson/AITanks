@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "IBoid.h"
 
+#include <vector>
+
 typedef glm::vec2 vec;
 
 
@@ -20,7 +22,8 @@ public:
 	void Wander();
 	void Evade(IBoid& target);
 	void Pursuit(IBoid& target);
-
+	void Separate();
+	void Alignment(std::vector<IBoid*>& agentList);
 	void Update();
 
 	void Reset();
@@ -41,6 +44,9 @@ private:
 	vec DoWander();
 	vec DoEvade(IBoid& target);
 	vec DoPursuit(IBoid& target);
+	vec DoSeparate();
+	vec DoAlignment(std::vector<IBoid*>& agentList);
+
 	void SetAngle(vec& vector, float value);
 
 	void Truncate(vec& original, float max);

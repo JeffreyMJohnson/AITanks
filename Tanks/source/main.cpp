@@ -13,6 +13,11 @@ typedef std::vector<Tile*>::iterator It;
 #define GLM_FORCE_PURE
 typedef glm::vec2 vec2;
 
+/*
+left off:
+finished bare bones of flocktank class, enough to instantiate in main. steering class needs to implement flocking behaviours 
+separate and alignment.
+*/
 
 enum HEURISTIC_TYPE
 {

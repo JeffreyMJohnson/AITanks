@@ -31,6 +31,16 @@ void SteeringManager::Pursuit(IBoid& target)
 	mSteering += DoPursuit(target);
 }
 
+void SteeringManager::Separate()
+{
+	mSteering += DoSeparate();
+}
+
+void SteeringManager::Alignment(std::vector<IBoid*>& agentList)
+{
+	mSteering += DoAlignment(agentList);
+}
+
 void SteeringManager::Update()
 {
 	vec& velocity = mHost->GetVelocity();
@@ -141,24 +151,40 @@ vec SteeringManager::DoWander()
 
 vec SteeringManager::DoEvade(IBoid& target)
 {
-	vec distance = target.GetPosition() - mHost->GetPosition();
-	int updatesAhead = glm::length(distance) / mHost->GetMaxVelocity();
-	vec futurePosition = target.GetPosition() + target.GetVelocity() * (float)updatesAhead;
+	//float distance = glm::distance(target.GetPosition(), mHost->GetPosition());
+	vec futurePosition = target.GetPosition() + target.GetVelocity();
+
 	return DoFlee(futurePosition);
 }
 
 vec SteeringManager::DoPursuit(IBoid& target)
 {
-	vec distance = target.GetPosition() - mHost->GetPosition();
-
-	float updatesNeeded = glm::length(distance) / mHost->GetMaxVelocity();
-
-	vec tv = target.GetVelocity();
-	tv *= updatesNeeded;
-
-	vec targetFuturePosition = target.GetPosition() + tv;
+	//float distance = glm::distance(target.GetPosition(), mHost->GetPosition());
+	vec targetFuturePosition = target.GetPosition() + target.GetVelocity();
 
 	return DoSeek(targetFuturePosition);
+}
+
+vec SteeringManager::DoSeparate()
+{
+	return vec();
+}
+
+vec SteeringManager::DoAlignment(std::vector<IBoid*>& agentList)
+{
+	vec force;
+	int neighborCount = 0;
+
+	for (auto agent : agentList)
+	{
+		if (glm::distance(mHost->GetPosition(), agent->GetPosition()) > 300)
+		{
+			force += agent->GetVelocity();
+			neighborCount++;
+		}
+	}
+
+	return vec();
 }
 
 void SteeringManager::SetAngle(glm::vec2& vector, float value)

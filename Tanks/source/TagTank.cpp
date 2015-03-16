@@ -69,17 +69,20 @@ void TagTank::Update(float timeDelta)
 
 		}
 
-		mSteering->Seek(tagPartner->mPosition);
+		//mSteering->Seek(tagPartner->mPosition);
+		mSteering->Pursuit(*tagPartner);
 	}
 	else
 	{
 		if (glm::distance(tagPartner->mPosition, mPosition) > VISIBILITY_RADIUS)
 		{
+			
 			mSteering->Wander();
 		}
 		else
 		{
-			mSteering->Flee(tagPartner->mPosition);
+			//mSteering->Flee(tagPartner->mPosition);
+			mSteering->Evade(*tagPartner);
 		}
 	}
 
