@@ -37,9 +37,9 @@ void SteeringManager::Separate()
 	mSteering += DoSeparate();
 }
 
-void SteeringManager::Alignment(std::vector<IBoid*>& agentList)
+void SteeringManager::Alignment()
 {
-	mSteering += DoAlignment(agentList);
+	mSteering += DoAlignment();
 }
 
 void SteeringManager::Update()
@@ -194,21 +194,39 @@ vec SteeringManager::DoSeparate()
 		
 }
 
-vec SteeringManager::DoAlignment(std::vector<IBoid*>& agentList)
+vec SteeringManager::DoAlignment()
 {
 	vec force;
-	int neighborCount = 0;
+	int numNeighbors = 0;
 
-	for (auto agent : agentList)
+	FlockTank* host = dynamic_cast<FlockTank*>(mHost);
+	assert(host != nullptr);
+	for (Entity* entity : *host->mEntityList)
 	{
-		if (glm::distance(mHost->GetPosition(), agent->GetPosition()) > 300)
+		////check if self, no need to use
+		//if (entity == dynamic_cast<Entity*>(mHost))
+		//	continue;
+		FlockTank* t = dynamic_cast<FlockTank*>(entity);
+		//check if the entity is not a FlockTank or is the host itself, if so skip it
+		if (t == nullptr || entity == dynamic_cast<Entity*>(mHost))
 		{
-			force += agent->GetVelocity();
-			neighborCount++;
+			continue;
 		}
-	}
+		float distance = glm::length(host->mPosition - entity->mPosition);
+		//check if in neghborhood radius
+		if (distance <= host->NEIGHBOR_RADIUS)
+		{
+			force += t->mVelocity;
+			numNeighbors++;
+		}
 
-	return vec();
+	}
+	//check for divide by zero!
+	if (numNeighbors == 0)
+		return vec(0, 0);
+	force = force / (float)numNeighbors;
+
+	return force - host->mVelocity;
 }
 
 void SteeringManager::SetAngle(glm::vec2& vector, float value)

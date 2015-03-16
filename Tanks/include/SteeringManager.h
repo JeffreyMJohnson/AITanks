@@ -24,7 +24,7 @@ public:
 	void Evade(IBoid& target);
 	void Pursuit(IBoid& target);
 	void Separate();
-	void Alignment(std::vector<IBoid*>& agentList);
+	void Alignment();
 	void Update();
 
 	void Reset();
@@ -46,7 +46,7 @@ private:
 	vec DoEvade(IBoid& target);
 	vec DoPursuit(IBoid& target);
 	vec DoSeparate();
-	vec DoAlignment(std::vector<IBoid*>& agentList);
+	vec DoAlignment();
 
 	void SetAngle(vec& vector, float value);
 

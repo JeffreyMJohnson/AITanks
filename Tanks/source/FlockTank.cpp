@@ -23,6 +23,7 @@ void FlockTank::Update(float timeDelta)
 {
 	InBoundsLogic();
 	mSteering->Separate();
+	mSteering->Alignment();
 	mSteering->Update();
 	mFramework->MoveSprite(mSpriteId, mPosition.x, mPosition.y);
 	mRotationAngle = atan2f(mVelocity.y, mVelocity.x);
