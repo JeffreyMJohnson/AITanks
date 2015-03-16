@@ -3,6 +3,7 @@
 #include "Grid.h"
 #include "TagTank.h"
 #include "WanderTank.h"
+#include "FlockTank.h"
 
 #include <time.h>
 #include <iostream>
@@ -399,6 +400,7 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 
 void CreateTanks()
 {
+	/*
 	TagTank* tom = new TagTank;
 	TagTank* jerry = new TagTank;
 	tom->Initialize(&frk, grid.GetTile(10, 10)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), jerry, true);
@@ -411,7 +413,8 @@ void CreateTanks()
 	jerry->mMaxVelocity = 1.0f;
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
-
+	*/
+	/*
 	//10 wander tanks 
 	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 	for (int i = 0; i < 5; i++)
@@ -421,6 +424,17 @@ void CreateTanks()
 		w->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
 		w->mBounds = grid.gridRect;
 		tankList.push_back(w);
+	}
+	*/
+	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
+	for (int i = 0; i < 5; i++)
+	{
+		vec position = grid.GetTile(i + 2, 4)->mPosition;
+		FlockTank* t = new FlockTank;
+		t->Initialize(&frk, position, vec(20, 20), glm::vec4(0, 0, 1, 1), &tankList);
+		t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
+		t->mBounds = grid.gridRect;
+		tankList.push_back(t);
 	}
 }
 

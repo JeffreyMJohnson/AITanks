@@ -1,4 +1,5 @@
 #include "SteeringManager.h"
+#include "FlockTank.h"
 
 SteeringManager::SteeringManager(IBoid* host)
 {
@@ -167,7 +168,30 @@ vec SteeringManager::DoPursuit(IBoid& target)
 
 vec SteeringManager::DoSeparate()
 {
-	return vec();
+	vec force;
+	int numNeighbors = 0;
+	FlockTank* host = dynamic_cast<FlockTank*>(mHost);
+	assert(host != nullptr);
+	for (Entity* entity : *host->mEntityList)
+	{
+		//check if self, which distance would divide by zero!
+		if (entity == dynamic_cast<Entity*>(mHost))
+			continue;
+		vec direction = mHost->GetPosition() - entity->mPosition;
+		float distance = glm::length(direction);
+		if (distance <= host->NEIGHBOR_RADIUS)
+		{
+			numNeighbors++;
+			force += glm::normalize(direction) / (distance * host->REPULSION_FORCE);
+		}
+		
+	}
+	//check for divide by zero!
+	if (numNeighbors == 0)
+		return vec(0, 0);
+	force = force / (float)numNeighbors;
+	return force;
+		
 }
 
 vec SteeringManager::DoAlignment(std::vector<IBoid*>& agentList)
