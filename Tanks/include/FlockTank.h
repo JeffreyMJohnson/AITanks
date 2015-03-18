@@ -9,7 +9,7 @@ class FlockTank :
 {
 public:
 	std::vector<Entity*>* mEntityList;
-	const float REPULSION_FORCE = 5.0f;
+	const float REPULSION_FORCE = 10.0f;
 	const float COHESION_FORCE = 4.0f;
 	const float NEIGHBOR_RADIUS = 35.0f;
 

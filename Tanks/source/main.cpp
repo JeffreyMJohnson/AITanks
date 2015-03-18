@@ -4,11 +4,13 @@
 #include "TagTank.h"
 #include "WanderTank.h"
 #include "FlockTank.h"
+#include "StateTank.h"
 
 #include <time.h>
 #include <iostream>
 #include <algorithm>
 #include <assert.h>
+#include <memory>
 
 typedef std::vector<Tile*>::iterator It;
 #define GLM_FORCE_PURE
@@ -414,6 +416,7 @@ void CreateTanks()
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
 	*/
+
 	/*
 	//10 wander tanks 
 	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
@@ -426,7 +429,8 @@ void CreateTanks()
 		tankList.push_back(w);
 	}
 	*/
-	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
+	/*
+	//unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 	for (int i = 0; i < 25; i++)
 	{
 		vec position = grid.GetRandomTile()->mPosition;
@@ -436,6 +440,14 @@ void CreateTanks()
 		t->mBounds = grid.gridRect;
 		tankList.push_back(t);
 	}
+	*/
+	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
+
+	StateTank* t = new StateTank;
+	t->Initialize(&frk, grid.GetTile(0, 0)->mPosition, vec(20, 20), &grid);
+	t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
+	t->mBounds = grid.gridRect;
+	tankList.push_back(t);
 }
 
 void Initialize()

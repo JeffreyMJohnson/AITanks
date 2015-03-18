@@ -78,6 +78,7 @@
     <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
+    <ClCompile Include="source\StateTank.cpp" />
     <ClCompile Include="source\SteeringManager.cpp" />
     <ClCompile Include="source\TagTank.cpp" />
     <ClCompile Include="source\pathFinder.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="include\Globals.h" />
     <ClInclude Include="include\Grid.h" />
     <ClInclude Include="include\IBoid.h" />
+    <ClInclude Include="include\StateTank.h" />
     <ClInclude Include="include\SteeringManager.h" />
     <ClInclude Include="include\TagTank.h" />
     <ClInclude Include="include\Tank.h" />

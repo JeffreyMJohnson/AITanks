@@ -75,6 +75,9 @@
     <ClCompile Include="source\FlockTank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\StateTank.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Globals.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files\grid</Filter>
     </ClInclude>
     <ClInclude Include="include\WanderTank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\StateTank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
