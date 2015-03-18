@@ -10,7 +10,7 @@
 #include <iostream>
 #include <algorithm>
 #include <assert.h>
-#include <memory>
+#include <string>
 
 typedef std::vector<Tile*>::iterator It;
 #define GLM_FORCE_PURE
@@ -18,7 +18,7 @@ typedef glm::vec2 vec2;
 
 /*
 left off:
-finished bare bones of flocktank class, enough to instantiate in main. steering class needs to implement flocking behaviours 
+finished bare bones of flocktank class, enough to instantiate in main. steering class needs to implement flocking behaviours
 separate and alignment.
 */
 
@@ -64,7 +64,7 @@ int main()
 	srand((unsigned int)time(NULL));
 
 	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
-	frk.SetBackgroundColor(1, 1, 1, 1);
+	frk.SetBackgroundColor(.071, .20, .376, 1);
 
 	//create grid and tanks
 	Initialize();
@@ -77,6 +77,13 @@ int main()
 		grid.Draw();
 		//TankLogic(frk.GetDeltaTime());
 		TankLogic(1 / 30.0f);
+
+		std::string s("Tank: ");
+		s += std::to_string(dynamic_cast<StateTank*>(tankList[0])->GetCurrentResourceQty());
+		frk.DrawText(s.c_str(), MNF::Globals::SCREEN_WIDTH * .5f, MNF::Globals::SCREEN_HEIGHT * .9f);
+
+		s = "Total: " + std::to_string(dynamic_cast<StateTank*>(tankList[0])->mTotalResourceQuantity);
+		frk.DrawText(s.c_str(), MNF::Globals::SCREEN_WIDTH * .1f, MNF::Globals::SCREEN_HEIGHT * .9f);
 
 		HandleUI();
 		//AutoRun();
@@ -120,14 +127,14 @@ void HandleUI()
 	double yPos = 0;
 	if (frk.IsMouseButtonDown(MOUSE_BUTTON::LEFT, xPos, yPos) && tank.mGoalNode == nullptr)
 	{
-		ResetTiles();
-		//check if current node is old goal node and change color
-		GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
-		Tile* t = GetNearestTile(xPos, yPos);
-		t->mColor = RED;
-		mGoalNode = t;
-		//tank.mGoalNode = t;
-		AStarPathFind(false);
+	ResetTiles();
+	//check if current node is old goal node and change color
+	GetNearestTile(tank.mPosition.x, tank.mPosition.y)->mColor = GREEN;
+	Tile* t = GetNearestTile(xPos, yPos);
+	t->mColor = RED;
+	mGoalNode = t;
+	//tank.mGoalNode = t;
+	AStarPathFind(false);
 	}
 	*/
 }
@@ -418,27 +425,27 @@ void CreateTanks()
 	*/
 
 	/*
-	//10 wander tanks 
+	//10 wander tanks
 	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 	for (int i = 0; i < 5; i++)
 	{
-		WanderTank* w = new WanderTank;
-		w->Initialize(&frk, grid.GetRandomTile()->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));
-		w->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
-		w->mBounds = grid.gridRect;
-		tankList.push_back(w);
+	WanderTank* w = new WanderTank;
+	w->Initialize(&frk, grid.GetRandomTile()->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));
+	w->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
+	w->mBounds = grid.gridRect;
+	tankList.push_back(w);
 	}
 	*/
 	/*
 	//unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 	for (int i = 0; i < 25; i++)
 	{
-		vec position = grid.GetRandomTile()->mPosition;
-		FlockTank* t = new FlockTank;
-		t->Initialize(&frk, position, vec(20, 20), glm::vec4(0, 0, 1, 1), &tankList);
-		t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
-		t->mBounds = grid.gridRect;
-		tankList.push_back(t);
+	vec position = grid.GetRandomTile()->mPosition;
+	FlockTank* t = new FlockTank;
+	t->Initialize(&frk, position, vec(20, 20), glm::vec4(0, 0, 1, 1), &tankList);
+	t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
+	t->mBounds = grid.gridRect;
+	tankList.push_back(t);
 	}
 	*/
 	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
@@ -447,6 +454,7 @@ void CreateTanks()
 	t->Initialize(&frk, grid.GetTile(0, 0)->mPosition, vec(20, 20), &grid);
 	t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
 	t->mBounds = grid.gridRect;
+	t->mMaxVelocity = 5.0f;
 	tankList.push_back(t);
 }
 
