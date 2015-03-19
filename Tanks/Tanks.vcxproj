@@ -69,15 +69,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\CollectResource.cpp" />
+    <ClCompile Include="source\DepositResource.cpp" />
     <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\FlockTank.cpp" />
     <ClCompile Include="source\Font.cpp" />
     <ClCompile Include="source\FontChar.cpp" />
     <ClCompile Include="source\FontManager.cpp" />
     <ClCompile Include="source\Framework.cpp" />
+    <ClCompile Include="source\GoToResource.cpp" />
     <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
+    <ClCompile Include="source\StateManager.cpp" />
     <ClCompile Include="source\StateTank.cpp" />
     <ClCompile Include="source\SteeringManager.cpp" />
     <ClCompile Include="source\TagTank.cpp" />
@@ -87,6 +91,8 @@
     <ClCompile Include="source\WanderTank.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CollectResource.h" />
+    <ClInclude Include="include\DepositResource.h" />
     <ClInclude Include="include\Edge.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\FlockTank.h" />
@@ -97,8 +103,11 @@
     <ClInclude Include="include\framework\Framework.h" />
     <ClInclude Include="include\framework\Sprite.h" />
     <ClInclude Include="include\Globals.h" />
+    <ClInclude Include="include\GoToResource.h" />
     <ClInclude Include="include\Grid.h" />
     <ClInclude Include="include\IBoid.h" />
+    <ClInclude Include="include\State.h" />
+    <ClInclude Include="include\StateManager.h" />
     <ClInclude Include="include\StateTank.h" />
     <ClInclude Include="include\SteeringManager.h" />
     <ClInclude Include="include\TagTank.h" />

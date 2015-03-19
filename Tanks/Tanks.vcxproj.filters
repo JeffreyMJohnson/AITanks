@@ -25,6 +25,12 @@
     <Filter Include="Source Files\grid">
       <UniqueIdentifier>{f9a189c3-3354-4fbc-90e0-4e25f9c4b911}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\tanks">
+      <UniqueIdentifier>{1af03d2f-2124-46d5-9d87-397e3aaa1cf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tanks">
+      <UniqueIdentifier>{d3913e89-c948-4720-ba9c-e75f125a63f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -36,13 +42,7 @@
     <ClCompile Include="source\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\TagTank.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\pathFinder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Tank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Animation.cpp">
@@ -69,21 +69,36 @@
     <ClCompile Include="source\Grid.cpp">
       <Filter>Source Files\grid</Filter>
     </ClCompile>
-    <ClCompile Include="source\WanderTank.cpp">
+    <ClCompile Include="source\StateManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GoToResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CollectResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\FlockTank.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\tanks</Filter>
     </ClCompile>
     <ClCompile Include="source\StateTank.cpp">
+      <Filter>Source Files\tanks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TagTank.cpp">
+      <Filter>Source Files\tanks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Tank.cpp">
+      <Filter>Source Files\tanks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\WanderTank.cpp">
+      <Filter>Source Files\tanks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\DepositResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Tank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\IBoid.h">
@@ -93,12 +108,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\TagTank.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\FlockTank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\framework\Animation.h">
@@ -128,10 +137,34 @@
     <ClInclude Include="include\Tile.h">
       <Filter>Header Files\grid</Filter>
     </ClInclude>
-    <ClInclude Include="include\WanderTank.h">
+    <ClInclude Include="include\StateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\State.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GoToResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CollectResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FlockTank.h">
+      <Filter>Header Files\tanks</Filter>
+    </ClInclude>
     <ClInclude Include="include\StateTank.h">
+      <Filter>Header Files\tanks</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TagTank.h">
+      <Filter>Header Files\tanks</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tank.h">
+      <Filter>Header Files\tanks</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WanderTank.h">
+      <Filter>Header Files\tanks</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DepositResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
