@@ -19,6 +19,7 @@ public:
 	float mMaxVelocity = 1.0f;
 	float mRotationAngle = 0.0f;
 	glm::vec4 mBounds;
+	SteeringManager* mSteering;
 
 	~Tank();
 
@@ -37,7 +38,7 @@ public:
 	void Draw(){};
 
 protected:
-	SteeringManager* mSteering;
+	
 	void InBoundsLogic();
 
 };

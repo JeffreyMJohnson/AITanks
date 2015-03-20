@@ -2,7 +2,6 @@
 #define _STATE_H_
 
 #include "StateTank.h"
-#include "StateManager.h"
 
 class StateManager;
 

@@ -2,6 +2,7 @@
 #define _COLLECT_RESOURCE_H_
 
 #include "State.h"
+#include "StateManager.h"
 
 class CollectResource : public State
 {

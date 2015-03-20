@@ -2,6 +2,7 @@
 #define _DEPOSIT_RESOURCE_H_
 
 #include "State.h"
+#include "StateManager.h"
 
 class DepositResource : public State
 {

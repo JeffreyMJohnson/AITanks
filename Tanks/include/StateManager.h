@@ -4,8 +4,7 @@
 
 #include "State.h"
 
-class State;
-
+/**/
 class StateManager
 {
 public:

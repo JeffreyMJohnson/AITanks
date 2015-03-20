@@ -2,6 +2,7 @@
 #define _GO_TO_RESOURCE_H_
 
 #include "State.h"
+#include "StateManager.h"
 
 class GoToResource : public State
 {
@@ -12,7 +13,5 @@ public:
 	void Exit(StateTank* agent, StateManager* manager);
 
 };
-
-
 
 #endif
