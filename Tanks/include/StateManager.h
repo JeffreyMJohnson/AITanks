@@ -16,12 +16,14 @@ public:
 	State* GetGlobalState();
 	void SetGlobalState(State* newState);
 
+	State* GetPreviousState();
+
 	void Update(float timeDelta);
 
 	StateTank* mOwner;
 	State* mCurrentState;
 	State* mGlobalState;
-
+	State* mPreviousState;
 
 private:
 

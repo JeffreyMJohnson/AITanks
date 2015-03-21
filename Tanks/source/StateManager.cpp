@@ -14,15 +14,22 @@ State* StateManager::GetCurrentState()
 void StateManager::SetCurrentState(State* newState)
 {
 	assert(newState != nullptr);
+	assert(mCurrentState != nullptr);
 	/*
 	 First we call the Exit() function of the currentState variable, passing in our owner and ourselves
 	 Then we call the Enter() function of the state that was passed in as an argument, again passing in our owner variable and ourselves.
 	*/
 
-	mCurrentState->Exit(mOwner, this);
+	//THIS CLASS HAS OWNERSHIP OF STATE CLASSES ON THE HEAP, MUST DELETE
+	//This could be the mPreviousState variable to revert state, must check before deleting
+	//delete it before changing so no memory leak
+	if (mPreviousState != nullptr && newState != mPreviousState)
+	{
+		delete mPreviousState;
+	}
 
-	//THIS CLASS HAS OWNERSHIP OF STATE CLASSES ON THE HEAP, MUST DELETE AFTER CALLING EXIT()
-	delete mCurrentState;
+	mPreviousState = mCurrentState;
+	mCurrentState->Exit(mOwner, this);
 	newState->Enter(mOwner, this);
 	mCurrentState = newState;
 }
@@ -44,6 +51,11 @@ void StateManager::SetGlobalState(State* newState)
 	{
 		mCurrentState->Enter(mOwner, this);
 	}
+}
+
+State* StateManager::GetPreviousState()
+{
+	return mPreviousState;
 }
 
 
