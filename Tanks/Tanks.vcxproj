@@ -69,9 +69,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\Animation.cpp" />
+    <ClCompile Include="source\CheckTimerDecision.cpp" />
     <ClCompile Include="source\CollectResource.cpp" />
+    <ClCompile Include="source\DecisionTank.cpp" />
     <ClCompile Include="source\DepositResource.cpp" />
     <ClCompile Include="source\Entity.cpp" />
+    <ClCompile Include="source\FleeDecision.cpp" />
     <ClCompile Include="source\FlockTank.cpp" />
     <ClCompile Include="source\Font.cpp" />
     <ClCompile Include="source\FontChar.cpp" />
@@ -88,13 +91,18 @@
     <ClCompile Include="source\pathFinder.cpp" />
     <ClCompile Include="source\Tank.cpp" />
     <ClCompile Include="source\Tile.cpp" />
+    <ClCompile Include="source\WanderDecision.cpp" />
     <ClCompile Include="source\WanderTank.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CheckTimerDecision.h" />
     <ClInclude Include="include\CollectResource.h" />
+    <ClInclude Include="include\Decision.h" />
+    <ClInclude Include="include\DecisionTank.h" />
     <ClInclude Include="include\DepositResource.h" />
     <ClInclude Include="include\Edge.h" />
     <ClInclude Include="include\Entity.h" />
+    <ClInclude Include="include\FleeDecision.h" />
     <ClInclude Include="include\FlockTank.h" />
     <ClInclude Include="include\framework\Animation.h" />
     <ClInclude Include="include\framework\Font.h" />
@@ -113,6 +121,7 @@
     <ClInclude Include="include\TagTank.h" />
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Tile.h" />
+    <ClInclude Include="include\WanderDecision.h" />
     <ClInclude Include="include\WanderTank.h" />
   </ItemGroup>
   <ItemGroup>
