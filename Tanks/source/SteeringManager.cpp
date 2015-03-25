@@ -94,6 +94,16 @@ vec SteeringManager::DoFlee(vec target)
 
 vec SteeringManager::DoWander()
 {
+	//get random target on circle around tank
+	int randAngle = rand() % 360;
+	float randX = CIRCLE_RADIUS * cosf(randAngle * RADIAN_CONVERSION) + mHost->GetPosition().x;
+	float randY = CIRCLE_RADIUS * sinf(randAngle * RADIAN_CONVERSION) + mHost->GetPosition().y;
+
+
+
+	return vec(0, 0);
+
+	/*
 	//CIRCLE CENTER POSITION
 	//calculate center of circle, because it's in front of owner, use the velocity as a guide.
 	vec circleCenter = mHost->GetVelocity();
@@ -125,7 +135,7 @@ vec SteeringManager::DoWander()
 	random number as well as 0.  This keeps the distribution 50/50 when subtracting by half,
 	otherwise the result is weighted to the below-half side and the tank will tend to circle in
 	one direction.*/
-
+	/*
 	int r = (rand() % (ANGLE_CHANGE + 1));
 	int s = (int)(ANGLE_CHANGE * .5f);
 	//subtracting by half changes scale around 0, equally distributed neg/pos.
@@ -135,7 +145,7 @@ vec SteeringManager::DoWander()
 	//scale up because final result is scaled down by deltaTime
 	vec force = (circleCenter + displacemenet) * WANDER_FORCE_SCALE;
 	return force;
-
+	*/
 
 }
 
