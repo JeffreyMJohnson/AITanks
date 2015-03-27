@@ -415,7 +415,8 @@ void CreateTanks()
 	for (int i = 0; i < 1; i++)
 	{
 		WanderTank* w = new WanderTank;
-		w->Initialize(&frk, grid.GetRandomTile()->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));
+		//w->Initialize(&frk, grid.GetRandomTile()->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));
+		w->Initialize(&frk, grid.GetTile(1,1)->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));
 		w->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
 		w->mBounds = grid.gridRect;
 		tankList.push_back(w);

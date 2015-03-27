@@ -84,7 +84,7 @@ void TagTank::Update(float timeDelta)
 	}
 
 
-	mSteering->Update();
+	mSteering->Update(timeDelta);
 	mFramework->MoveSprite(mSpriteId, mPosition.x, mPosition.y);
 	mRotationAngle = atan2f(mVelocity.y, mVelocity.x);
 	mFramework->RotateSprite(mSpriteId, mRotationAngle);

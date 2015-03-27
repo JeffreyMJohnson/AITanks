@@ -1,5 +1,5 @@
 #include "SteeringManager.h"
-
+#include <iostream>
 SteeringManager::SteeringManager(IBoid* host)
 {
 	mHost = host;
@@ -31,7 +31,7 @@ void SteeringManager::Pursuit(IBoid& target)
 	mSteering += DoPursuit(target);
 }
 
-void SteeringManager::Update()
+void SteeringManager::Update(float timeDelta)
 {
 	vec& velocity = mHost->GetVelocity();
 	vec& position = mHost->GetPosition();
@@ -42,7 +42,7 @@ void SteeringManager::Update()
 	velocity += mSteering;
 	Truncate(velocity, mHost->GetMaxVelocity());
 	
-	position += mHost->GetVelocity();
+	position += mHost->GetVelocity() * timeDelta;
 }
 
 void SteeringManager::Reset()
@@ -156,7 +156,32 @@ vec SteeringManager::DoWander()
 	/*add circleCenter to targetVector*/
 	mWanderTarget += circleCenter;
 
-	return DoSeek(mWanderTarget);
+	
+
+	mWanderTarget = glm::normalize(mWanderTarget);
+	mWanderTarget *= mHost->GetMaxVelocity();
+return mWanderTarget;// - mHost->GetVelocity();
+
+	/*vec force = vec(0, 0);
+	float distance = 0.0f;
+
+	vec desired = target - mHost->GetPosition();
+	distance = glm::length(desired);
+	desired = glm::normalize(desired);
+
+	if (distance <= slowingRadius)
+	{
+		desired *= (mHost->GetMaxVelocity() * distance / slowingRadius);
+	}
+	else
+	{
+		desired *= mHost->GetMaxVelocity();
+	}
+
+	force = desired - mHost->GetVelocity();
+
+	return force;*/
+	//return mWanderTarget;
 
 	/*
 	//CIRCLE CENTER POSITION

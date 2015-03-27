@@ -21,7 +21,7 @@ public:
 	void Evade(IBoid& target);
 	void Pursuit(IBoid& target);
 
-	void Update();
+	void Update(float timeDelta);
 
 	void Reset();
 
@@ -29,9 +29,9 @@ public:
 
 private:
 	//MAGIC NUMBERS 
-	const float WANDER_CIRCLE_DISTANCE = 10000.f;
-	const float WANDER_CIRCLE_RADIUS = 100000.f;
-	const float WANDER_JITTER_SCALE = 3000.f;
+	const float WANDER_CIRCLE_DISTANCE = 50.f;
+	const float WANDER_CIRCLE_RADIUS = 500.f;
+	const float WANDER_JITTER_SCALE = 5.f;
 
 	//value of -1 is flag for not being set yet
 	vec mWanderTarget = vec(-1, -1);
