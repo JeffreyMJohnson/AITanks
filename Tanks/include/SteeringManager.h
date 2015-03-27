@@ -29,9 +29,9 @@ public:
 
 private:
 	//MAGIC NUMBERS 
-	const float WANDER_CIRCLE_DISTANCE = 5.f;
-	const float WANDER_CIRCLE_RADIUS = 100.f;
-	const float WANDER_JITTER_SCALE = 10.f;
+	const float WANDER_CIRCLE_DISTANCE = 10000.f;
+	const float WANDER_CIRCLE_RADIUS = 100000.f;
+	const float WANDER_JITTER_SCALE = 3000.f;
 
 	//value of -1 is flag for not being set yet
 	vec mWanderTarget = vec(-1, -1);
