@@ -51,6 +51,7 @@ Grid grid(&frk);
 
 std::vector<Entity*> tankList;
 
+
 int main()
 {
 	srand((unsigned int)time(NULL));
@@ -394,6 +395,7 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 
 void CreateTanks()
 {
+	/*
 	TagTank* tom = new TagTank;
 	TagTank* jerry = new TagTank;
 	tom->Initialize(&frk, grid.GetTile(10, 10)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), jerry, true);
@@ -406,10 +408,11 @@ void CreateTanks()
 	jerry->mMaxVelocity = 1.0f;
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
+	*/
 
 	//10 wander tanks 
 	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		WanderTank* w = new WanderTank;
 		w->Initialize(&frk, grid.GetRandomTile()->mPosition, glm::vec2(20, 20), glm::vec4(1, 1, 0, 1));

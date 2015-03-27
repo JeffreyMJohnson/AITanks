@@ -94,14 +94,69 @@ vec SteeringManager::DoFlee(vec target)
 
 vec SteeringManager::DoWander()
 {
-	//get random target on circle around tank
-	int randAngle = rand() % 360;
-	float randX = CIRCLE_RADIUS * cosf(randAngle * RADIAN_CONVERSION) + mHost->GetPosition().x;
-	float randY = CIRCLE_RADIUS * sinf(randAngle * RADIAN_CONVERSION) + mHost->GetPosition().y;
+	/*
+	straight from skip:
+	if no previous targetVector
+	get random targetVector
 
+	get random jitterVector
 
+	multiply jitterVector by jitterScaler (this should be a small value)
 
-	return vec(0, 0);
+	add jitterVector to targetVector
+
+	normalize targetVector
+
+	get facing direction vector of player dirVector
+
+	multiply dirVector by disFromPlayerScaler set it to circleCenter
+
+	add playerPosition to circleCenter
+
+	multiply targetVector by circleRadius
+
+	add circleCenter to targetVector
+
+	return targetVector
+	*/
+
+	/*
+		if no previous targetVector
+	get random targetVector
+	*/
+	if (mWanderTarget == vec(-1,-1))
+	{
+		mWanderTarget = GetRandomVector();
+	}
+
+	/*get random jitterVector*/
+	vec jitter = GetRandomVector();
+
+	/*multiply jitterVector by jitterScaler(this should be a small value)*/
+	jitter *= WANDER_JITTER_SCALE;
+
+	/*add jitterVector to targetVector*/
+	mWanderTarget += jitter;
+
+	/*normalize targetVector*/
+	mWanderTarget = glm::normalize(mWanderTarget);
+
+	/*get facing direction vector of player dirVector*/
+	vec dirVector = glm::normalize(mHost->GetVelocity());
+
+	/*multiply dirVector by disFromPlayerScaler set it to circleCenter*/
+	vec circleCenter =  dirVector * WANDER_CIRCLE_DISTANCE;
+
+	/*add playerPosition to circleCenter*/
+	circleCenter += mHost->GetPosition();
+
+	/*multiply targetVector by circleRadius*/
+	mWanderTarget *= WANDER_CIRCLE_RADIUS;
+
+	/*add circleCenter to targetVector*/
+	mWanderTarget += circleCenter;
+
+	return DoSeek(mWanderTarget);
 
 	/*
 	//CIRCLE CENTER POSITION
@@ -119,13 +174,13 @@ vec SteeringManager::DoWander()
 	//normalize into vector with only direction
 	circleCenter = glm::normalize(circleCenter);
 	//scale vector by the distance the circle is from owner for correct magnitude.
-	circleCenter *= CIRCLE_DISTANCE;
+	circleCenter *= WANDER_CIRCLE_DISTANCE;
 
 	//DISPLACEMENT FORCE - responsible for left/right turn
 	//use vector aligned with y axis
 	vec displacemenet(0, -1);
 	//scale it by circle radius
-	displacemenet *= CIRCLE_RADIUS;
+	displacemenet *= WANDER_CIRCLE_RADIUS;
 
 	//randomly change vector direction by making it change it's current angle.
 	SetAngle(displacemenet, (float)mWanderAngle_);
@@ -176,4 +231,14 @@ void SteeringManager::SetAngle(glm::vec2& vector, float value)
 	float length = glm::length(vector);
 	vector.x = cosf(value * RADIAN_CONVERSION) * length;
 	vector.y = sinf(value * RADIAN_CONVERSION) * length;
+}
+
+/*
+returns a random 2D unit vector
+*/
+vec SteeringManager::GetRandomVector()
+{
+	return vec(
+		cos((rand() % 360) * RADIAN_CONVERSION),
+		sin((rand() % 360) * RADIAN_CONVERSION));
 }

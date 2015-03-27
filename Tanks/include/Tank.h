@@ -16,7 +16,7 @@ class Tank :
 public:
 	glm::vec2 mVelocity;
 	float mMass = 1.0f;
-	float mMaxVelocity = 1.0f;
+	float mMaxVelocity = 1.f;
 	float mRotationAngle = 0.0f;
 	glm::vec4 mBounds;
 

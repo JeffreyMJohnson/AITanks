@@ -8,6 +8,7 @@ Tank::~Tank()
 void Tank::Initialize(Framework* framework)
 {
 	mSteering = new SteeringManager(this);
+	mVelocity = vec(mMaxVelocity, mMaxVelocity);
 	Entity::Initialize(framework);
 
 }
@@ -15,12 +16,14 @@ void Tank::Initialize(Framework* framework)
 void Tank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size)
 {
 	mSteering = new SteeringManager(this);
+	mVelocity = vec(mMaxVelocity, mMaxVelocity);
 	Entity::Initialize(framework, position, size);
 }
 
 void Tank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color)
 {
 	mSteering = new SteeringManager(this);
+	mVelocity = vec(mMaxVelocity, mMaxVelocity);
 	Entity::Initialize(framework, position, size, color);
 }
 
