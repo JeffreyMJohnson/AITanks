@@ -1,4 +1,3 @@
-#include "Globals.h"
 #include "framework/Framework.h"
 #include "Grid.h"
 #include "TagTank.h"
@@ -16,18 +15,15 @@ typedef std::vector<Tile*>::iterator It;
 #define GLM_FORCE_PURE
 typedef glm::vec2 vec2;
 
+using namespace MNF;
+
 /*
 left off:
 finished bare bones of flocktank class, enough to instantiate in main. steering class needs to implement flocking behaviours
 separate and alignment.
 */
 
-enum HEURISTIC_TYPE
-{
-	DISTANCE,
-	MANHATTAN,
-	DIAGONAL
-};
+
 
 void Initialize();
 void Destroy();
@@ -46,11 +42,11 @@ void TankLogic(float deltaTime);
 */
 
 
-const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
-const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
-const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
-const glm::vec4 BLUE = glm::vec4(0, 0, 1, 1);
-const glm::vec4 BROWN = glm::vec4(0.501, 0.152, 0.039, 1.0f);
+//const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
+//const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
+//const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
+//const glm::vec4 BLUE = glm::vec4(0, 0, 1, 1);
+//const glm::vec4 BROWN = glm::vec4(0.501, 0.152, 0.039, 1.0f);
 
 Framework frk;
 bool quit = false;
@@ -63,7 +59,7 @@ int main()
 {
 	srand((unsigned int)time(NULL));
 
-	frk.Initialize(MNF::Globals::SCREEN_WIDTH, MNF::Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
+	frk.Initialize(Globals::SCREEN_WIDTH, Globals::SCREEN_HEIGHT, "Tanks Path Find Demo");
 	frk.SetBackgroundColor(.071, .20, .376, 1);
 
 	//create grid and tanks
@@ -80,10 +76,10 @@ int main()
 
 		std::string s("Tank: ");
 		s += std::to_string(dynamic_cast<StateTank*>(tankList[0])->GetCurrentResourceQty());
-		frk.DrawText(s.c_str(), MNF::Globals::SCREEN_WIDTH * .5f, MNF::Globals::SCREEN_HEIGHT * .9f);
+		frk.DrawText(s.c_str(), Globals::SCREEN_WIDTH * .5f, Globals::SCREEN_HEIGHT * .9f);
 
 		s = "Total: " + std::to_string(dynamic_cast<StateTank*>(tankList[0])->mTotalResourceQuantity);
-		frk.DrawText(s.c_str(), MNF::Globals::SCREEN_WIDTH * .1f, MNF::Globals::SCREEN_HEIGHT * .9f);
+		frk.DrawText(s.c_str(), Globals::SCREEN_WIDTH * .1f, Globals::SCREEN_HEIGHT * .9f);
 
 		HandleUI();
 		//AutoRun();
@@ -160,30 +156,9 @@ void AutoRun()
 	//}
 }
 
-bool SortOnFScore(Tile* lhs, Tile* rhs)
-{
-	return lhs->mFScore < rhs->mFScore;
-}
 
-float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
-{
-	float result = 0;
-	float distanceX;
-	float distanceY;
-	switch (type)
-	{
-	case DISTANCE:
-		result = glm::distance(node->mPosition, nodeTarget->mPosition);
-		break;
-	case MANHATTAN:
-		distanceX = abs(node->mPosition.x - nodeTarget->mPosition.x);
-		distanceY = abs(node->mPosition.y - nodeTarget->mPosition.y);
-		result = distanceX + distanceY;
-		break;
-	}
-	return result;
 
-}
+
 
 //void ThetaStarPathFind(Tank& tank)
 //{
@@ -257,140 +232,10 @@ float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget)
 //	}
 //}
 //
-//void AStarPathFind(bool smoothPath, Tank& tank)
-//{
-//	std::list<Tile*> priorityQ;
-//	Tile* startTile = GetNearestTile(tank.mPosition.x, tank.mPosition.y);
-//	priorityQ.push_front(startTile);
-//	startTile->mGScore = 0;
-//	startTile->mPathParentNode = startTile;
-//
-//	while (!priorityQ.empty())
-//	{
-//		priorityQ.sort(SortOnFScore);
-//		Tile* current = priorityQ.front();
-//		priorityQ.pop_front();
-//
-//		current->mIsVisited = true;
-//		if (current != startTile && current != mGoalNode && current->mIsWalkable)
-//		{
-//			current->mColor = glm::vec4(1, 1, 0, 1);
-//		}
-//
-//		if (current == mGoalNode)
-//			break;
-//
-//		for (auto edge : current->mEdges)
-//		{
-//			Tile* neighbor = edge->mEnd;
-//			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
-//			{
-//				float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(DISTANCE, neighbor, mGoalNode);
-//				//float fScore = current->mGScore + neighbor->mWeight + GetHeuristic(MANHATTAN, neighbor, mGoalNode);
-//				if (fScore < neighbor->mGScore)
-//				{
-//					neighbor->mPathParentNode = current;
-//					neighbor->mGScore = current->mGScore + neighbor->mWeight;
-//					neighbor->mFScore = (int)fScore;
-//					if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end())
-//					{
-//						priorityQ.push_back(neighbor);
-//					}
-//				}
-//			}
-//		}
-//
-//	}
-//	if (mGoalNode->mPathParentNode == nullptr)
-//	{
-//		//no solution
-//		return;
-//	}
-//
-//	tank.pathList.push_back(mGoalNode);
-//	Tile* parent = mGoalNode->mPathParentNode;
-//	tank.pathList.insert(tank.pathList.begin(), parent);
-//	while (parent != startTile)
-//	{
-//		parent = parent->mPathParentNode;
-//		tank.pathList.insert(tank.pathList.begin(), parent);
-//	}
-//
-//	if (smoothPath)
-//	{
-//
-//		if (tank.pathList.size() < 3)
-//			return;
-//		Tile* start = *tank.pathList.begin();
-//		Tile* end = *(tank.pathList.begin() + 2);
-//
-//		//std::find(tank.pathList.begin(), tank.pathList.end(), start)
-//		//std::find(tank.pathList.begin(), tank.pathList.end(), end)
-//		while (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
-//		{
-//			if (HasStraightLine(start, end))
-//			{
-//				//remove node after start
-//				tank.pathList.erase(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
-//				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
-//				{
-//					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
-//				}				
-//			}
-//			else
-//			{
-//				start = *(std::find(tank.pathList.begin(), tank.pathList.end(), start) + 1);
-//				if (std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1 != tank.pathList.end())
-//				{
-//					end = *(std::find(tank.pathList.begin(), tank.pathList.end(), end) + 1);
-//				}
-//			}
-//		}
-//	}
-//}
 
-//std::vector<Tile*> GetTilesInLine(MNF::Collider::Ray& ray, Tile* end)
-//{
-//	std::vector<Tile*> result;
-//	vec2 currentPosition = ray.origin;
-//	Tile* currentTile = nullptr;
-//
-//	while (currentTile != end)
-//	{
-//		currentPosition += end->mSize * ray.direction;
-//		currentTile = GetNearestTile(currentPosition.x, currentPosition.y);
-//		if (std::find(result.begin(), result.end(), currentTile) == result.end())
-//		{
-//			result.push_back(currentTile);
-//		}
-//		
-//	}
-//	return result;
-//}
 
-//bool HasStraightLine(Tile* start, Tile* goal)
-//{
-//	Ray ray(start->mPosition, GetRayDirection(start->mPosition, goal->mPosition));
-//	//need to check every object for collision
-//	std::vector<Tile*> nodeList = GetTilesInLine(ray, goal);
-//	for (Tile* tile : nodeList)
-//	{
-//		//only need to check non walkable objects
-//		if (!tile->mIsWalkable)
-//		{
-//			AABB box = GetAABB(tile);
-//			float enter = 0.0f;
-//			float exit = 0.0f;
-//			if (RayAABBIntersect(ray, box, enter, exit))
-//			{
-//				//if collision true, no straight line
-//				return false;
-//			}
-//		}
-//	}
-//	//no collisions found
-//	return true;
-//}
+
+
 
 //AABB GetAABB(Tile* tile)
 //{

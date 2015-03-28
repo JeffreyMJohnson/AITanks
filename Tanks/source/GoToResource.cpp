@@ -15,9 +15,9 @@ void GoToResource::Update(float deltaTime, StateTank* agent, StateManager* manag
 	go to resources:
 	reach node -> collect resources
 	*/
-	if (glm::distance(agent->mPosition, agent->FindClosestResource()) > 2)
+	if (glm::distance(agent->mPosition, agent->FindClosestResource()->mPosition) > 2)
 	{
-		agent->mSteering->Seek(agent->FindClosestResource(), 0.0f);
+		agent->mSteering->Seek(agent->FindClosestResource()->mPosition, 0.0f);
 		agent->mSteering->Update();
 	}
 	else

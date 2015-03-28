@@ -35,18 +35,23 @@ public:
 	Tile* GetNearestTile(glm::vec2 screenPosition);
 	void ResetTiles();
 	bool IsOutOfBounds(glm::vec2 position, glm::vec2 size);
-private:
-	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
-	Framework* mFramework;
-	std::vector<Tile*> mTileList;
 
-	void CreateGrid();
-	void LoadGridEdges();
+	const std::vector<Tile*>& GetResourceTilesList();
 
 	//pathfinding
 	bool HasStraightLine(Tile* start, Tile* goal);
 	glm::vec2 GetRayDirection(const glm::vec2& pointA, const glm::vec2& pointB);
 	std::vector<Tile*> GetTilesInLine(MNF::Collider::Ray& ray, Tile* end);
 	MNF::Collider::AABB GetAABB(Tile* tile);
+private:
+	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
+	Framework* mFramework;
+	std::vector<Tile*> mTileList;
+	std::vector<Tile*> mResourceTilesList;
+
+	void CreateGrid();
+	void LoadGridEdges();
+
+
 };
 #endif

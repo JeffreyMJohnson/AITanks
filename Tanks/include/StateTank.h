@@ -4,20 +4,22 @@
 #include "Tank.h"
 #include "Grid.h"
 
+#include <vector>
+#include <list>
+#include <limits>
 
 class StateManager;
+
+enum HEURISTIC_TYPE
+{
+	DISTANCE,
+	MANHATTAN,
+	DIAGONAL
+};
 
 class StateTank : public Tank
 {
 public:
-	/*
-	enum STATE
-	{
-		GO_TO_RESOURCE,
-		COLLECT_RESOURCE,
-		DEPOSIT_RESOURCE
-	};
-	*/
 	
 	static unsigned int mTotalResourceQuantity;
 	float mCollectionSpeed = .5f;
@@ -33,7 +35,7 @@ public:
 	void Draw();
 	unsigned int GetCurrentResourceQty();
 	vec FindClosestBase();
-	vec FindClosestResource();
+	Tile* FindClosestResource();
 
 
 
@@ -42,11 +44,13 @@ private:
 	//STATE mCurrentState;
 	StateManager* mStateManager;
 	
+	std::vector<Tile*> mPathTileList;
 
 	Tile* mBaseTile;
-	Tile* mResourceTile;
 
-	
+	void AStarPathFind(Tile* goal, bool smoothPath);
+	float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
+	bool HasStraightLine(Tile* start, Tile* goal);
 };
 
 

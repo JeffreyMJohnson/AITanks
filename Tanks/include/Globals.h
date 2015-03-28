@@ -120,6 +120,31 @@ namespace MNF
 			return (fabs(lhs - rhs) < delta);
 		}
 	};
+
+	class Color
+	{
+	public:
+		static glm::vec4 White()
+		{
+			return glm::vec4(1, 1, 1, 1);
+		}
+		static glm::vec4 Red()
+		{
+			return glm::vec4(1, 0, 0, 1);
+		}
+		static glm::vec4 Green()
+		{
+			return glm::vec4(0, 1, 0, 1);
+		}
+		static glm::vec4 Blue()
+		{
+			return glm::vec4(0, 0, 1, 1);
+		}
+		static glm::vec4 Brown()
+		{
+			return glm::vec4(0.501, 0.152, 0.039, 1.0f);
+		}
+	};
 }
 
 #endif

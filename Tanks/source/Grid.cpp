@@ -70,9 +70,16 @@ void Grid::CreateGrid()
 			//see if wall
 			if ((rand() % 100) + 1 <= wallProbability)
 			{
-				t->mColor = glm::vec4(0.501, 0.152, 0.039, 1.0f);
+				t->mColor = MNF::Color::Brown();
 				t->mWeight = INT_MAX;
 				t->mIsWalkable = false;
+			}
+			//resource tiles
+			if (row == 24 && col == 24 ||
+				row == 0 && col == 24)
+			{
+				t->mColor = MNF::Color::Green();
+				mResourceTilesList.push_back(t);
 			}
 
 		}
@@ -183,6 +190,11 @@ bool Grid::IsOutOfBounds(glm::vec2 position, glm::vec2 size = glm::vec2(0, 0))
 		position.y - halfSize.y >= gridRect.y &&
 		position.y + halfSize.y <= gridRect.w
 		);
+}
+
+const std::vector<Tile*>& Grid::GetResourceTilesList()
+{
+	return mResourceTilesList;
 }
 
 std::vector<Tile*> Grid::GetTilesInLine(MNF::Collider::Ray& ray, Tile* end)
