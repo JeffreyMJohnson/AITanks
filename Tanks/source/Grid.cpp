@@ -68,7 +68,7 @@ void Grid::CreateGrid()
 				position.x += tileSize.x;
 			}
 			//see if wall
-			if ((rand() % 100) + 1 <= wallProbability)
+			if ((rand() % 100) + 1 <= WALL_PROBABILITY)
 			{
 				t->mColor = MNF::Color::Brown();
 				t->mWeight = INT_MAX;
@@ -80,6 +80,13 @@ void Grid::CreateGrid()
 			{
 				t->mColor = MNF::Color::Green();
 				mResourceTilesList.push_back(t);
+			}
+
+			//base tiles
+			if (row == 0 && col == 0)
+			{
+				t->mColor = MNF::Color::Red();
+				mBaseTilesList.push_back(t);
 			}
 
 		}
@@ -195,6 +202,11 @@ bool Grid::IsOutOfBounds(glm::vec2 position, glm::vec2 size = glm::vec2(0, 0))
 const std::vector<Tile*>& Grid::GetResourceTilesList()
 {
 	return mResourceTilesList;
+}
+
+const std::vector<Tile*>& Grid::GetBaseTilesList()
+{
+	return mBaseTilesList;
 }
 
 std::vector<Tile*> Grid::GetTilesInLine(MNF::Collider::Ray& ray, Tile* end)

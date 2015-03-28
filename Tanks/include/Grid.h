@@ -37,6 +37,7 @@ public:
 	bool IsOutOfBounds(glm::vec2 position, glm::vec2 size);
 
 	const std::vector<Tile*>& GetResourceTilesList();
+	const std::vector<Tile*>& GetBaseTilesList();
 
 	//pathfinding
 	bool HasStraightLine(Tile* start, Tile* goal);
@@ -44,10 +45,11 @@ public:
 	std::vector<Tile*> GetTilesInLine(MNF::Collider::Ray& ray, Tile* end);
 	MNF::Collider::AABB GetAABB(Tile* tile);
 private:
-	const int wallProbability = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
+	const int WALL_PROBABILITY = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
 	Framework* mFramework;
 	std::vector<Tile*> mTileList;
 	std::vector<Tile*> mResourceTilesList;
+	std::vector<Tile*> mBaseTilesList;
 
 	void CreateGrid();
 	void LoadGridEdges();

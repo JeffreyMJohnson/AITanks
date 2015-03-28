@@ -8,8 +8,6 @@ unsigned int StateTank::mTotalResourceQuantity = 0.0f;
 void StateTank::Initialize(Framework* framework, Grid* grid)
 {
 	mGrid = grid;
-	mBaseTile = mGrid->GetTile(0, 0);
-	mBaseTile->mColor = glm::vec4(.824, .129, 0, 1);
 	//state manager has ownership of GoToResource heap pointer
 	mStateManager = new StateManager(this, new GoToResource);
 	Tank::Initialize(framework);
@@ -18,8 +16,6 @@ void StateTank::Initialize(Framework* framework, Grid* grid)
 void StateTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, Grid* grid)
 {
 	mGrid = grid;
-	mBaseTile = mGrid->GetTile(0, 0);
-	mBaseTile->mColor = glm::vec4(.824, .129, 0, 1);
 	//state manager has ownership of GoToResource heap pointer
 	mStateManager = new StateManager(this, new GoToResource);
 	Tank::Initialize(framework, position, size);
@@ -28,8 +24,6 @@ void StateTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2&
 void StateTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color, Grid* grid)
 {
 	mGrid = grid;
-	mBaseTile = mGrid->GetTile(0, 0);
-	mBaseTile->mColor = glm::vec4(.824, .129, 0, 1);
 	//state manager has ownership of GoToResource heap pointer
 	mStateManager = new StateManager(this, new GoToResource);
 	Tank::Initialize(framework, position, size, color);
@@ -62,17 +56,22 @@ unsigned int StateTank::GetCurrentResourceQty()
 	return mCurrentResourcesQuantity;
 }
 
-vec StateTank::FindClosestBase()
+Tile* StateTank::FindClosestBase()
 {
-	return mBaseTile->mPosition;
+	return FindClosest(mGrid->GetBaseTilesList());
 }
 
 Tile* StateTank::FindClosestResource()
 {
+	return FindClosest(mGrid->GetResourceTilesList());
+}
+
+Tile* StateTank::FindClosest(const std::vector<Tile*>& tileList)
+{
 	//find lowest distance
 	float lowDx = FLT_MAX;
 	Tile* nearestTile = nullptr;
-	for (Tile* t : mGrid->GetResourceTilesList())
+	for (Tile* t : tileList)
 	{
 		float dx = glm::distance(mPosition, t->mPosition);
 		if (dx < lowDx)

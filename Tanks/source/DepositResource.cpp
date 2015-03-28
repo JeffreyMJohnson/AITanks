@@ -15,9 +15,9 @@ void DepositResource::Update(float deltaTime, StateTank* agent, StateManager* ma
 	resources dumped -> go to resource
 	*/
 
-	if (glm::distance(agent->mPosition, agent->FindClosestBase()) > 2)
+	if (glm::distance(agent->mPosition, agent->FindClosestBase()->mPosition) > 2)
 	{
-		agent->mSteering->Seek(agent->FindClosestBase(), 0.0f);
+		agent->mSteering->Seek(agent->FindClosestBase()->mPosition, 0.0f);
 		agent->mSteering->Update();
 	}
 	else

@@ -34,8 +34,9 @@ public:
 	void Update(float timeDelta);
 	void Draw();
 	unsigned int GetCurrentResourceQty();
-	vec FindClosestBase();
+	Tile* FindClosestBase();
 	Tile* FindClosestResource();
+	Tile* FindClosest(const std::vector<Tile*>& tileList);
 
 
 
