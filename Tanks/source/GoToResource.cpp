@@ -24,9 +24,9 @@ void GoToResource::Update(float deltaTime, StateTank* agent, StateManager* manag
 	{
 		Tile* frontTile = agent->mPathTileList.front();
 		//going to next tile
-		if (glm::distance(agent->mPosition, frontTile->mPosition) > 1.5)
+		if (glm::distance(agent->mPosition, frontTile->mPosition) > 5.f)
 		{
-			agent->mSteering->Seek(agent->mPathTileList.front()->mPosition, 2.f);
+			agent->mSteering->Seek(agent->mPathTileList.front()->mPosition, 5.0f);
 			agent->mSteering->Update();
 		}
 		else//arrived at next tile

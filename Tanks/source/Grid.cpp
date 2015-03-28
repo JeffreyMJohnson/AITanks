@@ -80,6 +80,7 @@ void Grid::CreateGrid()
 			{
 				t->mColor = MNF::Color::Green();
 				t->mIsResource = true;
+				t->mIsWalkable = true;
 				mResourceTilesList.push_back(t);
 			}
 
@@ -88,6 +89,7 @@ void Grid::CreateGrid()
 			{
 				t->mColor = MNF::Color::Red();
 				t->mIsBase = true;
+				t->mIsWalkable = true;
 				mBaseTilesList.push_back(t);
 			}
 
@@ -184,7 +186,7 @@ void Grid::ResetTiles()
 		tile->mGScore = INT_MAX;
 		tile->mFScore = 0;
 		tile->mPathParentNode = nullptr;
-		if (!tile->mIsWalkable &&
+		if (tile->mIsWalkable &&
 			!tile->mIsBase &&
 			!tile->mIsResource)
 		{

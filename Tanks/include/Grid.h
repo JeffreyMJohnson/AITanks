@@ -18,6 +18,7 @@ public:
 	const float TILE_HEIGHT = 25.0f;
 	const float TILE_WIDTH = 25.0f;
 	const char* TILE_TEXTURE_PATH = ".\\resources\\textures\\Basic.png";
+	const int WALL_PROBABILITY = 10;//int between 0 and 100. greater increases likelyhood of tile being wall
 	const glm::vec2 startPosition = glm::vec2(200, 75);
 	glm::vec4 gridRect = glm::vec4(0, 0, 0, 0);
 	
@@ -45,7 +46,7 @@ public:
 	std::vector<Tile*> GetTilesInLine(MNF::Collider::Ray& ray, Tile* end);
 	MNF::Collider::AABB GetAABB(Tile* tile);
 private:
-	const int WALL_PROBABILITY = 0;//int between 0 and 100. greater increases likelyhood of tile being wall
+	
 	Framework* mFramework;
 	std::vector<Tile*> mTileList;
 	std::vector<Tile*> mResourceTilesList;
