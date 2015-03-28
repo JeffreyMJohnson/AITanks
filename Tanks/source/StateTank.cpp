@@ -88,7 +88,7 @@ bool SortOnFScore(Tile* lhs, Tile* rhs)
 	return lhs->mFScore < rhs->mFScore;
 }
 
-void StateTank::AStarPathFind(Tile* goal, bool smoothPath = false)
+void StateTank::AStarPathFind(Tile* goal, bool smoothPath)
 {
 	std::list<Tile*> priorityQ;
 	Tile* startTile = mGrid->GetNearestTile(mPosition);

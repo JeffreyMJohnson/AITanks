@@ -3,7 +3,7 @@
 StateManager::StateManager(StateTank* owner, State* startState)
 {
 	mOwner = owner;
-	mCurrentState = startState;
+	SetCurrentState(startState);
 }
 
 State* StateManager::GetCurrentState()
@@ -14,7 +14,6 @@ State* StateManager::GetCurrentState()
 void StateManager::SetCurrentState(State* newState)
 {
 	assert(newState != nullptr);
-	assert(mCurrentState != nullptr);
 	/*
 	 First we call the Exit() function of the currentState variable, passing in our owner and ourselves
 	 Then we call the Enter() function of the state that was passed in as an argument, again passing in our owner variable and ourselves.
@@ -28,8 +27,12 @@ void StateManager::SetCurrentState(State* newState)
 		delete mPreviousState;
 	}
 
+	if (mCurrentState != nullptr)
+	{
 	mPreviousState = mCurrentState;
 	mCurrentState->Exit(mOwner, this);
+	}
+
 	newState->Enter(mOwner, this);
 	mCurrentState = newState;
 }

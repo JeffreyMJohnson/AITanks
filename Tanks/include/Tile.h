@@ -21,6 +21,8 @@ public:
 	glm::vec2 mPosition;
 	glm::vec4 mColor;
 	bool mIsWalkable;
+	bool mIsBase;
+	bool mIsResource;
 
 	//MAGIC NUMBERS
 	//const float HEIGHT = 25.0f;

@@ -12,6 +12,9 @@ public:
 	void Update(float deltaTime, StateTank* agent, StateManager* manager);
 	void Exit(StateTank* agent, StateManager* manager);
 
+private:
+
+
 };
 
 #endif

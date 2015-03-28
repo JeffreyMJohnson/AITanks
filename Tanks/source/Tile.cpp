@@ -11,4 +11,6 @@ Tile::Tile(int a_rowPos, int a_colPos)
 	colPos = a_colPos;
 	mColor = glm::vec4(1, 1, 1, 1);
 	mIsWalkable = true;
+	mIsBase = false;
+	mIsResource = false;
 }
