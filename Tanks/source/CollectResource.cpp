@@ -45,6 +45,12 @@ void CollectResource::Update(float deltaTime, StateTank* agent, StateManager* ma
 			agent->mGrid->RemoveResource(resourceTile);
 		}
 
+		if (resourceTile->mIsResource)
+		{
+			float colorRatio = 1 - (resourceTile->mResourceQty / (float)agent->mGrid->TOTAL_RESOURCE_QTY);
+			resourceTile->mColor = glm::vec4(colorRatio, 1, colorRatio, 1);
+		}
+
 		//if tank full go deposit
 		if (agent->mCurrentResourcesQuantity == agent->mTotalResourcesAllowed)
 		{
