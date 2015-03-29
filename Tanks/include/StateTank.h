@@ -21,7 +21,7 @@ class StateTank : public Tank
 {
 public:
 
-	static unsigned int mTotalResourceQuantity;
+	static unsigned int mTotalResourceQuantity;//uninitialized because static
 	float mCollectionSpeed = .5f;
 	float mCollectionTimer = 0.0f;
 	unsigned int mTotalResourcesAllowed = 10;
@@ -39,7 +39,9 @@ public:
 	Tile* FindClosestBase();
 	Tile* FindClosestResource();
 	void AStarPathFind(Tile* goal, bool smoothPath = false);
+	void DkPathFind(Tile* goal);
 
+	void UpdateRotation();
 
 
 private:

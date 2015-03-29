@@ -7,7 +7,8 @@ void GoToResource::Enter(StateTank* agent, StateManager* manager)
 {
 	assert(agent->mPathTileList.empty());
 	agent->mGrid->ResetTiles();
-	agent->AStarPathFind(agent->FindClosestResource());
+	//agent->AStarPathFind(agent->FindClosestResource());
+	agent->DkPathFind(agent->FindClosestResource());
 }
 
 void GoToResource::Update(float deltaTime, StateTank* agent, StateManager* manager)
@@ -28,6 +29,7 @@ void GoToResource::Update(float deltaTime, StateTank* agent, StateManager* manag
 		{
 			agent->mSteering->Seek(agent->mPathTileList.front()->mPosition, 5.0f);
 			agent->mSteering->Update();
+
 		}
 		else//arrived at next tile
 		{
@@ -67,5 +69,5 @@ void GoToResource::Update(float deltaTime, StateTank* agent, StateManager* manag
 
 void GoToResource::Exit(StateTank* agent, StateManager* manager)
 {
-
+	agent->mPathTileList.clear();
 }

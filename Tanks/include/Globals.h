@@ -144,6 +144,14 @@ namespace MNF
 		{
 			return glm::vec4(0.501, 0.152, 0.039, 1.0f);
 		}
+		static glm::vec4 Yellow()
+		{
+			return glm::vec4(1, 1, 0, 1);
+		}
+		static glm::vec4 Aqua()
+		{
+			return glm::vec4(0, 1, 1, 1);
+		}
 	};
 }
 

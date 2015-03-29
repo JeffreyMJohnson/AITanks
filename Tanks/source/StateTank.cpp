@@ -31,19 +31,21 @@ void StateTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2&
 
 void StateTank::Update(float timeDelta)
 {
-/*transitions:
-go to resources:
+	/*transitions:
+	go to resources:
 	reach node -> collect resources
 
-collect:
+	collect:
 	runs out of resource (not full) -> go to resource
 	can't carry more (full) -> deposit
 
-deposit:
+	deposit:
 	resources dumped -> go to resource
-*/
+	*/
 	mStateManager->Update(timeDelta);
 	mFramework->MoveSprite(mSpriteId, mPosition.x, mPosition.y);
+	mRotationAngle = atan2f(mVelocity.y, mVelocity.x);
+	mFramework->RotateSprite(mSpriteId, mRotationAngle);
 }
 
 void StateTank::Draw()
@@ -105,7 +107,7 @@ void StateTank::AStarPathFind(Tile* goal, bool smoothPath)
 		current->mIsVisited = true;
 		if (current != startTile && current != goal && current->mIsWalkable)
 		{
-			current->mColor = glm::vec4(1, 1, 0, 1);
+			current->mColor = MNF::Color::Yellow();
 		}
 
 		if (current == goal)
@@ -166,7 +168,7 @@ void StateTank::AStarPathFind(Tile* goal, bool smoothPath)
 				if (std::find(mPathTileList.begin(), mPathTileList.end(), end) + 1 != mPathTileList.end())
 				{
 					end = *(std::find(mPathTileList.begin(), mPathTileList.end(), end) + 1);
-				}				
+				}
 			}
 			else
 			{
@@ -177,6 +179,65 @@ void StateTank::AStarPathFind(Tile* goal, bool smoothPath)
 				}
 			}
 		}
+	}
+}
+
+void StateTank::DkPathFind(Tile* goal)
+{
+	std::list<Tile*> priorityQ;
+	Tile* startTile = mGrid->GetNearestTile(mPosition);
+	priorityQ.push_front(startTile);
+	//set g score to 0 and current tile's parent (N) to itself
+	startTile->mGScore = 0;
+	startTile->mPathParentNode = startTile;
+
+	while (!priorityQ.empty())
+	{
+		Tile* current = priorityQ.front();
+		priorityQ.pop_front();
+
+		current->mIsVisited = true;
+
+		if (current != startTile && current != goal && current->mIsWalkable)
+		{
+			current->mColor = MNF::Color::Aqua();
+		}
+
+		if (current == goal)
+			break;
+
+		for (Edge* edge : current->mEdges)
+		{
+			Tile* neighbor = edge->mEnd;
+			if (!neighbor->mIsVisited && neighbor->mIsWalkable)
+			{
+				float gscore = current->mGScore + neighbor->mWeight;
+				if (gscore < neighbor->mGScore)
+				{
+					neighbor->mPathParentNode = current;
+					neighbor->mGScore = gscore;
+					if (std::find(priorityQ.begin(), priorityQ.end(), neighbor) == priorityQ.end())
+					{
+						priorityQ.push_back(neighbor);
+					}
+				}
+			}
+		}
+
+	}
+
+	mPathTileList.push_back(goal);
+	Tile* parent = goal->mPathParentNode;
+	mPathTileList.insert(mPathTileList.begin(), parent);
+	while (parent != startTile)
+	{
+		if (!parent->mIsResource && !parent->mIsBase)
+		{
+			parent->mColor = glm::vec4(1, 0, 1, 1);
+		}
+		parent = parent->mPathParentNode;
+
+		mPathTileList.insert(mPathTileList.begin(), parent);
 	}
 }
 
