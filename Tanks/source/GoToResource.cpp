@@ -7,8 +7,7 @@ void GoToResource::Enter(StateTank* agent, StateManager* manager)
 {
 	assert(agent->mPathTileList.empty());
 	agent->mGrid->ResetTiles();
-	//agent->AStarPathFind(agent->FindClosestResource());
-	agent->DkPathFind(agent->FindClosestResource());
+	agent->AStarPathFind(agent->FindClosestResource());
 }
 
 void GoToResource::Update(float deltaTime, StateTank* agent, StateManager* manager)

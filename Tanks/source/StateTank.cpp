@@ -198,7 +198,7 @@ void StateTank::DkPathFind(Tile* goal)
 
 		current->mIsVisited = true;
 
-		if (current != startTile && current != goal && current->mIsWalkable)
+		if (current != startTile && current != goal && current->mIsWalkable && !current->mIsResource)
 		{
 			current->mColor = MNF::Color::Aqua();
 		}
