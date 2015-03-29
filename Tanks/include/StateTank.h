@@ -26,6 +26,8 @@ public:
 	float mCollectionTimer = 0.0f;
 	unsigned int mTotalResourcesAllowed = 10;
 	unsigned int mCurrentResourcesQuantity = 0;
+
+
 	std::vector<Tile*> mPathTileList;
 	Grid* mGrid;
 
@@ -46,11 +48,7 @@ public:
 
 private:
 
-	//STATE mCurrentState;
 	StateManager* mStateManager;
-
-
-
 	Tile* mBaseTile;
 
 

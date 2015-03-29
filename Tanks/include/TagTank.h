@@ -2,9 +2,9 @@
 #define _TAG_TANK_H_
 
 #include "Tank.h"
-//#include "Entity.h"
-//#include "SteeringManager.h"
-//#include "IBoid.h"
+#include "Grid.h"
+
+class StateManager;
 
 typedef MNF::Collider::AABB AABB;
 
@@ -18,22 +18,27 @@ public:
 	
 	TagTank* tagPartner;
 	bool isSeeking;
+	Grid* mGrid;
 
 	~TagTank();
 
-	void Initialize(Framework* framework, TagTank* tagPartner, bool isSeeking);
-	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, TagTank* tagPartner, bool isSeeking);
-	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color, TagTank* tagPartner, bool isSeeking);
+	void Initialize(Framework* framework, TagTank* tagPartner, bool isSeeking, Grid* grid);
+	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, TagTank* tagPartner, bool isSeeking, Grid* grid);
+	void Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color, TagTank* tagPartner, bool isSeeking, Grid* grid);
 	
 	//Entity interface methods
 	void Update(float timeDelta);
 	void Draw();
 private:
-	bool mIsTagged = false;
-	float mWaitTimer = 0.0f;
-
+	//magic numbers
 	const float SEEK_PAUSE_TIME = 5.0f;
 	const float VISIBILITY_RADIUS = 100.0f;
+
+
+	bool mIsTagged = false;
+	float mWaitTimer = 0.0f;
+	StateManager* mStateManager;
+
 };
 
 #endif

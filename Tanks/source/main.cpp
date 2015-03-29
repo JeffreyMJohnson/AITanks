@@ -32,22 +32,6 @@ void CreateTanks();
 void AutoRun();
 void TankLogic(float deltaTime);
 
-/*
-//void LoadGridEdgesDiagonal();
-//void LoadGridEdgesOneWay();
-//bool SortOnFScore(Tile* lhs, Tile* rhs);
-//void ThetaStarPathFind();
-//void AStarPathFind(bool smoothPath);
-//float GetHeuristic(HEURISTIC_TYPE type, Tile* node, Tile* nodeTarget);
-*/
-
-
-//const glm::vec4 WHITE = glm::vec4(1, 1, 1, 1);
-//const glm::vec4 RED = glm::vec4(1, 0, 0, 1);
-//const glm::vec4 GREEN = glm::vec4(0, 1, 0, 1);
-//const glm::vec4 BLUE = glm::vec4(0, 0, 1, 1);
-//const glm::vec4 BROWN = glm::vec4(0.501, 0.152, 0.039, 1.0f);
-
 Framework frk;
 bool quit = false;
 
@@ -254,20 +238,29 @@ void AutoRun()
 
 void CreateTanks()
 {
-	/*
+
+	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
+
+	StateTank* t = new StateTank;
+	t->Initialize(&frk, grid.GetTile(0, 0)->mPosition, vec(20, 20), &grid);
+	t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
+	t->mBounds = grid.gridRect;
+	t->mMaxVelocity = 5.0f;
+	tankList.push_back(t);
+	
 	TagTank* tom = new TagTank;
 	TagTank* jerry = new TagTank;
-	tom->Initialize(&frk, grid.GetTile(10, 10)->mPosition, glm::vec2(20, 20), glm::vec4(1, 0, 0, 1), jerry, true);
-	tom->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
+	tom->Initialize(&frk, grid.GetTile(10, 10)->mPosition, glm::vec2(20, 20), MNF::Color::Red(), jerry, true, &grid);
+	tom->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
 	tom->mBounds = grid.gridRect;
 	tom->mMaxVelocity = 1.5f;
-	jerry->Initialize(&frk, grid.GetTile(15, 15)->mPosition, glm::vec2(20, 20), glm::vec4(0, 1, 0, 1), tom, false);
-	jerry->SetSpriteId(".\\resources\\textures\\tank.png", glm::vec4(.008f, .016f, .121f, .109f));
+	jerry->Initialize(&frk, grid.GetTile(15, 15)->mPosition, glm::vec2(20, 20), MNF::Color::Green(), tom, false, &grid);
+	jerry->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
 	jerry->mBounds = grid.gridRect;
 	jerry->mMaxVelocity = 1.0f;
 	tankList.push_back(tom);
 	tankList.push_back(jerry);
-	*/
+	
 
 	/*
 	//10 wander tanks
@@ -293,14 +286,7 @@ void CreateTanks()
 	tankList.push_back(t);
 	}
 	*/
-	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 
-	StateTank* t = new StateTank;
-	t->Initialize(&frk, grid.GetTile(0, 0)->mPosition, vec(20, 20), &grid);
-	t->SetSpriteId(tankSpriteID, glm::vec4(.008f, .016f, .121f, .109f));
-	t->mBounds = grid.gridRect;
-	t->mMaxVelocity = 5.0f;
-	tankList.push_back(t);
 }
 
 void Initialize()

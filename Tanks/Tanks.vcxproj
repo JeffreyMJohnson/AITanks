@@ -80,6 +80,7 @@
     <ClCompile Include="source\GoToResource.cpp" />
     <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\PursueTank.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\StateManager.cpp" />
     <ClCompile Include="source\StateTank.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="include\GoToResource.h" />
     <ClInclude Include="include\Grid.h" />
     <ClInclude Include="include\IBoid.h" />
+    <ClInclude Include="include\PursueTank.h" />
     <ClInclude Include="include\State.h" />
     <ClInclude Include="include\StateManager.h" />
     <ClInclude Include="include\StateTank.h" />

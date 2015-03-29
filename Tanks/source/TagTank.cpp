@@ -1,31 +1,33 @@
 #include "TagTank.h"
-#include "Grid.h"
-
+#include "StateManager.h"
 
 
 TagTank::~TagTank()
 {
 }
 
-void TagTank::Initialize(Framework* framework, TagTank* tagPartner, bool isSeeking)
+void TagTank::Initialize(Framework* framework, TagTank* tagPartner, bool isSeeking, Grid* grid)
 {
 	this->tagPartner = tagPartner;
 	this->isSeeking = isSeeking;
+	mGrid = grid;
 	Tank::Initialize(framework);
 
 }
 
-void TagTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, TagTank* tagPartner, bool isSeeking)
+void TagTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, TagTank* tagPartner, bool isSeeking, Grid* grid)
 {
 	this->tagPartner = tagPartner;
 	this->isSeeking = isSeeking;
+	mGrid = grid;
 	Tank::Initialize(framework, position, size);
 }
 
-void TagTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color, TagTank* tagPartner, bool isSeeking)
+void TagTank::Initialize(Framework* framework, glm::vec2& position, glm::vec2& size, glm::vec4& color, TagTank* tagPartner, bool isSeeking, Grid* grid)
 {
 	this->tagPartner = tagPartner;
 	this->isSeeking = isSeeking;
+	mGrid = grid;
 	Tank::Initialize(framework, position, size, color);
 }
 
