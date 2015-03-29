@@ -20,6 +20,8 @@ public:
 	const char* TILE_TEXTURE_PATH = ".\\resources\\textures\\Basic.png";
 	const int WALL_PROBABILITY = 10;//int between 0 and 100. greater increases likelyhood of tile being wall
 	const glm::vec2 startPosition = glm::vec2(200, 75);
+	const int TOTAL_RESOURCE_QTY = 20;
+	const int RESOURCE_PROBABILITY = 5;
 	glm::vec4 gridRect = glm::vec4(0, 0, 0, 0);
 	
 
@@ -38,6 +40,7 @@ public:
 	bool IsOutOfBounds(glm::vec2 position, glm::vec2 size);
 
 	const std::vector<Tile*>& GetResourceTilesList();
+	void RemoveResource(Tile* resourceTile);
 	const std::vector<Tile*>& GetBaseTilesList();
 
 	//pathfinding

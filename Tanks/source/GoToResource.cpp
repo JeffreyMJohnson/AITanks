@@ -5,7 +5,6 @@
 //api from state base class
 void GoToResource::Enter(StateTank* agent, StateManager* manager)
 {
-	assert(agent->mPathTileList.empty());
 	agent->mGrid->ResetTiles();
 	agent->AStarPathFind(agent->FindClosestResource());
 }

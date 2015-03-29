@@ -13,4 +13,5 @@ Tile::Tile(int a_rowPos, int a_colPos)
 	mIsWalkable = true;
 	mIsBase = false;
 	mIsResource = false;
+	mResourceQty = 0;
 }

@@ -23,6 +23,7 @@ public:
 	bool mIsWalkable;
 	bool mIsBase;
 	bool mIsResource;
+	int mResourceQty;
 
 	//MAGIC NUMBERS
 	//const float HEIGHT = 25.0f;

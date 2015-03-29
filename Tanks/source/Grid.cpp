@@ -47,12 +47,12 @@ void Grid::CreateGrid()
 	unsigned int spriteId = mFramework->CreateSprite(tileSize.x, tileSize.y, TILE_TEXTURE_PATH, true);
 
 	//vec2 startPos(200, 75);
-	Grid::gridRect.x = Grid::startPosition.x - (tileSize.x * .5f);
-	Grid::gridRect.y = Grid::startPosition.y - (tileSize.y * .5f);
-	glm::vec2 position = Grid::startPosition;
-	for (int row = 0; row < Grid::GRID_ROWS; row++)
+	gridRect.x = startPosition.x - (tileSize.x * .5f);
+	gridRect.y = startPosition.y - (tileSize.y * .5f);
+	glm::vec2 position = startPosition;
+	for (int row = 0; row < GRID_ROWS; row++)
 	{
-		for (int col = 0; col < Grid::GRID_COLS; col++)
+		for (int col = 0; col < GRID_COLS; col++)
 		{
 			Tile* t = new Tile(row, col);
 			t->mSpriteID = spriteId;
@@ -61,36 +61,41 @@ void Grid::CreateGrid()
 			mTileList.push_back(t);
 			if (col == GRID_COLS - 1)
 			{
-				position.x = Grid::startPosition.x;
+				position.x = startPosition.x;
 			}
 			else
 			{
 				position.x += tileSize.x;
 			}
-			//see if wall
-			if ((rand() % 100) + 1 <= WALL_PROBABILITY)
-			{
-				t->mColor = MNF::Color::Brown();
-				t->mWeight = INT_MAX;
-				t->mIsWalkable = false;
-			}
-			//resource tiles
-			if (row == 24 && col == 24 ||
-				row == 0 && col == 24)
-			{
-				t->mColor = MNF::Color::Green();
-				t->mIsResource = true;
-				t->mIsWalkable = true;
-				mResourceTilesList.push_back(t);
-			}
 
-			//base tiles
-			if (row == 0 && col == 0)
+			//base tiles in corners
+			if ((row == 0 && col == 0) ||
+				(row == GRID_ROWS - 1 && col == 0) ||
+				(row == 0 && col == GRID_COLS - 1) ||
+				(row == GRID_ROWS - 1 && col == GRID_COLS - 1))
 			{
 				t->mColor = MNF::Color::Red();
 				t->mIsBase = true;
 				t->mIsWalkable = true;
 				mBaseTilesList.push_back(t);
+			}
+			//wall tiles
+			if ((rand() % 100) + 1 <= WALL_PROBABILITY && !t->mIsBase)
+			{
+				t->mColor = MNF::Color::Brown();
+				t->mWeight = INT_MAX;
+				t->mIsWalkable = false;
+			}
+
+			//resource tiles
+			if ((rand() % 100) + 1 <= RESOURCE_PROBABILITY && t->mIsWalkable && !t->mIsBase)
+			{
+				t->mColor = MNF::Color::Green();
+				t->mIsResource = true;
+				t->mIsWalkable = true;
+				t->mResourceQty = TOTAL_RESOURCE_QTY;
+				mResourceTilesList.push_back(t);
+
 			}
 
 		}
@@ -213,6 +218,15 @@ const std::vector<Tile*>& Grid::GetResourceTilesList()
 	return mResourceTilesList;
 }
 
+void Grid::RemoveResource(Tile* resourceTile)
+{
+	std::vector<Tile*>::iterator result = std::find(mResourceTilesList.begin(), mResourceTilesList.end(), resourceTile);
+	if (result != mResourceTilesList.end())
+	{
+		mResourceTilesList.erase(result);
+	}
+}
+
 const std::vector<Tile*>& Grid::GetBaseTilesList()
 {
 	return mBaseTilesList;
@@ -232,7 +246,7 @@ std::vector<Tile*> Grid::GetTilesInLine(MNF::Collider::Ray& ray, Tile* end)
 		{
 			result.push_back(currentTile);
 		}
-		
+
 	}
 	return result;
 }
