@@ -102,9 +102,6 @@
     <ClCompile Include="source\GoToResource.cpp">
       <Filter>Source Files\states</Filter>
     </ClCompile>
-    <ClCompile Include="source\PursueTank.cpp">
-      <Filter>Source Files\states</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Globals.h">
@@ -174,9 +171,6 @@
       <Filter>Header Files\states</Filter>
     </ClInclude>
     <ClInclude Include="include\State.h">
-      <Filter>Header Files\states</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PursueTank.h">
       <Filter>Header Files\states</Filter>
     </ClInclude>
   </ItemGroup>
