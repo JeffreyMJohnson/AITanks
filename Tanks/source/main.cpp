@@ -5,6 +5,8 @@
 #include "FlockTank.h"
 #include "StateTank.h"
 
+#include "glm/gtc/constants.hpp"
+
 #include <time.h>
 #include <iostream>
 #include <algorithm>
@@ -262,9 +264,9 @@ void CreateTanks()
 	tankList.push_back(jerry);
 	
 
-	/*
+	/**/
 	//10 wander tanks
-	unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
+	//unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 	for (int i = 0; i < 5; i++)
 	{
 	WanderTank* w = new WanderTank;
@@ -273,7 +275,7 @@ void CreateTanks()
 	w->mBounds = grid.gridRect;
 	tankList.push_back(w);
 	}
-	*/
+	
 	/*
 	//unsigned int tankSpriteID = frk.CreateSprite(20, 20, ".\\resources\\textures\\tank.png", true);
 	for (int i = 0; i < 25; i++)

@@ -34,12 +34,22 @@ public:
 
 private:
 	//MAGIC NUMBERS 
+	//MAGIC NUMBERS 
+	const float WANDER_CIRCLE_DISTANCE = 150.f;
+	const float WANDER_CIRCLE_RADIUS = 100.f;
+	const float WANDER_JITTER_SCALE = .01f;
+
+	//value of -1 is flag for not being set yet
+	vec mWanderTarget = vec(-1, -1);
+	/*
 	const float CIRCLE_DISTANCE = 50;
 	const float CIRCLE_RADIUS = 100;
 	const int ANGLE_CHANGE = 10;
 	const float WANDER_FORCE_SCALE = .5f;
 	
 	float mWanderAngle_ = 0.0f;
+	*/
+
 	
 	vec DoSeek(vec target, float slowingRadius);
 	vec DoFlee(vec target);
@@ -53,6 +63,7 @@ private:
 	void SetAngle(vec& vector, float value);
 
 	void Truncate(vec& original, float max);
+	vec GetRandomVector();
 }; 
 
 #endif
