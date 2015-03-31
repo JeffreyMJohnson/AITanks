@@ -18,11 +18,37 @@ public:
 
 	SteeringManager(IBoid* host);
 
+	/**
+	Apply seek forces toward given target
+	####parameters
+	target - vector2 position to seek
+	slowingRadius - radius of circle around target position
+	*/
 	void Seek(vec target, float slowingRadius = 20.0f);
+	/**
+	Apply flee steering forces toward given target.
+	####parameters
+	target - vector2 position 
+	*/
 	void Flee(vec target);
+
+	/**
+	Apply Wander steering forces toward given target.
+	*/
 	void Wander();
+
+	/**
+	Apply evade steering behavior
+	####parameters
+	IBoid - target to evade
+	*/
 	void Evade(IBoid& target);
+	
+	/**
+	
+	*/
 	void Pursuit(IBoid& target);
+
 	void Separate();
 	void Alignment();
 	void Cohesion();
