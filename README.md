@@ -20,6 +20,10 @@ Tank demo for applying AI / path finding algorithms.
 **Wander**
 * 10 tanks placed randomly on the map are wandering using wandering steering behaviour.
 
+### Implementation ###
+* C++
+* School provided OpenGL framework
+
 ### To-Do ###
 fix bug when resources are done.
 
