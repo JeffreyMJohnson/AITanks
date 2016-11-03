@@ -32,6 +32,12 @@ Programmer / Designer - **Jeffrey M Johnson**
 * School provided OpenGL-wrapper framework
 * OpenGL Extension Wrangler Library (GLEW)
 
+#### Interesting Code
+* [AITank Base Class](https://github.com/JeffreyMJohnson/AITanks/blob/dev/Tanks/source/AITank.cpp)
+* [StateManager Class](https://github.com/JeffreyMJohnson/AITanks/blob/dev/Tanks/source/StateManager.cpp)
+* [Wander Logic](https://github.com/JeffreyMJohnson/AITanks/blob/dev/Tanks/source/Wander.cpp)
+* [Grid Class](https://github.com/JeffreyMJohnson/AITanks/blob/dev/Tanks/source/Grid.cpp)
+
 ## Current Status
 This project is currently not building. Visual studio compiler change, so need to recompile
 dependant libraries as well. Should have posted compiled lib but did not at the time.
